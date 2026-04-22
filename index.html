@@ -5,20 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>李稀敏 | 个人主页</title>
   <meta name="description" content="李稀敏个人主页，聚焦大模型训练、声纹识别、语音反欺诈、可信多媒体鉴定，以及科研背书与产业能力。">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     :root {
-      --bg: #0b1118;
-      --bg-soft: #101722;
-      --panel: rgba(17, 24, 34, 0.92);
-      --line: rgba(255, 255, 255, 0.08);
-      --line-strong: rgba(255, 255, 255, 0.14);
-      --line-subtle: rgba(255, 255, 255, 0.05);
+      --bg: #000000;
+      --bg-soft: #0a0a0a;
+      --panel: rgba(20, 20, 20, 0.92);
+      --line: rgba(255, 255, 255, 0.07);
+      --line-strong: rgba(255, 255, 255, 0.13);
+      --line-subtle: rgba(255, 255, 255, 0.04);
       --text: #f2f6fb;
-      --muted: rgba(242, 246, 251, 0.62);
+      --muted: rgba(242, 246, 251, 0.58);
       --accent: #7aa8f0;
-      --accent-soft: rgba(122, 168, 240, 0.12);
-      --shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
-      --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.18);
+      --accent-soft: rgba(122, 168, 240, 0.1);
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+      --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.35);
       --radius-xl: 32px;
       --radius-lg: 24px;
       --radius-md: 18px;
@@ -33,10 +34,7 @@
       margin: 0;
       color: var(--text);
       font-family: "SF Pro Display", "SF Pro Text", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-      background:
-        radial-gradient(circle at 10% 8%, rgba(122, 168, 240, 0.07), transparent 22%),
-        radial-gradient(circle at 90% 90%, rgba(122, 168, 240, 0.04), transparent 20%),
-        linear-gradient(180deg, #0b1118 0%, #0f1621 45%, #0b1118 100%);
+      background: #000000;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
       min-height: 100vh;
@@ -122,7 +120,8 @@
     /* ─── Hero ─── */
     .hero-shell {
       display: grid;
-      grid-template-columns: 1fr 0.9fr;
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: stretch;
       gap: 20px;
     }
 
@@ -137,15 +136,13 @@
     }
 
     .hero-copy {
-      padding: 52px 48px;
-      min-height: 580px;
+      padding: 40px 40px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      gap: 28px;
     }
 
-    .hero-copy::before,
-    .hero-portrait::before {
+    .hero-copy::before {
       content: "";
       position: absolute;
       inset: 0;
@@ -156,15 +153,36 @@
       z-index: 0;
     }
 
-    .hero-portrait {
-      min-height: 580px;
+    .hero-title-row {
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 32px;
+      gap: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title-text {
+      flex: 1;
+    }
+
+    .hero-portrait {
+      display: flex;
+      align-items: center;
+      justify-content: stretch;
+      padding: 0;
+      position: relative;
+      overflow: hidden;
       background:
         radial-gradient(circle at 50% 16%, rgba(122, 168, 240, 0.07), transparent 22%),
         linear-gradient(180deg, rgba(16, 22, 30, 0.99) 0%, rgba(11, 17, 24, 0.99) 100%);
+    }
+
+    #expertise-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
     }
 
     .eyebrow {
@@ -278,7 +296,7 @@
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
       margin-top: 40px;
     }
@@ -309,48 +327,38 @@
     .portrait-orbit {
       position: relative;
       z-index: 1;
-      width: min(100%, 580px);
-      aspect-ratio: 1 / 1;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      background:
-        radial-gradient(circle at 50% 34%, rgba(255, 255, 255, 0.1), rgba(18, 26, 37, 0.98) 58%, rgba(10, 15, 22, 1) 100%);
-      box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.06),
-        0 0 0 1px rgba(122, 168, 240, 0.1),
-        0 24px 64px rgba(0, 0, 0, 0.32);
+      background: #ffffff;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
       overflow: hidden;
-    }
-
-    .portrait-orbit::before,
-    .portrait-orbit::after {
-      content: "";
-      position: absolute;
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .portrait-orbit::before {
-      inset: 5%;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .portrait-orbit::after {
-      inset: 13%;
-      border: 1px solid rgba(122, 168, 240, 0.12);
+      flex-shrink: 0;
     }
 
     .portrait-orbit img {
-      width: 84%;
-      height: 90%;
-      object-fit: contain;
-      object-position: center bottom;
-      filter: saturate(1.02) contrast(1.03);
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
       position: relative;
       z-index: 1;
-      mask-image: radial-gradient(circle at 50% 50%, black 66%, transparent 100%);
+    }
+
+    .hero-title-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title-text {
+      flex: 1;
+      padding-top: 8px;
     }
 
     /* ─── Section Head ─── */
@@ -667,10 +675,6 @@
         min-height: auto;
       }
 
-      .portrait-orbit {
-        width: min(100%, 500px);
-      }
-
       .panel-grid,
       .panel-grid-b {
         grid-template-columns: 1fr;
@@ -733,8 +737,15 @@
     <section class="hero-shell reveal" id="profile">
       <article class="hero-copy">
         <div>
-          <div class="eyebrow">Technical Profile</div>
-          <h1>李稀敏</h1>
+          <div class="hero-title-row">
+            <div class="hero-title-text">
+              <div class="eyebrow">Technical Profile</div>
+              <h1>李稀敏</h1>
+            </div>
+            <div class="portrait-orbit">
+              <img src="assets/images/ximin-li-portrait.png" alt="李稀敏个人形象照">
+            </div>
+          </div>
           <div class="role-tags">
             <span class="role-tag">国家重大科技项目负责人</span>
             <span class="role-tag">Kriston AI 联合创始人</span>
@@ -742,17 +753,7 @@
             <span class="role-tag">声像资料鉴定司法鉴定人</span>
             <span class="role-tag">汉朝语音大模型负责人</span>
           </div>
-          <div class="hero-tags">
-            <span class="tag">大模型训练</span>
-            <span class="tag">声纹识别</span>
-            <span class="tag">语音反欺诈</span>
-            <span class="tag">可信多媒体鉴定</span>
-          </div>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#research">查看科研成果</a>
-            <a class="btn btn-secondary" href="#awards">查看获奖</a>
-          </div>
-        </div>
+                  </div>
 
         <div class="hero-meta">
           <div class="meta-box">
@@ -761,23 +762,19 @@
           </div>
           <div class="meta-box">
             <strong>Top2</strong>
-            <span>VoxSRC 2022<br>国际挑战赛</span>
+            <span>国际 VoxSRC 2022 大赛</span>
           </div>
           <div class="meta-box">
             <strong>国标</strong>
-            <span>声纹识别国家标准<br>起草单位</span>
-          </div>
-          <div class="meta-box">
-            <strong>500+</strong>
-            <span>Kriston AI<br>累计发明专利</span>
+            <span>国家声纹标准起草人</span>
           </div>
         </div>
       </article>
 
       <aside class="hero-portrait">
-        <div class="portrait-orbit">
-          <img src="assets/images/ximin-li-portrait.png" alt="李稀敏个人形象照">
-        </div>
+        <a href="https://mp.weixin.qq.com/s?__biz=MzA5NzI3MTYyNg==&mid=2651200023&idx=1&sn=41d42a65ad58534d57654077cbe5fd58&chksm=8afc7beff6d10cd90c9a956573dd2addd5892347bb3601b03c5af8cf3e7edaad4b85ca96bf85&scene=27" target="_blank" rel="noreferrer" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;">
+          <img src="assets/images/interview.gif" alt="" style="width:100%;height:auto;max-height:100%;object-fit:contain;display:block;">
+        </a>
       </aside>
     </section>
 
@@ -909,6 +906,7 @@
           <ul class="list">
             <li>荣获 2017 年厦门市科技进步奖</li>
             <li>荣获 2019 年厦门市科技进步奖</li>
+            <li>荣获 2022 年厦门市科技进步奖</li>
           </ul>
           <div class="proof-visual">
             <img src="assets/images/xiamen-science-award.jpg" alt="科技进步奖展示">
@@ -980,6 +978,226 @@
         }
       });
     }, { passive: true });
+
+  // ── Three.js Expertise Network ──
+  (function() {
+    const CONTAINER = document.querySelector('.hero-portrait');
+    const canvas = document.getElementById('expertise-canvas');
+    if (!canvas || !CONTAINER) return;
+
+    // ── Renderer ──
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+    renderer.sortObjects = true;
+
+    // ── Scene ──
+    const scene = new THREE.Scene();
+    const W = () => CONTAINER.clientWidth;
+    const H = () => CONTAINER.clientHeight;
+
+    // ── Camera ──
+    const camera = new THREE.OrthographicCamera(-W() / 2, W() / 2, H() / 2, -H() / 2, 0.1, 100);
+    camera.position.z = 20;
+
+    // ── Lighting ──
+    scene.add(new THREE.AmbientLight(0x223344, 1.0));
+    const keyLight = new THREE.PointLight(0x4488ff, 1.5, 100);
+    keyLight.position.set(5, 5, 8);
+    scene.add(keyLight);
+    const rimLight = new THREE.PointLight(0x00ccff, 1.0, 80);
+    rimLight.position.set(-5, -3, 5);
+    scene.add(rimLight);
+
+    // ── Node Data ──
+    const NODES = [
+      { label: '大模型训练',     color: 0x00d4ff, r: 52 },
+      { label: 'AI Agent 设计',  color: 0x00ff88, r: 42 },
+      { label: '声纹识别',       color: 0xff6b35, r: 33 },
+      { label: '语音反欺诈',      color: 0xffd93d, r: 26 },
+      { label: '可信多媒体鉴定',  color: 0xc77dff, r: 20 },
+    ];
+
+    // Layout: pentagon, largest in center
+    const SCALE = 1.1;
+    const BASE_POS = [
+      [0,          0,          0  ],
+      [-130 * SCALE,  90 * SCALE,  0],
+      [-120 * SCALE, -85 * SCALE,  0],
+      [ 90 * SCALE, -60 * SCALE,  0],
+      [110 * SCALE,  40 * SCALE,  0],
+    ];
+
+    const EDGES = [[0,1],[0,2],[0,3],[0,4],[1,2],[2,3],[3,4]];
+
+    // ── Texture Text (canvas) ──
+    function makeTextTexture(label, radius) {
+      const size = 256;
+      const c = document.createElement('canvas');
+      c.width = size; c.height = size;
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, size, size);
+
+      const fontSize = Math.max(18, Math.round(radius * 0.45));
+      ctx.font = `bold ${fontSize}px "PingFang SC", "Microsoft YaHei", sans-serif`;
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // Wrap text
+      const maxW = radius * 2.2;
+      let lines = [];
+      const words = label.split('');
+      let line = '';
+      words.forEach(char => {
+        const test = line + char;
+        if (ctx.measureText(test).width > maxW && line) {
+          lines.push(line); line = char;
+        } else { line = test; }
+      });
+      if (line) lines.push(line);
+
+      const lineH = fontSize * 1.3;
+      const totalH = lines.length * lineH;
+      const startY = -totalH / 2 + lineH / 2;
+      lines.forEach((l, i) => ctx.fillText(l, size / 2, size / 2 + startY + i * lineH));
+
+      return new THREE.CanvasTexture(c);
+    }
+
+    // ── Build Nodes ──
+    const meshes = [];
+    NODES.forEach((n, i) => {
+      const [bx, by] = BASE_POS[i];
+
+      // Core sphere
+      const geo = new THREE.CircleGeometry(NODES[i].r, 64);
+      const mat = new THREE.MeshBasicMaterial({
+        color: n.color,
+        transparent: true,
+        opacity: 0.92,
+        side: THREE.DoubleSide,
+      });
+      const circle = new THREE.Mesh(geo, mat);
+      circle.position.set(bx, by, 0);
+      scene.add(circle);
+
+      // Inner white ring
+      const ringGeo = new THREE.RingGeometry(NODES[i].r * 0.72, NODES[i].r * 0.88, 64);
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      ring.position.set(bx, by, 0.1);
+      scene.add(ring);
+
+      // Glow halo
+      const haloGeo = new THREE.CircleGeometry(NODES[i].r * 1.5, 64);
+      const haloMat = new THREE.MeshBasicMaterial({
+        color: n.color,
+        transparent: true,
+        opacity: 0.08,
+        side: THREE.DoubleSide,
+      });
+      const halo = new THREE.Mesh(haloGeo, haloMat);
+      halo.position.set(bx, by, -0.5);
+      scene.add(halo);
+
+      // Text sprite (crisp canvas texture)
+      const tex = makeTextTexture(n.label, NODES[i].r);
+      const spriteMat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
+      const sprite = new THREE.Sprite(spriteMat);
+      const spriteScale = NODES[i].r * 2.2;
+      sprite.scale.set(spriteScale, spriteScale, 1);
+      sprite.position.set(bx, by, 0.5);
+      scene.add(sprite);
+
+      meshes.push({
+        circle, ring, halo, sprite,
+        bx, by,
+        baseR: NODES[i].r,
+        color: n.color,
+        phase: i * 1.4 + 0.5,
+      });
+    });
+
+    // ── Build Edges ──
+    const edgeObjs = [];
+    EDGES.forEach(([a, b]) => {
+      const [ax, ay] = BASE_POS[a];
+      const [bx, by] = BASE_POS[b];
+
+      // Glow line
+      const points = [new THREE.Vector3(ax, ay, 0), new THREE.Vector3(bx, by, 0)];
+      const geo = new THREE.BufferGeometry().setFromPoints(points);
+      const mat = new THREE.LineBasicMaterial({ color: 0x3399ff, transparent: true, opacity: 0.4 });
+      const line = new THREE.Line(geo, mat);
+      scene.add(line);
+
+      // Traveling particles (2 per edge)
+      [0.25, 0.7].forEach(offset => {
+        const pGeo = new THREE.CircleGeometry(4, 16);
+        const pMat = new THREE.MeshBasicMaterial({ color: 0x88ddff, transparent: true, opacity: 0.9 });
+        const p = new THREE.Mesh(pGeo, pMat);
+        p.position.set(ax, ay, 0.2);
+        scene.add(p);
+        edgeObjs.push({ p, ax, ay, bx, by, t: offset });
+      });
+    });
+
+    // ── Mouse Parallax ──
+    let mx = 0, my = 0;
+    let cx = 0, cy = 0;
+    CONTAINER.addEventListener('mousemove', e => {
+      const r = CONTAINER.getBoundingClientRect();
+      mx = ((e.clientX - r.left) / r.width  - 0.5) * 2;
+      my = ((e.clientY - r.top)  / r.height - 0.5) * 2;
+    });
+    CONTAINER.addEventListener('mouseleave', () => { mx = 0; my = 0; });
+
+    // ── Resize ──
+    function resize() {
+      const w = W(), h = H();
+      renderer.setSize(w, h, false);
+      camera.left   = -w / 2; camera.right = w / 2;
+      camera.top    =  h / 2; camera.bottom = -h / 2;
+      camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // ── Animate ──
+    function animate() {
+      requestAnimationFrame(animate);
+      const t = Date.now() * 0.001;
+
+      // Smooth camera pan
+      cx += (mx * 12 - cx) * 0.04;
+      cy += (-my * 8 - cy) * 0.04;
+      camera.position.x = cx;
+      camera.position.y = cy;
+
+      // Pulse nodes
+      meshes.forEach(m => {
+        const pulse = 1 + Math.sin(t * 1.2 + m.phase) * 0.04;
+        m.circle.scale.set(pulse, pulse, 1);
+        m.ring.scale.set(pulse, pulse, 1);
+        m.halo.scale.set(pulse * 1.05, pulse * 1.05, 1);
+        m.circle.position.x = m.bx + Math.sin(t * 0.3 + m.phase) * 2.5;
+        m.circle.position.y = m.by + Math.cos(t * 0.25 + m.phase * 0.8) * 3;
+        m.ring.position.x = m.sprite.position.x = m.halo.position.x = m.circle.position.x;
+        m.ring.position.y = m.sprite.position.y = m.halo.position.y = m.circle.position.y;
+      });
+
+      // Animate particles along edges
+      edgeObjs.forEach(e => {
+        e.t = (e.t + 0.006) % 1;
+        e.p.position.x = e.ax + (e.bx - e.ax) * e.t;
+        e.p.position.y = e.ay + (e.by - e.ay) * e.t;
+      });
+
+      renderer.render(scene, camera);
+    }
+    animate();
+  })();
   </script>
 </body>
 </html>
