@@ -7,3 +7,13 @@ node_modules/
 .idea/
 *.swp
 *.swo
+_docx_extract/
+url-to-markdown/
+*.pptx
+*.docx
+*.pdf
+*.jpg
+*.png
+*.jpeg
+*.gif
+index.html.backup

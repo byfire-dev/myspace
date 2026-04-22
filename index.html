@@ -3,41 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>李稀敏 | 个人主页</title>
-  <meta name="description" content="李稀敏个人主页，聚焦大模型训练、声纹识别、语音反欺诈、可信多媒体鉴定，以及科研背书与产业能力。">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <title>李稀敏 | 声纹识别 · 大模型 · 可信多媒体鉴定</title>
+  <meta name="description" content="李稀敏个人主页，聚焦大模型训练、声纹识别、语音反欺诈、可信多媒体鉴定">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #000000;
-      --bg-soft: #0a0a0a;
-      --panel: rgba(20, 20, 20, 0.92);
-      --line: rgba(255, 255, 255, 0.07);
-      --line-strong: rgba(255, 255, 255, 0.13);
-      --line-subtle: rgba(255, 255, 255, 0.04);
-      --text: #f2f6fb;
-      --muted: rgba(242, 246, 251, 0.58);
-      --accent: #7aa8f0;
-      --accent-soft: rgba(122, 168, 240, 0.1);
-      --shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
-      --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.35);
-      --radius-xl: 32px;
-      --radius-lg: 24px;
-      --radius-md: 18px;
-      --max: 1480px;
+      --ink:       #0d1117;
+      --ink-2:     #1c2431;
+      --paper:     #f5f2ec;
+      --paper-2:   #ede9e0;
+      --paper-3:   #e4dfd3;
+      --rule:      rgba(13,17,23,0.12);
+      --rule-dark: rgba(13,17,23,0.22);
+      --accent:    #c0392b;
+      --accent-2:  #e8523f;
+      --gold:      #b8860b;
+      --mono:      "JetBrains Mono", monospace;
+      --serif:     "DM Serif Display", serif;
+      --cn:        "Noto Serif SC", serif;
+      --max:       1320px;
     }
 
-    * { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; font-size: 16px; }
 
     body {
-      margin: 0;
-      color: var(--text);
-      font-family: "SF Pro Display", "SF Pro Text", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-      background: #000000;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--cn);
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
       min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ── Paper texture overlay ── */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      mix-blend-mode: multiply;
     }
 
     a { color: inherit; text-decoration: none; }
@@ -46,70 +59,431 @@
     .wrap {
       width: min(calc(100% - 48px), var(--max));
       margin: 0 auto;
+      position: relative;
+      z-index: 1;
     }
 
-    /* ─── Topbar ─── */
+    /* ═══════════════════════════════════════
+       TOPBAR
+    ═══════════════════════════════════════ */
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 60;
-      backdrop-filter: blur(18px) saturate(130%);
-      background: rgba(11, 17, 24, 0.85);
-      border-bottom: 1px solid var(--line-subtle);
+      z-index: 80;
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule-dark);
+    }
+
+    .topbar::after {
+      content: "";
+      display: block;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent) 0%, transparent 60%);
     }
 
     .topbar-inner {
-      min-height: 54px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
+      gap: 24px;
+      min-height: 52px;
     }
 
     .brand {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 0.95rem;
-      letter-spacing: 0.02em;
-      color: rgba(245, 247, 251, 0.92);
-      font-weight: 500;
+      align-items: baseline;
+      gap: 10px;
     }
 
-    .brand::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
+    .brand-cn {
+      font-family: var(--serif);
+      font-size: 1.45rem;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+    }
+
+    .brand-id {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      font-weight: 400;
     }
 
     .nav {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px;
-      color: var(--muted);
-      font-size: 0.82rem;
+      gap: 0;
     }
 
     .nav a {
-      padding-bottom: 2px;
-      border-bottom: 1px solid transparent;
-      transition: color 0.2s, border-color 0.2s;
+      font-family: var(--mono);
+      font-size: 0.73rem;
+      letter-spacing: 0.08em;
+      color: rgba(13,17,23,0.5);
+      padding: 4px 14px;
+      border-right: 1px solid var(--rule);
+      transition: color 0.18s;
     }
 
-    .nav a:hover { color: var(--text); }
+    .nav a:first-child { border-left: 1px solid var(--rule); }
 
-    /* ─── Main ─── */
-    main { padding: 32px 0 64px; }
+    .nav a:hover, .nav a.active {
+      color: var(--accent);
+    }
 
-    section { margin-top: 28px; }
+    /* ═══════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════ */
+    .hero {
+      padding: 64px 0 48px;
+      border-bottom: 1px solid var(--rule-dark);
+    }
 
-    /* ─── Reveal Animation ─── */
+    .hero-layout {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 0;
+      align-items: start;
+    }
+
+    .hero-left {
+      padding-right: 56px;
+      border-right: 1px solid var(--rule-dark);
+    }
+
+    .hero-right {
+      padding-left: 56px;
+    }
+
+    /* Waveform decoration */
+    .waveform-bar {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      margin-bottom: 32px;
+    }
+
+    .waveform-bar .w-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--accent);
+      letter-spacing: 0.18em;
+      margin-right: 12px;
+    }
+
+    .wave-lines {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 24px;
+    }
+
+    .wave-lines span {
+      display: block;
+      width: 2px;
+      border-radius: 1px;
+      background: var(--accent);
+      animation: wavePulse 1.8s ease-in-out infinite;
+    }
+
+    .wave-lines span:nth-child(1)  { height: 6px;  animation-delay: 0s; }
+    .wave-lines span:nth-child(2)  { height: 14px; animation-delay: 0.1s; }
+    .wave-lines span:nth-child(3)  { height: 20px; animation-delay: 0.2s; }
+    .wave-lines span:nth-child(4)  { height: 10px; animation-delay: 0.3s; }
+    .wave-lines span:nth-child(5)  { height: 18px; animation-delay: 0.15s; }
+    .wave-lines span:nth-child(6)  { height: 8px;  animation-delay: 0.25s; }
+    .wave-lines span:nth-child(7)  { height: 22px; animation-delay: 0.05s; }
+    .wave-lines span:nth-child(8)  { height: 12px; animation-delay: 0.35s; }
+    .wave-lines span:nth-child(9)  { height: 16px; animation-delay: 0.12s; }
+    .wave-lines span:nth-child(10) { height: 6px;  animation-delay: 0.28s; }
+    .wave-lines span:nth-child(11) { height: 20px; animation-delay: 0.08s; }
+    .wave-lines span:nth-child(12) { height: 8px;  animation-delay: 0.22s; }
+
+    @keyframes wavePulse {
+      0%, 100% { opacity: 1; transform: scaleY(1); }
+      50%       { opacity: 0.4; transform: scaleY(0.5); }
+    }
+
+    .hero-name-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 28px;
+      margin-bottom: 24px;
+    }
+
+    .portrait-frame {
+      width: 88px;
+      height: 88px;
+      flex-shrink: 0;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--rule-dark);
+      background: var(--paper-3);
+      position: relative;
+    }
+
+    .portrait-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 4px;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+    }
+
+    .portrait-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .portrait-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--serif);
+      font-size: 2rem;
+      color: var(--ink-2);
+      opacity: 0.3;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(3.2rem, 7vw, 5.6rem);
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+
+    .hero-tagline {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: rgba(13,17,23,0.5);
+      letter-spacing: 0.12em;
+      margin-top: 8px;
+    }
+
+    .hero-roles {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 28px 0;
+      padding-left: 0;
+      list-style: none;
+      border-left: 2px solid var(--accent);
+      padding-left: 18px;
+    }
+
+    .hero-roles li {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: var(--ink-2);
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 1px solid var(--rule-dark);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 36px;
+    }
+
+    .stat-cell {
+      padding: 18px 16px;
+      border-right: 1px solid var(--rule-dark);
+      background: var(--paper-2);
+    }
+
+    .stat-cell:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: var(--serif);
+      font-size: 2.2rem;
+      line-height: 1;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: rgba(13,17,23,0.55);
+      letter-spacing: 0.06em;
+      line-height: 1.4;
+      display: block;
+    }
+
+    /* Right column: expertise map */
+    .expertise-header {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      color: rgba(13,17,23,0.4);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .expertise-header::before {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--rule-dark);
+    }
+
+    .expertise-map {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .exp-node {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--rule);
+      background: var(--paper-2);
+      border-radius: 2px;
+      transition: border-color 0.2s, background 0.2s;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .exp-node::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+    }
+
+    .exp-node:nth-child(1)::before { background: #0055cc; }
+    .exp-node:nth-child(2)::before { background: #00aa66; }
+    .exp-node:nth-child(3)::before { background: #cc4400; }
+    .exp-node:nth-child(4)::before { background: #bb8800; }
+    .exp-node:nth-child(5)::before { background: #8833cc; }
+
+    .exp-node:hover {
+      border-color: var(--rule-dark);
+      background: var(--paper-3);
+    }
+
+    .exp-index {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: rgba(13,17,23,0.3);
+      letter-spacing: 0.1em;
+      min-width: 28px;
+    }
+
+    .exp-name {
+      font-family: var(--cn);
+      font-size: 0.88rem;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .exp-bar-wrap {
+      width: 60px;
+      height: 3px;
+      background: var(--rule);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .exp-bar {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--ink);
+      opacity: 0.3;
+    }
+
+    /* Interview embed */
+    .interview-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 24px;
+      padding: 14px 16px;
+      border: 1px solid var(--rule-dark);
+      background: var(--ink);
+      color: var(--paper);
+      border-radius: 2px;
+      font-family: var(--mono);
+      font-size: 0.73rem;
+      letter-spacing: 0.06em;
+      transition: background 0.2s;
+    }
+
+    .interview-link:hover { background: var(--ink-2); }
+
+    .interview-link-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .interview-link-icon svg {
+      width: 10px;
+      height: 10px;
+      fill: white;
+    }
+
+    /* ═══════════════════════════════════════
+       SECTION STRUCTURE
+    ═══════════════════════════════════════ */
+    main { padding-bottom: 80px; }
+
+    .section-wrap {
+      border-bottom: 1px solid var(--rule);
+      padding: 56px 0;
+    }
+
+    .section-head-row {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+
+    .section-index {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+    }
+
+    h2 {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+    }
+
+    .section-rule {
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    /* Reveal animation */
     .reveal {
       opacity: 0;
-      transform: translateY(22px);
-      transition: opacity 0.55s ease, transform 0.55s ease;
+      transform: translateY(18px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
     }
 
     .reveal.visible {
@@ -117,526 +491,368 @@
       transform: none;
     }
 
-    /* ─── Hero ─── */
-    .hero-shell {
+    /* ═══════════════════════════════════════
+       RESEARCH SECTION
+    ═══════════════════════════════════════ */
+    .research-grid {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      align-items: stretch;
-      gap: 20px;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--rule-dark);
+      border: 1px solid var(--rule-dark);
     }
 
-    .hero-copy,
-    .hero-portrait {
-      border: 1px solid var(--line-strong);
-      border-radius: var(--radius-xl);
-      background: linear-gradient(160deg, rgba(18, 25, 35, 0.98) 0%, rgba(12, 18, 26, 0.99) 100%);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      position: relative;
+    .research-cell {
+      background: var(--paper);
+      padding: 32px 28px;
     }
 
-    .hero-copy {
-      padding: 40px 40px;
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
-    }
+    .research-cell:hover { background: var(--paper-2); }
 
-    .hero-copy::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(122, 168, 240, 0.07), transparent 28%),
-        radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.025), transparent 32%);
-      z-index: 0;
-    }
-
-    .hero-title-row {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-title-text {
-      flex: 1;
-    }
-
-    .hero-portrait {
-      display: flex;
-      align-items: center;
-      justify-content: stretch;
-      padding: 0;
-      position: relative;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 50% 16%, rgba(122, 168, 240, 0.07), transparent 22%),
-        linear-gradient(180deg, rgba(16, 22, 30, 0.99) 0%, rgba(11, 17, 24, 0.99) 100%);
-    }
-
-    #expertise-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    .eyebrow {
-      position: relative;
-      z-index: 1;
+    .cell-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
       color: var(--accent);
-      font-size: 0.82rem;
-      letter-spacing: 0.2em;
       text-transform: uppercase;
-      margin-bottom: 16px;
-      font-weight: 500;
-    }
-
-    h1, h2, h3, p {
-      margin: 0;
-      position: relative;
-      z-index: 1;
-    }
-
-    h1 {
-      font-size: clamp(3.6rem, 7.5vw, 6.2rem);
-      line-height: 0.97;
-      letter-spacing: -0.03em;
-      max-width: 7ch;
-    }
-
-    .role-tags {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .role-tag {
-      padding: 8px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(122, 168, 240, 0.18);
-      background: rgba(122, 168, 240, 0.08);
-      color: rgba(242, 246, 251, 0.88);
-      font-size: 0.9rem;
-      line-height: 1.4;
-    }
-
-    .hero-tags {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 22px;
-    }
-
-    .tag {
-      padding: 9px 15px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      background: rgba(255, 255, 255, 0.025);
-      color: rgba(245, 247, 251, 0.84);
-      font-size: 0.9rem;
-    }
-
-    .hero-actions {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      margin-top: 32px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 144px;
-      padding: 12px 22px;
-      border-radius: 999px;
-      font-size: 0.95rem;
-      font-weight: 500;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #5a8de8, #7aa8f0);
-      color: #ffffff;
-      box-shadow: 0 4px 16px rgba(90, 141, 232, 0.3);
-    }
-
-    .btn-primary:hover {
-      box-shadow: 0 6px 24px rgba(90, 141, 232, 0.45);
-    }
-
-    .btn-secondary {
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.03);
-    }
-
-    .btn-secondary:hover {
-      border-color: rgba(255, 255, 255, 0.22);
-      background: rgba(255, 255, 255, 0.06);
-    }
-
-    .hero-meta {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 40px;
-    }
-
-    .meta-box {
-      border-radius: var(--radius-md);
-      padding: 16px 16px 14px;
-      background: rgba(255, 255, 255, 0.025);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .meta-box strong {
-      display: block;
-      font-size: 1.5rem;
-      line-height: 1.1;
-      letter-spacing: -0.04em;
-      margin-bottom: 6px;
-      color: #fff;
-    }
-
-    .meta-box span {
-      color: var(--muted);
-      line-height: 1.55;
-      font-size: 0.88rem;
-    }
-
-    /* ─── Portrait ─── */
-    .portrait-orbit {
-      position: relative;
-      z-index: 1;
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #ffffff;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .portrait-orbit img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center center;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-title-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-title-text {
-      flex: 1;
-      padding-top: 8px;
-    }
-
-    /* ─── Section Head ─── */
-    .section-head {
-      padding: 28px 4px 12px;
-      position: relative;
-    }
-
-    .section-head h2 {
-      font-size: clamp(2.2rem, 4.5vw, 3.8rem);
-      line-height: 1.04;
-      letter-spacing: -0.02em;
-      position: relative;
-      display: inline-block;
-    }
-
-    .section-head h2::after {
-      content: "";
-      display: block;
-      width: 48px;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), transparent);
-      margin-top: 10px;
-      border-radius: 1px;
-    }
-
-    /* ─── Panel A — 数据面板（科研成果 / 重大项目）─── */
-    .panel-a {
-      border: 1px solid var(--line);
-      border-radius: var(--radius-xl);
-      background: linear-gradient(160deg, rgba(17, 24, 34, 0.96) 0%, rgba(13, 19, 28, 0.98) 100%);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      position: relative;
-      padding: 40px 36px;
-    }
-
-    .panel-a::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(122, 168, 240, 0.06), transparent 28%),
-        radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.02), transparent 30%);
-      z-index: 0;
-    }
-
-    .panel-a > * { position: relative; z-index: 1; }
-
-    .panel-a .eyebrow { margin-bottom: 14px; }
-
-    .panel-a h3 {
-      font-size: clamp(1.7rem, 2.2vw, 2.2rem);
-      line-height: 1.14;
-      letter-spacing: -0.01em;
-    }
-
-    .panel-a .desc {
-      margin-top: 14px;
-      color: var(--muted);
-      font-size: 1rem;
-      line-height: 1.8;
-    }
-
-    .panel-a .line-deco {
-      width: 54px;
-      height: 1px;
-      background: linear-gradient(90deg, var(--accent), transparent);
-      margin: 16px 0 0;
-    }
-
-    .panel-a .link-list {
-      margin: 14px 0 0;
-      padding-left: 18px;
-      color: var(--muted);
-      line-height: 1.85;
-      font-size: 0.95rem;
-    }
-
-    .panel-a .link-list a { color: #9bc1ff; }
-
-    /* ─── Panel B — 品牌展示（产业能力）─── */
-    .panel-b {
-      border: 1px solid var(--line-subtle);
-      border-radius: var(--radius-xl);
-      background: linear-gradient(160deg, rgba(15, 21, 30, 0.98) 0%, rgba(11, 17, 24, 0.99) 100%);
-      box-shadow: var(--shadow-sm);
-      overflow: hidden;
-      position: relative;
-      padding: 44px 40px;
-    }
-
-    .panel-b::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(122, 168, 240, 0.04), transparent 26%);
-      z-index: 0;
-    }
-
-    .panel-b > * { position: relative; z-index: 1; }
-
-    .panel-b .eyebrow {
-      color: rgba(255, 255, 255, 0.45);
       margin-bottom: 14px;
     }
 
-    .panel-b h3 {
-      font-size: clamp(1.7rem, 2.2vw, 2.2rem);
-      line-height: 1.14;
-      letter-spacing: -0.01em;
+    .cell-title {
+      font-family: var(--cn);
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.55;
+      margin-bottom: 12px;
     }
 
-    .panel-b .desc {
-      margin-top: 14px;
-      color: var(--muted);
-      font-size: 1rem;
+    .cell-desc {
+      font-size: 0.88rem;
       line-height: 1.8;
+      color: rgba(13,17,23,0.62);
+      margin-bottom: 18px;
     }
 
-    /* ─── Panel C — 身份标签（社会兼职）─── */
-    .panel-c {
-      border: 1px solid var(--line-subtle);
-      border-radius: var(--radius-lg);
-      background: rgba(15, 21, 30, 0.7);
-      overflow: hidden;
-      position: relative;
-      padding: 30px 28px;
-    }
-
-    .panel-c .eyebrow { margin-bottom: 14px; }
-
-    .panel-c h3 {
-      font-size: clamp(1.4rem, 1.8vw, 1.8rem);
-      line-height: 1.18;
-      letter-spacing: -0.01em;
-    }
-
-    .panel-tags {
-      position: relative;
-      z-index: 1;
+    .cell-links {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 18px;
+      gap: 8px;
     }
 
-    .panel-tag {
-      padding: 10px 15px;
-      border-radius: 12px;
-      border: 1px solid rgba(122, 168, 240, 0.14);
-      background: rgba(255, 255, 255, 0.025);
-      color: rgba(242, 246, 251, 0.9);
-      font-size: 0.9rem;
-      line-height: 1.45;
+    .cell-link {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      padding: 5px 12px;
+      border: 1px solid var(--rule-dark);
+      border-radius: 1px;
+      background: transparent;
+      color: var(--ink);
+      transition: background 0.15s, border-color 0.15s;
     }
 
-    /* ─── Grid Layouts ─── */
-    .panel-grid {
+    .cell-link:hover {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+    }
+
+    .data-trio {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .data-row {
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 24px;
+      grid-template-columns: 120px 1fr;
+      gap: 16px;
       align-items: start;
-      position: relative;
-      z-index: 1;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--rule);
     }
 
-    .panel-grid-b {
+    .data-row:last-child { border-bottom: none; }
+
+    .data-key {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: rgba(13,17,23,0.45);
+      letter-spacing: 0.06em;
+      padding-top: 2px;
+    }
+
+    .data-val {
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--ink-2);
+    }
+
+    .data-val a {
+      color: #1a50b0;
+      border-bottom: 1px solid rgba(26,80,176,0.25);
+    }
+
+    .data-val a:hover { border-color: #1a50b0; }
+
+    /* ═══════════════════════════════════════
+       PROJECT SECTION
+    ═══════════════════════════════════════ */
+    .project-card {
+      border: 1px solid var(--rule-dark);
+      background: var(--paper-2);
+      padding: 40px 36px;
+      position: relative;
       display: grid;
-      grid-template-columns: 1fr 0.6fr;
-      gap: 24px;
+      grid-template-columns: 1fr 280px;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .project-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2), transparent);
+    }
+
+    .project-title {
+      font-family: var(--cn);
+      font-size: 1.3rem;
+      font-weight: 600;
+      line-height: 1.5;
+      margin: 12px 0 16px;
+    }
+
+    .project-desc {
+      font-size: 0.9rem;
+      line-height: 1.85;
+      color: rgba(13,17,23,0.65);
+    }
+
+    .project-link {
+      display: inline-flex;
       align-items: center;
-      position: relative;
-      z-index: 1;
+      gap: 6px;
+      margin-top: 20px;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: #1a50b0;
+      border-bottom: 1px solid rgba(26,80,176,0.3);
     }
 
-    .data-rail {
-      display: grid;
+    .project-meta-stack {
+      display: flex;
+      flex-direction: column;
       gap: 12px;
     }
 
-    .data-item {
-      border-radius: var(--radius-md);
-      background: rgba(255, 255, 255, 0.025);
-      border: 1px solid rgba(255, 255, 255, 0.055);
-      padding: 16px 18px 14px;
+    .meta-chip {
+      padding: 12px 16px;
+      background: var(--paper);
+      border: 1px solid var(--rule-dark);
+      border-radius: 2px;
     }
 
-    .data-item strong {
+    .meta-chip-key {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      color: rgba(13,17,23,0.4);
       display: block;
-      font-size: 1.05rem;
-      margin-bottom: 5px;
-      color: #fff;
-      letter-spacing: -0.01em;
+      margin-bottom: 4px;
     }
 
-    .data-item span {
-      color: var(--muted);
-      line-height: 1.65;
-      font-size: 0.9rem;
+    .meta-chip-val {
+      font-size: 0.88rem;
+      color: var(--ink);
+      line-height: 1.5;
     }
 
-    .data-item a { color: #9bc1ff; }
-
-    /* ─── Awards ─── */
-    .award-grid {
+    /* ═══════════════════════════════════════
+       INDUSTRY SECTION
+    ═══════════════════════════════════════ */
+    .industry-layout {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr 260px;
+      gap: 0;
+      border: 1px solid var(--rule-dark);
+    }
+
+    .industry-main {
+      padding: 40px 36px;
+      border-right: 1px solid var(--rule-dark);
+    }
+
+    .industry-aside {
+      padding: 40px 32px;
+      background: var(--paper-2);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .industry-name {
+      font-family: var(--serif);
+      font-size: 2rem;
+      line-height: 1.1;
+      margin: 10px 0 20px;
+    }
+
+    .industry-desc {
+      font-size: 0.92rem;
+      line-height: 1.9;
+      color: rgba(13,17,23,0.65);
+    }
+
+    .industry-badge-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ind-badge {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.8rem;
+      line-height: 1.5;
+      color: rgba(13,17,23,0.7);
+    }
+
+    .ind-badge:last-child { border-bottom: none; }
+
+    .ind-badge::before {
+      content: "◆";
+      font-size: 0.5rem;
+      color: var(--accent);
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════
+       ROLES SECTION
+    ═══════════════════════════════════════ */
+    .roles-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--rule-dark);
+      border: 1px solid var(--rule-dark);
+    }
+
+    .role-card {
+      background: var(--paper);
+      padding: 28px 26px;
+      display: flex;
+      align-items: flex-start;
       gap: 18px;
     }
 
-    .card {
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      background: linear-gradient(160deg, rgba(17, 24, 34, 0.96) 0%, rgba(13, 19, 28, 0.98) 100%);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      position: relative;
-      padding: 30px 26px;
+    .role-card:hover { background: var(--paper-2); }
+
+    .role-num {
+      font-family: var(--mono);
+      font-size: 1.8rem;
+      line-height: 1;
+      color: rgba(13,17,23,0.1);
+      font-weight: 300;
+      flex-shrink: 0;
+      min-width: 40px;
+    }
+
+    .role-text {
+      font-family: var(--cn);
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--ink-2);
+    }
+
+    /* ═══════════════════════════════════════
+       AWARDS SECTION
+    ═══════════════════════════════════════ */
+    .awards-timeline {
       display: flex;
       flex-direction: column;
       gap: 0;
+      border-left: 2px solid var(--rule-dark);
+      padding-left: 36px;
+      margin-left: 12px;
     }
 
-    .card::before {
+    .award-entry {
+      position: relative;
+      padding: 0 0 36px 0;
+    }
+
+    .award-entry:last-child { padding-bottom: 0; }
+
+    .award-entry::before {
       content: "";
       position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(122, 168, 240, 0.06), transparent 28%);
-      z-index: 0;
+      left: -41px;
+      top: 8px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--paper);
+      border: 2px solid var(--rule-dark);
     }
 
-    .card > * { position: relative; z-index: 1; }
-
-    .card .eyebrow { margin-bottom: 12px; }
-
-    .card h3 {
-      font-size: clamp(1.4rem, 1.8vw, 1.8rem);
-      line-height: 1.18;
-      letter-spacing: -0.01em;
+    .award-entry.highlight::before {
+      background: var(--accent);
+      border-color: var(--accent);
+      width: 12px;
+      height: 12px;
+      left: -42px;
     }
 
-    .card .list {
-      margin: 14px 0 0;
-      padding-left: 18px;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: 0.9rem;
+    .award-year-badge {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 6px;
     }
 
-    .card .list a { color: #9bc1ff; }
-
-    .proof-visual {
-      position: relative;
-      z-index: 1;
-      margin-top: auto;
-      padding-top: 18px;
+    .award-title-text {
+      font-family: var(--cn);
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 8px;
     }
 
-    .proof-visual img {
+    .award-body {
+      font-size: 0.88rem;
+      line-height: 1.75;
+      color: rgba(13,17,23,0.6);
+    }
+
+    .award-img {
+      margin-top: 14px;
+      border-radius: 2px;
+      overflow: hidden;
+      max-width: 320px;
+      border: 1px solid var(--rule);
+    }
+
+    .award-img img {
       width: 100%;
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 4/3;
       object-fit: cover;
-      border-radius: 16px;
-      display: block;
-      border: 1px solid rgba(255, 255, 255, 0.06);
     }
 
-    /* ─── Footer ─── */
+    /* ═══════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════ */
     footer {
-      border-top: 1px solid var(--line-subtle);
-      padding: 32px 0;
-      margin-top: 56px;
+      border-top: 1px solid var(--rule-dark);
+      padding: 28px 0;
+      background: var(--paper-2);
     }
 
     .footer-inner {
@@ -645,84 +861,100 @@
       align-items: center;
     }
 
-    footer span {
-      color: var(--muted);
-      font-size: 0.88rem;
+    .footer-copy {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: rgba(13,17,23,0.4);
+      letter-spacing: 0.08em;
     }
 
-    footer a {
-      color: var(--muted);
-      font-size: 0.88rem;
-      transition: color 0.2s;
+    .footer-back {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: rgba(13,17,23,0.4);
+      letter-spacing: 0.08em;
+      border-bottom: 1px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
     }
 
-    footer a:hover { color: var(--text); }
-
-    /* ─── Responsive ─── */
-    @media (max-width: 1200px) {
-      .hero-meta {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    .footer-back:hover {
+      color: var(--accent);
+      border-color: var(--accent);
     }
 
-    @media (max-width: 1080px) {
-      .hero-shell {
+    /* ═══════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      .hero-layout {
         grid-template-columns: 1fr;
       }
 
-      .hero-copy,
-      .hero-portrait {
-        min-height: auto;
+      .hero-left {
+        padding-right: 0;
+        border-right: none;
+        border-bottom: 1px solid var(--rule-dark);
+        padding-bottom: 40px;
+        margin-bottom: 0;
       }
 
-      .panel-grid,
-      .panel-grid-b {
+      .hero-right {
+        padding-left: 0;
+        padding-top: 36px;
+      }
+
+      .research-grid,
+      .roles-grid {
         grid-template-columns: 1fr;
       }
 
-      .award-grid {
-        grid-template-columns: repeat(2, 1fr);
+      .project-card,
+      .industry-layout {
+        grid-template-columns: 1fr;
       }
+
+      .industry-main { border-right: none; border-bottom: 1px solid var(--rule-dark); }
     }
 
-    @media (max-width: 760px) {
-      .wrap {
-        width: min(calc(100% - 28px), var(--max));
-      }
+    @media (max-width: 640px) {
+      .wrap { width: calc(100% - 32px); }
 
       .topbar-inner {
-        align-items: flex-start;
         flex-direction: column;
-        padding: 8px 0;
-        gap: 12px;
+        align-items: flex-start;
+        padding: 10px 0;
+        gap: 10px;
       }
 
-      .hero-copy {
-        padding: 36px 24px;
-      }
+      .nav { gap: 0; }
+      .nav a { padding: 3px 10px; font-size: 0.68rem; }
 
-      .panel-a,
-      .panel-b {
-        padding: 28px 22px;
-      }
+      h1 { font-size: clamp(2.6rem, 10vw, 4rem); }
 
-      .panel-c {
-        padding: 24px 20px;
-      }
+      .hero-stats { grid-template-columns: 1fr 1fr; }
+      .hero-stats .stat-cell:last-child { border-top: 1px solid var(--rule-dark); }
 
-      .hero-meta,
-      .award-grid {
-        grid-template-columns: 1fr;
-      }
+      .project-card { padding: 28px 20px; }
+      .industry-main, .industry-aside { padding: 28px 20px; }
+      .research-cell { padding: 24px 20px; }
+
+      .awards-timeline { padding-left: 24px; margin-left: 6px; }
+      .award-entry::before { left: -29px; }
+      .award-entry.highlight::before { left: -30px; }
     }
   </style>
 </head>
 <body>
+
+  <!-- ═══ TOPBAR ═══ -->
   <header class="topbar">
     <div class="wrap topbar-inner">
-      <div class="brand">李稀敏</div>
+      <div class="brand">
+        <span class="brand-cn">李稀敏</span>
+        <span class="brand-id">LI XIMIN / AI RESEARCH</span>
+      </div>
       <nav class="nav" aria-label="页面导航">
-        <a href="#profile">人物简介</a>
+        <a href="#profile">简介</a>
         <a href="#research">科研成果</a>
         <a href="#projects">重大项目</a>
         <a href="#industry">产业能力</a>
@@ -732,472 +964,347 @@
     </div>
   </header>
 
-  <main class="wrap">
-    <!-- ─── Hero ─── -->
-    <section class="hero-shell reveal" id="profile">
-      <article class="hero-copy">
-        <div>
-          <div class="hero-title-row">
-            <div class="hero-title-text">
-              <div class="eyebrow">Technical Profile</div>
+  <!-- ═══ HERO ═══ -->
+  <section class="hero" id="profile">
+    <div class="wrap">
+      <div class="hero-layout">
+
+        <!-- Left: Identity -->
+        <div class="hero-left">
+          <div class="waveform-bar">
+            <span class="w-label">VOICEPRINT</span>
+            <div class="wave-lines">
+              <span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+
+          <div class="hero-name-row">
+            <div class="portrait-frame">
+              <img src="assets/images/ximin-li-portrait.png" alt="李稀敏" onerror="this.parentNode.innerHTML='<div class=portrait-placeholder>李</div>'">
+            </div>
+            <div>
               <h1>李稀敏</h1>
-            </div>
-            <div class="portrait-orbit">
-              <img src="assets/images/ximin-li-portrait.png" alt="李稀敏个人形象照">
+              <p class="hero-tagline">SPEAKER RECOGNITION · LLM · FORENSIC MEDIA</p>
             </div>
           </div>
-          <div class="role-tags">
-            <span class="role-tag">国家重大科技项目负责人</span>
-            <span class="role-tag">Kriston AI 联合创始人</span>
-            <span class="role-tag">厦门市新一代人工智能领域项目评审专家</span>
-            <span class="role-tag">声像资料鉴定司法鉴定人</span>
-            <span class="role-tag">汉朝语音大模型负责人</span>
-          </div>
-                  </div>
 
-        <div class="hero-meta">
-          <div class="meta-box">
-            <strong>30+</strong>
-            <span>授权发明专利</span>
-          </div>
-          <div class="meta-box">
-            <strong>Top2</strong>
-            <span>国际 VoxSRC 2022 大赛</span>
-          </div>
-          <div class="meta-box">
-            <strong>国标</strong>
-            <span>国家声纹标准起草人</span>
-          </div>
-        </div>
-      </article>
+          <ul class="hero-roles">
+            <li>国家重大科技项目负责人</li>
+            <li>Kriston AI 联合创始人</li>
+            <li>汉朝语音大模型负责人</li>
+            <li>声纹识别国家标准 GB/T 37036.5-2023 起草人</li>
+            <li>声像资料鉴定司法鉴定人</li>
+          </ul>
 
-      <aside class="hero-portrait">
-        <a href="https://mp.weixin.qq.com/s?__biz=MzA5NzI3MTYyNg==&mid=2651200023&idx=1&sn=41d42a65ad58534d57654077cbe5fd58&chksm=8afc7beff6d10cd90c9a956573dd2addd5892347bb3601b03c5af8cf3e7edaad4b85ca96bf85&scene=27" target="_blank" rel="noreferrer" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;">
-          <img src="assets/images/interview.gif" alt="" style="width:100%;height:auto;max-height:100%;object-fit:contain;display:block;">
-        </a>
-      </aside>
-    </section>
-
-    <!-- ─── 科研成果 ─── -->
-    <section id="research">
-      <div class="section-head">
-        <h2>科研成果</h2>
-      </div>
-
-      <article class="panel-a reveal">
-        <div class="panel-grid">
-          <div>
-            <div class="eyebrow">Representative Paper</div>
-            <h3>The Kriston AI System for VoxCeleb Speaker Recognition Challenge 2022</h3>
-            <p class="desc">论文发表于 2022 年 9 月 23 日，为团队在 VoxSRC 2022 中获得全球第二名的成果总结。</p>
-            <div class="line-deco"></div>
-            <ul class="link-list">
-              <li><a href="https://arxiv.org/abs/2209.11433" target="_blank" rel="noreferrer">查看 arXiv</a></li>
-              <li><a href="https://doi.org/10.48550/arXiv.2209.11433" target="_blank" rel="noreferrer">查看 DOI</a></li>
-              <li><a href="https://www.robots.ox.ac.uk/~vgg/data/voxceleb/data_workshop_2022/slides/voxsrc2022_kristonai_track1_2.pdf" target="_blank" rel="noreferrer">Workshop PPT</a></li>
-            </ul>
-          </div>
-          <div class="data-rail">
-            <div class="data-item">
-              <strong>国家标准</strong>
-              <span><a href="https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=1ABD5F5934C9EBA5484F2951A1854DD7" target="_blank" rel="noreferrer">参与起草 GB/T 37036.5-2023<br>《信息技术 移动设备生物特征识别 第5部分：声纹》</a></span>
+          <div class="hero-stats">
+            <div class="stat-cell">
+              <span class="stat-num">30+</span>
+              <span class="stat-label">授权发明专利</span>
             </div>
-            <div class="data-item">
-              <strong>授权专利</strong>
-              <span>30+ 已授权发明专利</span>
+            <div class="stat-cell">
+              <span class="stat-num">Top2</span>
+              <span class="stat-label">VoxSRC 2022 国际赛</span>
             </div>
-            <div class="data-item">
-              <strong>企业认证</strong>
-              <span>国家级专精特新小巨人企业</span>
+            <div class="stat-cell">
+              <span class="stat-num">国标</span>
+              <span class="stat-label">声纹国家标准起草</span>
             </div>
           </div>
         </div>
-      </article>
-    </section>
 
-    <!-- ─── 重大项目 ─── -->
-    <section id="projects">
-      <div class="section-head">
-        <h2>重大项目主导</h2>
-      </div>
+        <!-- Right: Expertise map -->
+        <div class="hero-right">
+          <div class="expertise-header">EXPERTISE DOMAINS</div>
 
-      <article class="panel-a reveal">
-        <div class="panel-grid">
-          <div>
-            <div class="eyebrow">Xiamen Major Program</div>
-            <h3>基于深度学习的可信多媒体鉴定关键技术研究及其产业化应用</h3>
-            <p class="desc">厦门市重大科技计划项目，总经费 500 万，总项目负责人。</p>
-            <div class="line-deco"></div>
-            <div class="panel-tags">
-              <span class="panel-tag">厦门市重大科技计划项目</span>
-              <span class="panel-tag">经费 500 万</span>
-              <span class="panel-tag">总项目负责人</span>
+          <div class="expertise-map">
+            <div class="exp-node">
+              <span class="exp-index">01</span>
+              <span class="exp-name">大模型训练</span>
+              <div class="exp-bar-wrap"><div class="exp-bar" style="width:95%"></div></div>
             </div>
-            <p class="desc" style="margin-top:16px;font-size:0.9rem;">
-              <a href="http://sti.xm.gov.cn/xxgk/zfxxgk/xxgkml/jdjc/202402/t20240219_2817585.htm" target="_blank" rel="noreferrer">› 查看官方公示</a>
+            <div class="exp-node">
+              <span class="exp-index">02</span>
+              <span class="exp-name">AI Agent 设计</span>
+              <div class="exp-bar-wrap"><div class="exp-bar" style="width:85%"></div></div>
+            </div>
+            <div class="exp-node">
+              <span class="exp-index">03</span>
+              <span class="exp-name">声纹识别</span>
+              <div class="exp-bar-wrap"><div class="exp-bar" style="width:100%"></div></div>
+            </div>
+            <div class="exp-node">
+              <span class="exp-index">04</span>
+              <span class="exp-name">语音反欺诈</span>
+              <div class="exp-bar-wrap"><div class="exp-bar" style="width:90%"></div></div>
+            </div>
+            <div class="exp-node">
+              <span class="exp-index">05</span>
+              <span class="exp-name">可信多媒体鉴定</span>
+              <div class="exp-bar-wrap"><div class="exp-bar" style="width:88%"></div></div>
+            </div>
+          </div>
+
+          <a class="interview-link" href="https://mp.weixin.qq.com/s?__biz=MzA5NzI3MTYyNg==&mid=2651200023&idx=1&sn=41d42a65ad58534d57654077cbe5fd58" target="_blank" rel="noreferrer">
+            <div class="interview-link-icon">
+              <svg viewBox="0 0 10 10"><polygon points="3,2 8,5 3,8"/></svg>
+            </div>
+            查看媒体专访报道 →
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <main>
+
+    <!-- ═══ RESEARCH ═══ -->
+    <div class="section-wrap" id="research">
+      <div class="wrap">
+        <div class="section-head-row reveal">
+          <span class="section-index">§ 01</span>
+          <h2>科研成果</h2>
+          <div class="section-rule"></div>
+        </div>
+
+        <div class="research-grid reveal">
+          <div class="research-cell">
+            <div class="cell-eyebrow">Representative Paper · arXiv 2022</div>
+            <div class="cell-title">The Kriston AI System for VoxCeleb Speaker Recognition Challenge 2022</div>
+            <p class="cell-desc">
+              论文发表于 2022 年 9 月，系统性总结团队在 VoxSRC 2022 国际声纹识别挑战赛中获得全球第二名的技术方案与方法论。
+            </p>
+            <div class="cell-links">
+              <a class="cell-link" href="https://arxiv.org/abs/2209.11433" target="_blank" rel="noreferrer">arXiv 论文</a>
+              <a class="cell-link" href="https://doi.org/10.48550/arXiv.2209.11433" target="_blank" rel="noreferrer">DOI 链接</a>
+              <a class="cell-link" href="https://www.robots.ox.ac.uk/~vgg/data/voxceleb/data_workshop_2022/slides/voxsrc2022_kristonai_track1_2.pdf" target="_blank" rel="noreferrer">Workshop PPT</a>
+            </div>
+          </div>
+
+          <div class="research-cell">
+            <div class="data-trio">
+              <div class="data-row">
+                <span class="data-key">国家标准</span>
+                <span class="data-val">
+                  <a href="https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=1ABD5F5934C9EBA5484F2951A1854DD7" target="_blank" rel="noreferrer">
+                    参与起草 GB/T 37036.5-2023《信息技术 移动设备生物特征识别 第5部分：声纹》
+                  </a>
+                </span>
+              </div>
+              <div class="data-row">
+                <span class="data-key">授权专利</span>
+                <span class="data-val">30+ 已授权发明专利</span>
+              </div>
+              <div class="data-row">
+                <span class="data-key">企业资质</span>
+                <span class="data-val">国家级专精特新小巨人企业</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PROJECTS ═══ -->
+    <div class="section-wrap" id="projects">
+      <div class="wrap">
+        <div class="section-head-row reveal">
+          <span class="section-index">§ 02</span>
+          <h2>重大项目主导</h2>
+          <div class="section-rule"></div>
+        </div>
+
+        <div class="project-card reveal">
+          <div>
+            <div class="cell-eyebrow">Xiamen Major Program · 厦门市重大科技计划</div>
+            <div class="project-title">基于深度学习的可信多媒体鉴定关键技术研究及其产业化应用</div>
+            <p class="project-desc">
+              本项目面向司法鉴定与公共安全场景，攻关可信多媒体内容鉴定的深度学习核心技术，并推动研究成果在产业中的规模化落地应用。总经费 500 万元，由李稀敏担任总项目负责人，同时兼任关键子课题主持人。
+            </p>
+            <a class="project-link" href="http://sti.xm.gov.cn/xxgk/zfxxgk/xxgkml/jdjc/202402/t20240219_2817585.htm" target="_blank" rel="noreferrer">
+              查看政府官方公示 →
+            </a>
+          </div>
+
+          <div class="project-meta-stack">
+            <div class="meta-chip">
+              <span class="meta-chip-key">PROJECT ROLE</span>
+              <span class="meta-chip-val">总项目负责人 · 子课题主持人</span>
+            </div>
+            <div class="meta-chip">
+              <span class="meta-chip-key">FUNDING</span>
+              <span class="meta-chip-val" style="font-family:var(--mono);font-size:1.4rem;color:var(--accent);">500万</span>
+            </div>
+            <div class="meta-chip">
+              <span class="meta-chip-key">LEVEL</span>
+              <span class="meta-chip-val">厦门市重大科技计划项目</span>
+            </div>
+            <div class="meta-chip">
+              <span class="meta-chip-key">APPLICATION</span>
+              <span class="meta-chip-val">司法 · 公共安全</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ INDUSTRY ═══ -->
+    <div class="section-wrap" id="industry">
+      <div class="wrap">
+        <div class="section-head-row reveal">
+          <span class="section-index">§ 03</span>
+          <h2>产业能力</h2>
+          <div class="section-rule"></div>
+        </div>
+
+        <div class="industry-layout reveal">
+          <div class="industry-main">
+            <div class="cell-eyebrow">Kriston AI · 快商通</div>
+            <div class="industry-name">联合创始人</div>
+            <p class="industry-desc">
+              Kriston AI（快商通）是抖音、快手、小红书、百度等平台官方最佳营销技术合作伙伴，智能营销领域头部企业之一。2016 年上市，获国家产业基金投资背书，现已成长为国家级专精特新小巨人企业。同时，公司是公安部安全技术供应商之一，也是声纹识别国家标准的核心起草单位之一，在声纹和语音 AI 领域具备深厚的技术积累与产业影响力。
             </p>
           </div>
-          <div class="data-rail">
-            <div class="data-item">
-              <strong>项目角色</strong>
-              <span>总项目负责人，兼任子课题主持人</span>
-            </div>
-            <div class="data-item">
-              <strong>核心目标</strong>
-              <span>面向可信多媒体鉴定与产业化应用，服务司法和公共安全场景</span>
-            </div>
-            <div class="data-item">
-              <strong>项目级别</strong>
-              <span>厦门市重大科技计划项目</span>
+          <div class="industry-aside">
+            <div class="cell-eyebrow">KEY CREDENTIALS</div>
+            <div class="industry-badge-list">
+              <div class="ind-badge">抖音 · 快手 · 小红书 · 百度官方最佳营销技术合作伙伴</div>
+              <div class="ind-badge">国家级专精特新小巨人企业</div>
+              <div class="ind-badge">公安部安全技术供应商</div>
+              <div class="ind-badge">声纹国家标准 GB/T 37036 核心起草单位</div>
+              <div class="ind-badge">2016 年上市 · 国家产业基金投资</div>
             </div>
           </div>
         </div>
-      </article>
-    </section>
-
-    <!-- ─── 产业能力 ─── -->
-    <section id="industry">
-      <div class="section-head">
-        <h2>产业能力</h2>
       </div>
+    </div>
 
-      <article class="panel-b reveal">
-        <div class="panel-grid-b">
-          <div>
-            <div class="eyebrow">Kriston AI</div>
-            <h3>Kriston AI 联合创始人</h3>
-            <p class="desc">Kriston AI（快商通），是抖音、快手、小红书、百度等平台官方最佳营销技术合作伙伴，是智能营销领域的头部企业之一，国家级专精特新小巨人企业，2016年上市，国家产业基金投资背景。是公安部的安全技术供应商之一，声纹识别国家标准起草单位之一。</p>
+    <!-- ═══ ROLES ═══ -->
+    <div class="section-wrap" id="roles">
+      <div class="wrap">
+        <div class="section-head-row reveal">
+          <span class="section-index">§ 04</span>
+          <h2>社会兼职</h2>
+          <div class="section-rule"></div>
+        </div>
+
+        <div class="roles-grid reveal">
+          <div class="role-card">
+            <div class="role-num">01</div>
+            <div class="role-text">厦门市新一代人工智能领域项目评审专家</div>
           </div>
-          <div style="display:flex;align-items:center;justify-content:center;">
-            <img src="assets/images/kristonai_logo.png" alt="Kriston AI" style="max-width:200px;width:100%;opacity:0.85;">
+          <div class="role-card">
+            <div class="role-num">02</div>
+            <div class="role-text">政府机构官方认证专家（科技局、工信局、司法机构等多部门认证）</div>
+          </div>
+          <div class="role-card">
+            <div class="role-num">03</div>
+            <div class="role-text">声像资料鉴定司法鉴定人</div>
+          </div>
+          <div class="role-card">
+            <div class="role-num">04</div>
+            <div class="role-text">中文信息学会开源情报专委会委员</div>
           </div>
         </div>
-      </article>
-    </section>
-
-    <!-- ─── 社会兼职 ─── -->
-    <section id="roles">
-      <div class="section-head">
-        <h2>社会兼职</h2>
       </div>
+    </div>
 
-      <article class="panel-c reveal">
-        <div class="eyebrow">Professional Appointments</div>
-        <h3>专业任职与社会职责</h3>
-        <div class="panel-tags">
-          <span class="panel-tag">厦门市新一代人工智能领域项目评审专家</span>
-          <span class="panel-tag">政府机构官方认证专家（科技局、工信局、司法机构等）</span>
-          <span class="panel-tag">声像资料鉴定司法鉴定人</span>
-          <span class="panel-tag">中文信息学会开源情报专委会委员</span>
+    <!-- ═══ AWARDS ═══ -->
+    <div class="section-wrap" id="awards">
+      <div class="wrap">
+        <div class="section-head-row reveal">
+          <span class="section-index">§ 05</span>
+          <h2>获奖</h2>
+          <div class="section-rule"></div>
         </div>
-      </article>
-    </section>
 
-    <!-- ─── 获奖 ─── -->
-    <section id="awards">
-      <div class="section-head">
-        <h2>获奖</h2>
+        <div class="awards-timeline reveal">
+
+          <div class="award-entry highlight">
+            <div class="award-year-badge">INTERSPEECH 2022 · OXFORD</div>
+            <div class="award-title-text">VoxSRC 2022 国际声纹识别挑战赛 · 全球第二名</div>
+            <p class="award-body">
+              牛津大学与 INTERSPEECH 2022 联合主办，Kriston AI 团队在全球顶级声纹识别赛事中斩获第二名，相关成果发表于 arXiv。
+            </p>
+            <div class="award-img">
+              <img src="assets/images/voxsrc-2022-top2-award.png" alt="VoxSRC 2022 全球第二名获奖证书">
+            </div>
+          </div>
+
+          <div class="award-entry highlight">
+            <div class="award-year-badge">CHINA AI COMPETITION</div>
+            <div class="award-title-text">中国人工智能大赛 · 冠军</div>
+            <p class="award-body">
+              由多部委联合主办的国家级赛事，荣获冠军。
+              <a href="https://ai.xm.gov.cn/" target="_blank" rel="noreferrer" style="color:#1a50b0;border-bottom:1px solid rgba(26,80,176,0.3);">查看赛事官网</a>
+            </p>
+            <div class="award-img">
+              <img src="assets/images/china-ai-competition-champion.jpg" alt="中国人工智能大赛A级证书">
+            </div>
+          </div>
+
+          <div class="award-entry">
+            <div class="award-year-badge">2022 · XIAMEN</div>
+            <div class="award-title-text">2022 年厦门市科技进步奖</div>
+            <p class="award-body">三度荣获厦门市科技进步奖（2017 · 2019 · 2022），持续推动本地 AI 科技产业发展。</p>
+          </div>
+
+          <div class="award-entry">
+            <div class="award-year-badge">2019 · XIAMEN</div>
+            <div class="award-title-text">2019 年厦门市科技进步奖</div>
+            <p class="award-body"></p>
+            <div class="award-img">
+              <img src="assets/images/xiamen-science-award.jpg" alt="科技进步奖">
+            </div>
+          </div>
+
+          <div class="award-entry">
+            <div class="award-year-badge">2017 · XIAMEN</div>
+            <div class="award-title-text">2017 年厦门市科技进步奖</div>
+            <p class="award-body"></p>
+          </div>
+
+        </div>
       </div>
+    </div>
 
-      <div class="award-grid">
-        <article class="card reveal">
-          <div class="eyebrow">Science Award</div>
-          <h3>科技进步奖</h3>
-          <ul class="list">
-            <li>荣获 2017 年厦门市科技进步奖</li>
-            <li>荣获 2019 年厦门市科技进步奖</li>
-            <li>荣获 2022 年厦门市科技进步奖</li>
-          </ul>
-          <div class="proof-visual">
-            <img src="assets/images/xiamen-science-award.jpg" alt="科技进步奖展示">
-          </div>
-        </article>
-
-        <article class="card reveal">
-          <div class="eyebrow">China AI Competition</div>
-          <h3>中国人工智能大赛冠军</h3>
-          <ul class="list">
-            <li><a href="https://ai.xm.gov.cn/" target="_blank" rel="noreferrer">查看赛事官网</a></li>
-            <li>主办方：多部委联合举办</li>
-          </ul>
-          <div class="proof-visual">
-            <img src="assets/images/china-ai-competition-champion.jpg" alt="中国人工智能大赛A级证书展示">
-          </div>
-        </article>
-
-        <article class="card reveal">
-          <div class="eyebrow">VoxSRC 2022</div>
-          <h3>VoxSRC 2022 Top2</h3>
-          <ul class="list">
-            <li><a href="http://mm.kaist.ac.kr/datasets/voxceleb/voxsrc/interspeech2022.html" target="_blank" rel="noreferrer">查看赛事官网</a></li>
-            <li>主办方：牛津大学 + INTERSPEECH 2022</li>
-          </ul>
-          <div class="proof-visual">
-            <img src="assets/images/voxsrc-2022-top2-award.png" alt="VoxSRC 2022 全球第二名获奖证书">
-          </div>
-        </article>
-      </div>
-    </section>
   </main>
 
   <footer>
     <div class="wrap footer-inner">
-      <span>© 2025 李稀敏</span>
-      <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">返回顶部 ↑</a>
+      <span class="footer-copy">© 2025 李稀敏 · LI XIMIN</span>
+      <a class="footer-back" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ BACK TO TOP</a>
     </div>
   </footer>
 
   <script>
     // ── Scroll Reveal ──
     const revealEls = document.querySelectorAll('.reveal');
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
         }
       });
-    }, { threshold: 0.08 });
-    revealEls.forEach(el => revealObserver.observe(el));
+    }, { threshold: 0.06 });
+    revealEls.forEach(el => io.observe(el));
 
     // ── Nav Active State ──
-    const sections = document.querySelectorAll('section[id]');
+    const sections = document.querySelectorAll('[id]');
     const navLinks = document.querySelectorAll('.nav a');
-    window.addEventListener('scroll', () => {
+    const onScroll = () => {
       let current = '';
       sections.forEach(s => {
-        const top = s.offsetTop - 90;
-        if (window.scrollY >= top) current = s.getAttribute('id');
+        if (window.scrollY >= s.offsetTop - 80) current = s.id;
       });
       navLinks.forEach(l => {
-        l.style.color = '';
-        l.style.borderBottom = '';
-        if (l.getAttribute('href') === '#' + current) {
-          l.style.color = 'var(--accent)';
-          l.style.borderBottom = '1px solid var(--accent)';
-        }
+        l.classList.toggle('active', l.getAttribute('href') === '#' + current);
       });
-    }, { passive: true });
-
-  // ── Three.js Expertise Network ──
-  (function() {
-    const CONTAINER = document.querySelector('.hero-portrait');
-    const canvas = document.getElementById('expertise-canvas');
-    if (!canvas || !CONTAINER) return;
-
-    // ── Renderer ──
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
-    renderer.sortObjects = true;
-
-    // ── Scene ──
-    const scene = new THREE.Scene();
-    const W = () => CONTAINER.clientWidth;
-    const H = () => CONTAINER.clientHeight;
-
-    // ── Camera ──
-    const camera = new THREE.OrthographicCamera(-W() / 2, W() / 2, H() / 2, -H() / 2, 0.1, 100);
-    camera.position.z = 20;
-
-    // ── Lighting ──
-    scene.add(new THREE.AmbientLight(0x223344, 1.0));
-    const keyLight = new THREE.PointLight(0x4488ff, 1.5, 100);
-    keyLight.position.set(5, 5, 8);
-    scene.add(keyLight);
-    const rimLight = new THREE.PointLight(0x00ccff, 1.0, 80);
-    rimLight.position.set(-5, -3, 5);
-    scene.add(rimLight);
-
-    // ── Node Data ──
-    const NODES = [
-      { label: '大模型训练',     color: 0x00d4ff, r: 52 },
-      { label: 'AI Agent 设计',  color: 0x00ff88, r: 42 },
-      { label: '声纹识别',       color: 0xff6b35, r: 33 },
-      { label: '语音反欺诈',      color: 0xffd93d, r: 26 },
-      { label: '可信多媒体鉴定',  color: 0xc77dff, r: 20 },
-    ];
-
-    // Layout: pentagon, largest in center
-    const SCALE = 1.1;
-    const BASE_POS = [
-      [0,          0,          0  ],
-      [-130 * SCALE,  90 * SCALE,  0],
-      [-120 * SCALE, -85 * SCALE,  0],
-      [ 90 * SCALE, -60 * SCALE,  0],
-      [110 * SCALE,  40 * SCALE,  0],
-    ];
-
-    const EDGES = [[0,1],[0,2],[0,3],[0,4],[1,2],[2,3],[3,4]];
-
-    // ── Texture Text (canvas) ──
-    function makeTextTexture(label, radius) {
-      const size = 256;
-      const c = document.createElement('canvas');
-      c.width = size; c.height = size;
-      const ctx = c.getContext('2d');
-      ctx.clearRect(0, 0, size, size);
-
-      const fontSize = Math.max(18, Math.round(radius * 0.45));
-      ctx.font = `bold ${fontSize}px "PingFang SC", "Microsoft YaHei", sans-serif`;
-      ctx.fillStyle = '#ffffff';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-
-      // Wrap text
-      const maxW = radius * 2.2;
-      let lines = [];
-      const words = label.split('');
-      let line = '';
-      words.forEach(char => {
-        const test = line + char;
-        if (ctx.measureText(test).width > maxW && line) {
-          lines.push(line); line = char;
-        } else { line = test; }
-      });
-      if (line) lines.push(line);
-
-      const lineH = fontSize * 1.3;
-      const totalH = lines.length * lineH;
-      const startY = -totalH / 2 + lineH / 2;
-      lines.forEach((l, i) => ctx.fillText(l, size / 2, size / 2 + startY + i * lineH));
-
-      return new THREE.CanvasTexture(c);
-    }
-
-    // ── Build Nodes ──
-    const meshes = [];
-    NODES.forEach((n, i) => {
-      const [bx, by] = BASE_POS[i];
-
-      // Core sphere
-      const geo = new THREE.CircleGeometry(NODES[i].r, 64);
-      const mat = new THREE.MeshBasicMaterial({
-        color: n.color,
-        transparent: true,
-        opacity: 0.92,
-        side: THREE.DoubleSide,
-      });
-      const circle = new THREE.Mesh(geo, mat);
-      circle.position.set(bx, by, 0);
-      scene.add(circle);
-
-      // Inner white ring
-      const ringGeo = new THREE.RingGeometry(NODES[i].r * 0.72, NODES[i].r * 0.88, 64);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
-      const ring = new THREE.Mesh(ringGeo, ringMat);
-      ring.position.set(bx, by, 0.1);
-      scene.add(ring);
-
-      // Glow halo
-      const haloGeo = new THREE.CircleGeometry(NODES[i].r * 1.5, 64);
-      const haloMat = new THREE.MeshBasicMaterial({
-        color: n.color,
-        transparent: true,
-        opacity: 0.08,
-        side: THREE.DoubleSide,
-      });
-      const halo = new THREE.Mesh(haloGeo, haloMat);
-      halo.position.set(bx, by, -0.5);
-      scene.add(halo);
-
-      // Text sprite (crisp canvas texture)
-      const tex = makeTextTexture(n.label, NODES[i].r);
-      const spriteMat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
-      const sprite = new THREE.Sprite(spriteMat);
-      const spriteScale = NODES[i].r * 2.2;
-      sprite.scale.set(spriteScale, spriteScale, 1);
-      sprite.position.set(bx, by, 0.5);
-      scene.add(sprite);
-
-      meshes.push({
-        circle, ring, halo, sprite,
-        bx, by,
-        baseR: NODES[i].r,
-        color: n.color,
-        phase: i * 1.4 + 0.5,
-      });
-    });
-
-    // ── Build Edges ──
-    const edgeObjs = [];
-    EDGES.forEach(([a, b]) => {
-      const [ax, ay] = BASE_POS[a];
-      const [bx, by] = BASE_POS[b];
-
-      // Glow line
-      const points = [new THREE.Vector3(ax, ay, 0), new THREE.Vector3(bx, by, 0)];
-      const geo = new THREE.BufferGeometry().setFromPoints(points);
-      const mat = new THREE.LineBasicMaterial({ color: 0x3399ff, transparent: true, opacity: 0.4 });
-      const line = new THREE.Line(geo, mat);
-      scene.add(line);
-
-      // Traveling particles (2 per edge)
-      [0.25, 0.7].forEach(offset => {
-        const pGeo = new THREE.CircleGeometry(4, 16);
-        const pMat = new THREE.MeshBasicMaterial({ color: 0x88ddff, transparent: true, opacity: 0.9 });
-        const p = new THREE.Mesh(pGeo, pMat);
-        p.position.set(ax, ay, 0.2);
-        scene.add(p);
-        edgeObjs.push({ p, ax, ay, bx, by, t: offset });
-      });
-    });
-
-    // ── Mouse Parallax ──
-    let mx = 0, my = 0;
-    let cx = 0, cy = 0;
-    CONTAINER.addEventListener('mousemove', e => {
-      const r = CONTAINER.getBoundingClientRect();
-      mx = ((e.clientX - r.left) / r.width  - 0.5) * 2;
-      my = ((e.clientY - r.top)  / r.height - 0.5) * 2;
-    });
-    CONTAINER.addEventListener('mouseleave', () => { mx = 0; my = 0; });
-
-    // ── Resize ──
-    function resize() {
-      const w = W(), h = H();
-      renderer.setSize(w, h, false);
-      camera.left   = -w / 2; camera.right = w / 2;
-      camera.top    =  h / 2; camera.bottom = -h / 2;
-      camera.updateProjectionMatrix();
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    // ── Animate ──
-    function animate() {
-      requestAnimationFrame(animate);
-      const t = Date.now() * 0.001;
-
-      // Smooth camera pan
-      cx += (mx * 12 - cx) * 0.04;
-      cy += (-my * 8 - cy) * 0.04;
-      camera.position.x = cx;
-      camera.position.y = cy;
-
-      // Pulse nodes
-      meshes.forEach(m => {
-        const pulse = 1 + Math.sin(t * 1.2 + m.phase) * 0.04;
-        m.circle.scale.set(pulse, pulse, 1);
-        m.ring.scale.set(pulse, pulse, 1);
-        m.halo.scale.set(pulse * 1.05, pulse * 1.05, 1);
-        m.circle.position.x = m.bx + Math.sin(t * 0.3 + m.phase) * 2.5;
-        m.circle.position.y = m.by + Math.cos(t * 0.25 + m.phase * 0.8) * 3;
-        m.ring.position.x = m.sprite.position.x = m.halo.position.x = m.circle.position.x;
-        m.ring.position.y = m.sprite.position.y = m.halo.position.y = m.circle.position.y;
-      });
-
-      // Animate particles along edges
-      edgeObjs.forEach(e => {
-        e.t = (e.t + 0.006) % 1;
-        e.p.position.x = e.ax + (e.bx - e.ax) * e.t;
-        e.p.position.y = e.ay + (e.by - e.ay) * e.t;
-      });
-
-      renderer.render(scene, camera);
-    }
-    animate();
-  })();
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
   </script>
 </body>
 </html>
