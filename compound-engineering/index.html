@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Bebas+Neue&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .outer-frame {
+    border: 6px solid #cc2222;
+    background: #f5f0e8;
+    width: 980px;
+    padding: 32px 36px 36px 36px;
+    position: relative;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+
+  .title-block h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 1;
+    color: #111;
+    letter-spacing: 2px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #222;
+    margin-top: 10px;
+    line-height: 1.7;
+    max-width: 420px;
+  }
+
+  .header-right {
+    text-align: right;
+    font-size: 11px;
+    color: #333;
+    line-height: 1.8;
+    min-width: 240px;
+  }
+
+  .header-right .label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #cc2222;
+    display: block;
+    margin-top: 6px;
+  }
+
+  .author {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .author-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #cc2222;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 10px; font-weight: 900;
+  }
+
+  /* Main grid */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 0;
+    border-top: 1.5px solid #bbb;
+  }
+
+  .col {
+    padding: 18px 16px 16px 0;
+    border-right: 1.5px solid #bbb;
+    padding-right: 16px;
+  }
+  .col:first-child { padding-left: 0; }
+  .col:last-child { border-right: none; }
+  .col + .col { padding-left: 16px; }
+
+  .col-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    color: #cc2222;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .col-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .col-body {
+    font-size: 11px;
+    color: #333;
+    line-height: 1.7;
+  }
+
+  /* Steps */
+  .step {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 9px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #cc2222;
+    color: white;
+    font-size: 9px;
+    font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-content .step-title {
+    font-size: 12px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 2px;
+  }
+
+  .step-content p {
+    font-size: 10.5px;
+    color: #444;
+    line-height: 1.6;
+  }
+
+  /* Core shift circles */
+  .shift-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 9px;
+  }
+
+  .circle-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #cc2222;
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+  }
+
+  .circle-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #cc2222;
+  }
+
+  .shift-item .item-title {
+    font-size: 12px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 2px;
+  }
+
+  .shift-item .item-body {
+    font-size: 10.5px;
+    color: #444;
+    line-height: 1.6;
+  }
+
+  /* Wrong frame */
+  .wrong-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    color: #888;
+    text-transform: uppercase;
+    margin-top: 12px;
+    margin-bottom: 4px;
+  }
+
+  .dont-badge {
+    display: inline-block;
+    border: 1.5px solid #cc2222;
+    color: #cc2222;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    padding: 3px 8px;
+    margin-top: 8px;
+  }
+
+  /* Leverage column */
+  .plan-review-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 8px 0;
+  }
+
+  .pr-badge {
+    background: #111;
+    color: white;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 3px 7px;
+  }
+
+  .work-badge {
+    background: #cc2222;
+    color: white;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 3px 7px;
+  }
+
+  .applies-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    color: #cc2222;
+    text-transform: uppercase;
+    margin: 10px 0 4px;
+  }
+
+  .apply-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 6px;
+  }
+
+  .tag-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 5px;
+  }
+
+  .tag {
+    background: #111;
+    color: white;
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tag-text {
+    font-size: 10px;
+    color: #333;
+    line-height: 1.5;
+  }
+
+  /* Linear vs Compound */
+  .highlight-box {
+    background: #111;
+    color: white;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+
+  .highlight-box p {
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.5;
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .compare-item .compare-head {
+    font-size: 10px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 4px;
+  }
+
+  .compare-item p {
+    font-size: 9.5px;
+    color: #444;
+    line-height: 1.6;
+  }
+
+  .compare-divider {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 6px 0;
+    grid-column: 1 / -1;
+  }
+
+  .final-body {
+    font-size: 10.5px;
+    color: #333;
+    line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<div class="outer-frame">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="title-block">
+      <h1>COMPOUND<br>ENGINEERING</h1>
+      <p class="subtitle">不是把 AI 当成一次性加速器，而是让每次任务都把经验沉淀成下一次<br>任务的起点。</p>
+    </div>
+    <div class="header-right">
+      <span class="label">CORE IDEA</span>
+      每次任务都不只产出结果，还要把判断沉淀进系统。
+      <span class="label">KEY QUESTION</span>
+      经验是留在脑里，还是变成模板、规则与检查表？
+      <div class="author">
+        <div class="author-avatar">敏</div>
+        <span>敏哥说AI</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="main-grid">
+
+    <!-- Col 1: The Loop -->
+    <div class="col">
+      <div class="col-label">THE LOOP</div>
+      <div class="col-title">从"再做一次"到"以后都更容易"</div>
+      <p class="col-body" style="margin-bottom:12px;">关键不在于任务做得更快，而在每次完成之后，都把判断回写成下一次默认可用的系统能力。</p>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Plan</div>
+          <p>先看材料、旧规则、旧案例。不是空白提示，而是带着历史上下文开工。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Work</div>
+          <p>让 AI 先生成初稿、分析、回复和结构化结论，但执行仍由人来压低。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Review</div>
+          <p>人类介入的价值不是补字，而是判断哪些错误会重复出现、哪些标准值得固化。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Compound</div>
+          <p>把教训回写进模板、清单、术语表和门槛，下一次就不必从头解释。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Col 2: Core Shift -->
+    <div class="col">
+      <div class="col-label">CORE SHIFT</div>
+      <div class="col-title">沉淀下来的到底是什么</div>
+      <p class="col-body" style="margin-bottom:12px;">真正被复用的不是这次答案本身，而是标准、记忆、路由和评估这些系统资产。</p>
+      <p class="col-body" style="margin-bottom:12px;">答案会过期，但判断依据、失败样例、升级条件和验收口径会持续复用。</p>
+
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">Standards</div>
+          <p class="item-body">什么算合格、什么不该出现、口径如何统一。</p>
+        </div>
+      </div>
+
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">Memory</div>
+          <p class="item-body">历史案例、反例、术语表和已经踩过的坑。</p>
+        </div>
+      </div>
+
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">Routing</div>
+          <p class="item-body">什么情况自动通过、什么情况升级、拦截或转人工。</p>
+        </div>
+      </div>
+
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">Evaluation</div>
+          <p class="item-body">用什么检查系统有没有更准，而不是只看感觉。</p>
+        </div>
+      </div>
+
+      <div class="wrong-label">WRONG FRAME</div>
+      <div class="col-title" style="font-size:13px;">为什么很多人越用 AI 越累</div>
+      <p class="col-body">因为工作流是线性的：写完就发，答完就算，分析完就结束。每次任务都像一块孤岛。</p>
+      <div class="dont-badge">DON'T JUST SHIP OUTPUT</div>
+    </div>
+
+    <!-- Col 3: Leverage -->
+    <div class="col">
+      <div class="col-label">LEVERAGE</div>
+      <div class="col-title">真正高杠杆的部分</div>
+      <p class="col-body" style="margin-bottom:8px;">在 agent 速度足够快之后，瓶颈往往不再是"做"，而是"做什么"与"学到了什么"。</p>
+
+      <div class="plan-review-bar">
+        <span class="pr-badge">PLAN + REVIEW</span>
+        <span class="work-badge">WORK</span>
+      </div>
+
+      <p class="col-body" style="margin-bottom:10px;">高价值工作量合并 planning 与 review 偏移，因为那里决定系统是否会越来越准。</p>
+
+      <div class="applies-label">APPLIES TO</div>
+      <div class="apply-title">不止工程</div>
+      <p class="col-body" style="margin-bottom:8px;">它可以进入一切重复型知识工作：内容、研究、运营、支持、分析。</p>
+
+      <div class="tag-row">
+        <span class="tag">CONTENT</span>
+        <span class="tag-text">品牌语气、禁用表达、标题结构、内链规则。</span>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag">RESEARCH</span>
+        <span class="tag-text">证据标准、摘要格式、判断框架、引用规范。</span>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag">OPS</span>
+        <span class="tag-text">异常处理、阈值判断、周报格式、交接规则。</span>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag">SUPPORT</span>
+        <span class="tag-text">问题分层、回复模板、升级条件、风险用语。</span>
+      </div>
+    </div>
+
+    <!-- Col 4: Linear vs Compound -->
+    <div class="col">
+      <div class="col-label">LINEAR VS COMPOUND</div>
+      <div class="col-title">两种系统的差别</div>
+      <p class="col-body" style="margin-bottom:10px;">真正的差别不是快 20%，而是第 N 次任务会不会自动携带前 N-1 次的判断沉淀。</p>
+
+      <div class="compare-grid">
+        <div class="compare-item">
+          <div class="compare-head">Linear</div>
+          <p>第 20 次仍像第 1 次。</p>
+        </div>
+        <div class="compare-item">
+          <div class="compare-head">Compound</div>
+          <p>第 20 次会调用前 19 次积累。</p>
+        </div>
+        <hr class="compare-divider">
+        <div class="compare-item">
+          <div class="compare-head">知识位置</div>
+          <p>主要在人的脑子里。</p>
+        </div>
+        <div class="compare-item">
+          <div class="compare-head">知识位置</div>
+          <p>主要在系统文档和规则里。</p>
+        </div>
+        <hr class="compare-divider">
+        <div class="compare-item">
+          <div class="compare-head">错误处理</div>
+          <p>一次次补救。</p>
+        </div>
+        <div class="compare-item">
+          <div class="compare-head">错误处理</div>
+          <p>尽量变成永久预防。</p>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <p>复利不发生在模型里。复利发生在你有没有把判断留下来。</p>
+      </div>
+
+      <p class="final-body">把 AI 当成一次性劳动力，你得到更快执行；把 AI 放进 compound 循环，你得到越来越顺手的系统。</p>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

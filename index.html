@@ -492,6 +492,116 @@
     }
 
     /* ═══════════════════════════════════════
+       DOCUMENT SECTION
+    ═══════════════════════════════════════ */
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1px;
+      background: var(--rule-dark);
+      border: 1px solid var(--rule-dark);
+    }
+
+    .doc-card {
+      min-height: 260px;
+      background: var(--paper);
+      padding: 30px 26px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: background 0.15s, transform 0.15s;
+    }
+
+    .doc-card:hover {
+      background: var(--paper-2);
+      transform: translateY(-2px);
+    }
+
+    .doc-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), transparent 70%);
+      opacity: 0.9;
+    }
+
+    .doc-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+      font-family: var(--mono);
+      font-size: 0.64rem;
+      letter-spacing: 0.16em;
+      color: rgba(13,17,23,0.48);
+      text-transform: uppercase;
+    }
+
+    .doc-title {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3vw, 2.7rem);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+      margin-bottom: 18px;
+    }
+
+    .doc-title span {
+      display: block;
+    }
+
+    .doc-desc {
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: rgba(13,17,23,0.64);
+      margin-bottom: 24px;
+    }
+
+    .doc-footer {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: 18px;
+      border-top: 1px solid var(--rule);
+    }
+
+    .doc-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .doc-tag {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      color: rgba(13,17,23,0.55);
+    }
+
+    .doc-arrow {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--rule-dark);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      color: var(--accent);
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .doc-card:hover .doc-arrow {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+    }
+
+    /* ═══════════════════════════════════════
        RESEARCH SECTION
     ═══════════════════════════════════════ */
     .research-grid {
@@ -903,6 +1013,7 @@
         padding-top: 36px;
       }
 
+      .doc-grid,
       .research-grid,
       .roles-grid {
         grid-template-columns: 1fr;
@@ -936,6 +1047,7 @@
 
       .project-card { padding: 28px 20px; }
       .industry-main, .industry-aside { padding: 28px 20px; }
+      .doc-card,
       .research-cell { padding: 24px 20px; }
 
       .awards-timeline { padding-left: 24px; margin-left: 6px; }
@@ -955,6 +1067,7 @@
       </div>
       <nav class="nav" aria-label="页面导航">
         <a href="#profile">简介</a>
+        <a href="#documents">经验文档</a>
         <a href="#research">科研成果</a>
         <a href="#projects">重大项目</a>
         <a href="#industry">产业能力</a>
@@ -1060,11 +1173,46 @@
 
   <main>
 
+    <!-- ═══ DOCUMENTS ═══ -->
+    <div class="section-wrap" id="documents">
+      <div class="wrap">
+        <div class="section-head-row reveal">
+          <span class="section-index">§ 01</span>
+          <h2>经验文档</h2>
+          <div class="section-rule"></div>
+        </div>
+
+        <div class="doc-grid reveal">
+          <a class="doc-card" href="compound-engineering/" aria-label="查看 Compound Engineering 经验文档">
+            <div class="doc-meta">
+              <span>Experience Note</span>
+              <span>AI Workflow</span>
+            </div>
+            <div class="doc-title">
+              <span>Compound</span>
+              <span>Engineering</span>
+            </div>
+            <p class="doc-desc">
+              不是把 AI 当成一次性加速器，而是让每次任务都把经验沉淀成下一次任务的起点。
+            </p>
+            <div class="doc-footer">
+              <div class="doc-tags">
+                <span class="doc-tag">Template</span>
+                <span class="doc-tag">Rules</span>
+                <span class="doc-tag">Checklist</span>
+              </div>
+              <span class="doc-arrow" aria-hidden="true">→</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
     <!-- ═══ RESEARCH ═══ -->
     <div class="section-wrap" id="research">
       <div class="wrap">
         <div class="section-head-row reveal">
-          <span class="section-index">§ 01</span>
+          <span class="section-index">§ 02</span>
           <h2>科研成果</h2>
           <div class="section-rule"></div>
         </div>
@@ -1111,7 +1259,7 @@
     <div class="section-wrap" id="projects">
       <div class="wrap">
         <div class="section-head-row reveal">
-          <span class="section-index">§ 02</span>
+          <span class="section-index">§ 03</span>
           <h2>重大项目主导</h2>
           <div class="section-rule"></div>
         </div>
@@ -1154,7 +1302,7 @@
     <div class="section-wrap" id="industry">
       <div class="wrap">
         <div class="section-head-row reveal">
-          <span class="section-index">§ 03</span>
+          <span class="section-index">§ 04</span>
           <h2>产业能力</h2>
           <div class="section-rule"></div>
         </div>
@@ -1185,7 +1333,7 @@
     <div class="section-wrap" id="roles">
       <div class="wrap">
         <div class="section-head-row reveal">
-          <span class="section-index">§ 04</span>
+          <span class="section-index">§ 05</span>
           <h2>社会兼职</h2>
           <div class="section-rule"></div>
         </div>
@@ -1215,7 +1363,7 @@
     <div class="section-wrap" id="awards">
       <div class="wrap">
         <div class="section-head-row reveal">
-          <span class="section-index">§ 05</span>
+          <span class="section-index">§ 06</span>
           <h2>获奖</h2>
           <div class="section-rule"></div>
         </div>
