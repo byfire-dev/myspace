@@ -1,10 +1,20 @@
-name: Notify and deploy myspace
+name: Notify or deploy myspace
 
 on:
   push:
     branches:
       - master
   workflow_dispatch:
+    inputs:
+      deploy_ref:
+        description: "Branch, tag, or commit SHA to deploy"
+        required: true
+        default: "master"
+      confirm_deploy:
+        description: "Confirm deployment to production"
+        required: true
+        type: boolean
+        default: false
 
 concurrency:
   group: myspace-production
@@ -16,6 +26,7 @@ permissions:
 jobs:
   notify:
     name: Send approval email
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Email deployment approval link
@@ -31,6 +42,7 @@ jobs:
           BRANCH_NAME: ${{ github.ref_name }}
           ACTOR: ${{ github.actor }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/workflows/deploy-myspace.yml
           REPOSITORY: ${{ github.repository }}
         run: |
           python - <<'PY'
@@ -47,24 +59,31 @@ jobs:
           sender = os.environ.get("SMTP_FROM") or os.environ["SMTP_USERNAME"]
           recipient = os.environ["APPROVAL_EMAIL_TO"]
           run_url = os.environ["RUN_URL"]
+          workflow_url = os.environ["WORKFLOW_URL"]
           sha = os.environ["COMMIT_SHA"]
 
           message = EmailMessage()
-          message["Subject"] = f"[myspace] Deployment approval needed: {sha[:7]}"
+          message["Subject"] = f"[myspace] New code pushed, deploy manually: {sha[:7]}"
           message["From"] = sender
           message["To"] = recipient
           message.set_content("\n".join([
-              "A new myspace deployment is waiting for your approval.",
+              "New code was pushed to myspace.",
               "",
               f"Repository: {os.environ['REPOSITORY']}",
               f"Branch: {os.environ['BRANCH_NAME']}",
               f"Commit: {sha}",
               f"Triggered by: {os.environ['ACTOR']}",
               "",
-              "Approve the production environment in GitHub Actions:",
+              "To deploy, open this workflow page and click Run workflow:",
+              workflow_url,
+              "",
+              "Use deploy_ref=master for the latest master branch, or paste the commit SHA above to deploy this exact commit.",
+              "Check confirm_deploy before running.",
+              "",
+              "Push notification run:",
               run_url,
               "",
-              "After approval, GitHub Actions will publish the checked-out files to the configured server directory.",
+              "The manual deploy run will publish the selected files to the configured server directory.",
               "",
           ]))
 
@@ -84,14 +103,22 @@ jobs:
           PY
 
   deploy:
-    name: Deploy after approval
-    needs: notify
+    name: Deploy manual selection
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment:
       name: production
     steps:
+      - name: Confirm manual deployment
+        env:
+          CONFIRM_DEPLOY: ${{ inputs.confirm_deploy }}
+        run: |
+          test "$CONFIRM_DEPLOY" = "true" || (echo "Set confirm_deploy=true before deploying to production." && exit 1)
+
       - name: Checkout site
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.deploy_ref }}
 
       - name: Configure SSH
         env:

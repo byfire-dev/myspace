@@ -1,21 +1,32 @@
 # myspace deployment workflow
 
-This repository uses GitHub Actions to notify and deploy the static site.
+This repository uses GitHub Actions to notify on push and deploy only after a manual workflow run.
 
 ## Flow
 
 1. A push to `master` starts `.github/workflows/deploy-myspace.yml`.
-2. The workflow emails `lixm@byfire.ai` with the GitHub Actions run link.
-3. The `deploy` job waits for approval on the `production` environment.
-4. After approval, GitHub Actions syncs the repository files to the configured server directory by SSH and `rsync`.
+2. The push run emails `lixm@byfire.ai` with the commit SHA and the workflow page link.
+3. To deploy, open the workflow page, click `Run workflow`, choose `deploy_ref`, and check `confirm_deploy`.
+4. The manual deploy run syncs the selected ref to the configured server directory by SSH and `rsync`.
 
 ## Required GitHub environment
 
-Create an environment named `production` in the repository settings, then enable required reviewers and add yourself as the reviewer.
+Create an environment named `production` in the repository settings. Required reviewers are not required for the private-repository manual deployment flow.
 
 Path:
 
 `Settings -> Environments -> New environment -> production`
+
+## Manual deployment
+
+Open:
+
+`Actions -> Notify or deploy myspace -> Run workflow`
+
+Inputs:
+
+- `deploy_ref`: use `master` for the latest master branch, or paste a commit SHA from the email to deploy that exact commit.
+- `confirm_deploy`: set this to `true`; otherwise the deploy job exits before publishing.
 
 ## Required secrets and variables
 
