@@ -53,18 +53,20 @@ jobs:
           message["Subject"] = f"[myspace] Deployment approval needed: {sha[:7]}"
           message["From"] = sender
           message["To"] = recipient
-          message.set_content(f"""A new myspace deployment is waiting for your approval.
-
-Repository: {os.environ["REPOSITORY"]}
-Branch: {os.environ["BRANCH_NAME"]}
-Commit: {sha}
-Triggered by: {os.environ["ACTOR"]}
-
-Approve the production environment in GitHub Actions:
-{run_url}
-
-After approval, GitHub Actions will publish the checked-out files to the configured server directory.
-""")
+          message.set_content("\n".join([
+              "A new myspace deployment is waiting for your approval.",
+              "",
+              f"Repository: {os.environ['REPOSITORY']}",
+              f"Branch: {os.environ['BRANCH_NAME']}",
+              f"Commit: {sha}",
+              f"Triggered by: {os.environ['ACTOR']}",
+              "",
+              "Approve the production environment in GitHub Actions:",
+              run_url,
+              "",
+              "After approval, GitHub Actions will publish the checked-out files to the configured server directory.",
+              "",
+          ]))
 
           port = int(os.environ["SMTP_PORT"])
           starttls = os.environ.get("SMTP_STARTTLS", "true").lower() != "false"
