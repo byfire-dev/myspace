@@ -1,0 +1,428 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Bebas+Neue&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+  .outer-frame {
+    border: 6px solid #cc2222;
+    background: #f5f0e8;
+    width: 980px;
+    padding: 32px 36px 36px 36px;
+    position: relative;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+  .title-block h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 1;
+    color: #111;
+    letter-spacing: 2px;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: #222;
+    margin-top: 10px;
+    line-height: 1.7;
+    max-width: 420px;
+  }
+  .header-right {
+    text-align: right;
+    font-size: 11px;
+    color: #333;
+    line-height: 1.8;
+    min-width: 240px;
+  }
+  .header-right .label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #cc2222;
+    display: block;
+    margin-top: 6px;
+  }
+  .author {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .author-avatar {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: #cc2222;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 10px; font-weight: 900;
+  }
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 0;
+    border-top: 1.5px solid #bbb;
+  }
+  .col {
+    padding: 18px 16px 16px 0;
+    border-right: 1.5px solid #bbb;
+    padding-right: 16px;
+  }
+  .col:first-child { padding-left: 0; }
+  .col:last-child { border-right: none; }
+  .col + .col { padding-left: 16px; }
+  .col-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    color: #cc2222;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .col-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .col-body {
+    font-size: 11px;
+    color: #333;
+    line-height: 1.7;
+  }
+  .step {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 9px;
+    align-items: flex-start;
+  }
+  .step-num {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: #cc2222;
+    color: white;
+    font-size: 9px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .step-content .step-title {
+    font-size: 12px; font-weight: 900; color: #111; margin-bottom: 2px;
+  }
+  .step-content p {
+    font-size: 10.5px; color: #444; line-height: 1.6;
+  }
+  .shift-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 9px;
+  }
+  .circle-icon {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid #cc2222;
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+  }
+  .circle-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #cc2222;
+  }
+  .shift-item .item-title {
+    font-size: 12px; font-weight: 900; color: #111; margin-bottom: 2px;
+  }
+  .shift-item .item-body {
+    font-size: 10.5px; color: #444; line-height: 1.6;
+  }
+  .wrong-label {
+    font-size: 8.5px; font-weight: 700;
+    letter-spacing: 1.8px; color: #888;
+    text-transform: uppercase;
+    margin-top: 12px; margin-bottom: 4px;
+  }
+  .dont-badge {
+    display: inline-block;
+    border: 1.5px solid #cc2222;
+    color: #cc2222;
+    font-size: 8.5px; font-weight: 700;
+    letter-spacing: 1.2px;
+    padding: 3px 8px;
+    margin-top: 8px;
+  }
+  .tag-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 5px;
+  }
+  .tag {
+    background: #111;
+    color: white;
+    font-size: 7.5px; font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .tag-text {
+    font-size: 10px; color: #333; line-height: 1.5;
+  }
+  .applies-label {
+    font-size: 8.5px; font-weight: 700;
+    letter-spacing: 1.8px; color: #cc2222;
+    text-transform: uppercase;
+    margin: 10px 0 4px;
+  }
+  .apply-title {
+    font-size: 18px; font-weight: 900; color: #111; margin-bottom: 6px;
+  }
+  .highlight-box {
+    background: #111;
+    color: white;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+  .highlight-box p {
+    font-size: 14px; font-weight: 900; line-height: 1.5;
+  }
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .compare-item .compare-head {
+    font-size: 10px; font-weight: 900; color: #111; margin-bottom: 4px;
+  }
+  .compare-item p {
+    font-size: 9.5px; color: #444; line-height: 1.6;
+  }
+  .compare-divider {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 6px 0;
+    grid-column: 1 / -1;
+  }
+  .final-body {
+    font-size: 10.5px; color: #333; line-height: 1.7;
+  }
+  .year-badge {
+    display: inline-block;
+    background: #cc2222;
+    color: white;
+    font-size: 8px; font-weight: 700;
+    letter-spacing: 1px;
+    padding: 3px 7px;
+    margin-bottom: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="outer-frame">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="title-block">
+      <h1>HUMAN<br>ADVANTAGE</h1>
+      <p class="subtitle">当 AI 把执行成本降到零，真正稀缺的不再是「怎么做」，<br>而是「做什么」——方向判断，才是人类不可替代的核心。</p>
+    </div>
+    <div class="header-right">
+      <span class="label">CORE IDEA</span>
+      AI 是通才，人类的价值是把通才培养成专家。
+      <span class="label">KEY QUESTION</span>
+      你在用 AI 执行，还是在用 AI 思考方向？
+      <div class="author">
+        <div class="author-avatar">敏</div>
+        <span>敏哥说AI</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="main-grid">
+
+    <!-- Col 1: Human Role -->
+    <div class="col">
+      <div class="col-label">HUMAN ROLE</div>
+      <div class="col-title">人类的不可替代性在哪里</div>
+      <p class="col-body" style="margin-bottom:12px;">大模型是个「通才」——什么都懂一点，但不够专精。人类的核心价值，是把这个通才定向培养成专家。</p>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">识别领域</div>
+          <p>判断哪个垂直场景值得深耕，AI 没有这个判断力，人有。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">注入专业上下文</div>
+          <p>把行业知识、隐性规则和真实约束喂给模型，让它从通才变专才。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">持续校准方向</div>
+          <p>AI 会漂移，人来把控每一次输出是否仍在正确轨道上。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">沉淀专家能力</div>
+          <p>把反复校准的判断写进系统，让 AI 在这个领域越来越专。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Col 2: Core Shift -->
+    <div class="col">
+      <div class="col-label">CORE SHIFT</div>
+      <div class="col-title">战场从执行转向探索</div>
+      <p class="col-body" style="margin-bottom:12px;">执行成本已经近乎为零。工具的核心价值不再是帮你做得更快，而是帮你判断这件事值不值得做。</p>
+      <p class="col-body" style="margin-bottom:12px;">真正稀缺的，是「思考工具」——辅助方向判断的能力，而非执行加速器。</p>
+
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">方向判断</div>
+          <p class="item-body">这件事值不值得做？现在做还是以后做？</p>
+        </div>
+      </div>
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">优先级筛选</div>
+          <p class="item-body">在无数可执行选项中，找到最高价值的那一个。</p>
+        </div>
+      </div>
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">探索与验证</div>
+          <p class="item-body">在没有先例的问题面前，辅助人类快速试错和收敛。</p>
+        </div>
+      </div>
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">风险感知</div>
+          <p class="item-body">识别什么方向走下去会有麻烦，而不只是更快踩坑。</p>
+        </div>
+      </div>
+
+      <div class="wrong-label">WRONG FRAME</div>
+      <div class="col-title" style="font-size:13px;">为什么很多人用 AI 用不出价值</div>
+      <p class="col-body">因为他们把 AI 当打字员——只是执行更快，从不问该不该做、值不值得做。</p>
+      <div class="dont-badge">DON'T JUST ACCELERATE EXECUTION</div>
+    </div>
+
+    <!-- Col 3: Narrow Startups -->
+    <div class="col">
+      <div class="col-label">NARROW STARTUPS</div>
+      <div class="col-title">未来最强应用的形态</div>
+      <p class="col-body" style="margin-bottom:8px;">不是大而全的平台，而是极窄、极深、极专业的「组合体」——为一类极具体的人群量身定制。</p>
+
+      <div class="applies-label">三层结构</div>
+      <div class="apply-title">底 × 中 × 上</div>
+
+      <div class="tag-row">
+        <span class="tag">底层</span>
+        <span class="tag-text">调度多家最强模型，按任务类型路由到最优解。</span>
+      </div>
+      <div class="tag-row">
+        <span class="tag">中层</span>
+        <span class="tag-text">复杂上下文工程、流程编排与反馈闭环，让系统越来越准。</span>
+      </div>
+      <div class="tag-row">
+        <span class="tag">上层</span>
+        <span class="tag-text">为极具体人群量身定做的 UI，而不是通用对话框。</span>
+      </div>
+
+      <div class="applies-label" style="margin-top:14px;">特征</div>
+      <div class="tag-row">
+        <span class="tag">极窄</span>
+        <span class="tag-text">只服务一类场景，不贪大求全。</span>
+      </div>
+      <div class="tag-row">
+        <span class="tag">极深</span>
+        <span class="tag-text">在这个场景里做到行业最深的专业度。</span>
+      </div>
+      <div class="tag-row">
+        <span class="tag">极专</span>
+        <span class="tag-text">每个细节都是为目标用户设计的，而不是通用方案微调。</span>
+      </div>
+    </div>
+
+    <!-- Col 4: 2026 Dividing Line -->
+    <div class="col">
+      <div class="col-label">2026 DIVIDING LINE</div>
+      <div class="col-title">真正的分水岭</div>
+      <p class="col-body" style="margin-bottom:10px;">不是谁的模型更强，而是谁能把 AI 变成「会思考的工具」，而不只是一个更快的执行器。</p>
+
+      <div class="compare-grid">
+        <div class="compare-item">
+          <div class="compare-head">执行器</div>
+          <p>更快完成你指定的任务。</p>
+        </div>
+        <div class="compare-item">
+          <div class="compare-head">思考工具</div>
+          <p>帮你判断该不该做这件事。</p>
+        </div>
+        <hr class="compare-divider">
+        <div class="compare-item">
+          <div class="compare-head">价值来源</div>
+          <p>速度和成本压缩。</p>
+        </div>
+        <div class="compare-item">
+          <div class="compare-head">价值来源</div>
+          <p>方向正确带来的复利。</p>
+        </div>
+        <hr class="compare-divider">
+        <div class="compare-item">
+          <div class="compare-head">竞争护城河</div>
+          <p>几乎没有，随时被替代。</p>
+        </div>
+        <div class="compare-item">
+          <div class="compare-head">竞争护城河</div>
+          <p>深度场景积累，难以复制。</p>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <p>创造力不再是少数人的特权。生成一个小应用，会像写一首诗一样简单。</p>
+      </div>
+
+      <p class="final-body">把 AI 当成执行加速器，你只得到更快的错误；把 AI 变成探索工具，你得到越来越清晰的方向。</p>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

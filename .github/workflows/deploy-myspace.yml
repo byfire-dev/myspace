@@ -1,0 +1,123 @@
+name: Notify and deploy myspace
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: myspace-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    name: Send approval email
+    runs-on: ubuntu-latest
+    steps:
+      - name: Email deployment approval link
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          SMTP_STARTTLS: ${{ secrets.SMTP_STARTTLS }}
+          APPROVAL_EMAIL_TO: lixm@byfire.ai
+          COMMIT_SHA: ${{ github.sha }}
+          BRANCH_NAME: ${{ github.ref_name }}
+          ACTOR: ${{ github.actor }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import os
+          import smtplib
+          import ssl
+          from email.message import EmailMessage
+
+          required = ["SMTP_HOST", "SMTP_PORT", "SMTP_USERNAME", "SMTP_PASSWORD"]
+          missing = [name for name in required if not os.environ.get(name)]
+          if missing:
+              raise SystemExit(f"Missing required email secrets: {', '.join(missing)}")
+
+          sender = os.environ.get("SMTP_FROM") or os.environ["SMTP_USERNAME"]
+          recipient = os.environ["APPROVAL_EMAIL_TO"]
+          run_url = os.environ["RUN_URL"]
+          sha = os.environ["COMMIT_SHA"]
+
+          message = EmailMessage()
+          message["Subject"] = f"[myspace] Deployment approval needed: {sha[:7]}"
+          message["From"] = sender
+          message["To"] = recipient
+          message.set_content(f"""A new myspace deployment is waiting for your approval.
+
+Repository: {os.environ["REPOSITORY"]}
+Branch: {os.environ["BRANCH_NAME"]}
+Commit: {sha}
+Triggered by: {os.environ["ACTOR"]}
+
+Approve the production environment in GitHub Actions:
+{run_url}
+
+After approval, GitHub Actions will publish the checked-out files to the configured server directory.
+""")
+
+          port = int(os.environ["SMTP_PORT"])
+          starttls = os.environ.get("SMTP_STARTTLS", "true").lower() != "false"
+
+          if port == 465:
+              with smtplib.SMTP_SSL(os.environ["SMTP_HOST"], port, context=ssl.create_default_context()) as server:
+                  server.login(os.environ["SMTP_USERNAME"], os.environ["SMTP_PASSWORD"])
+                  server.send_message(message)
+          else:
+              with smtplib.SMTP(os.environ["SMTP_HOST"], port) as server:
+                  if starttls:
+                      server.starttls(context=ssl.create_default_context())
+                  server.login(os.environ["SMTP_USERNAME"], os.environ["SMTP_PASSWORD"])
+                  server.send_message(message)
+          PY
+
+  deploy:
+    name: Deploy after approval
+    needs: notify
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - name: Checkout site
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        env:
+          DEPLOY_HOST: ${{ vars.DEPLOY_HOST || secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ vars.DEPLOY_PORT || secrets.DEPLOY_PORT }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          test -n "$DEPLOY_HOST" || (echo "Missing DEPLOY_HOST secret" && exit 1)
+          test -n "$DEPLOY_SSH_KEY" || (echo "Missing DEPLOY_SSH_KEY secret" && exit 1)
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "${DEPLOY_PORT:-22}" "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+
+      - name: Publish static files
+        env:
+          DEPLOY_HOST: ${{ vars.DEPLOY_HOST || secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ vars.DEPLOY_PORT || secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ vars.DEPLOY_USER || secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH || secrets.DEPLOY_PATH }}
+        run: |
+          test -n "$DEPLOY_USER" || (echo "Missing DEPLOY_USER secret" && exit 1)
+          test -n "$DEPLOY_PATH" || (echo "Missing DEPLOY_PATH secret" && exit 1)
+          SSH_CMD="ssh -i ~/.ssh/deploy_key -p ${DEPLOY_PORT:-22}"
+          $SSH_CMD "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$DEPLOY_PATH'"
+          rsync -az --delete \
+            --exclude ".git/" \
+            --exclude ".github/" \
+            -e "$SSH_CMD" \
+            ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
