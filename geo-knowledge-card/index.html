@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEO Knowledge Card | 经验文档</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Bebas+Neue&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .outer-frame {
+    border: 6px solid #cc2222;
+    background: #f5f0e8;
+    width: 980px;
+    padding: 32px 36px 36px 36px;
+    position: relative;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 28px;
+    margin-bottom: 14px;
+  }
+
+  .title-block h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 1;
+    color: #111;
+    letter-spacing: 2px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #222;
+    margin-top: 10px;
+    line-height: 1.7;
+    max-width: 470px;
+  }
+
+  .header-right {
+    text-align: right;
+    font-size: 11px;
+    color: #333;
+    line-height: 1.8;
+    min-width: 255px;
+  }
+
+  .header-right .label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #cc2222;
+    display: block;
+    margin-top: 6px;
+  }
+
+  .author {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .author-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #cc2222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 10px;
+    font-weight: 900;
+  }
+
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 0;
+    border-top: 1.5px solid #bbb;
+  }
+
+  .col {
+    padding: 18px 16px 16px 0;
+    border-right: 1.5px solid #bbb;
+    padding-right: 16px;
+  }
+
+  .col:first-child { padding-left: 0; }
+  .col:last-child { border-right: none; }
+  .col + .col { padding-left: 16px; }
+
+  .col-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    color: #cc2222;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .col-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .col-body {
+    font-size: 11px;
+    color: #333;
+    line-height: 1.7;
+  }
+
+  .step {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 9px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #cc2222;
+    color: white;
+    font-size: 9px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-content .step-title {
+    font-size: 12px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 2px;
+  }
+
+  .step-content p {
+    font-size: 10.5px;
+    color: #444;
+    line-height: 1.6;
+  }
+
+  .shift-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 9px;
+  }
+
+  .circle-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #cc2222;
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+  }
+
+  .circle-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #cc2222;
+  }
+
+  .shift-item .item-title {
+    font-size: 12px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 2px;
+  }
+
+  .shift-item .item-body {
+    font-size: 10.5px;
+    color: #444;
+    line-height: 1.6;
+  }
+
+  .plan-review-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 8px 0;
+    flex-wrap: wrap;
+  }
+
+  .pr-badge,
+  .work-badge {
+    color: white;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 3px 7px;
+  }
+
+  .pr-badge { background: #111; }
+  .work-badge { background: #cc2222; }
+
+  .applies-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    color: #cc2222;
+    text-transform: uppercase;
+    margin: 10px 0 4px;
+  }
+
+  .apply-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 6px;
+  }
+
+  .tag-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 5px;
+  }
+
+  .tag {
+    background: #111;
+    color: white;
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tag-text {
+    font-size: 10px;
+    color: #333;
+    line-height: 1.5;
+  }
+
+  .highlight-box {
+    background: #111;
+    color: white;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+
+  .highlight-box p {
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.5;
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .compare-item .compare-head {
+    font-size: 10px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 4px;
+  }
+
+  .compare-item p {
+    font-size: 9.5px;
+    color: #444;
+    line-height: 1.6;
+  }
+
+  .compare-divider {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 6px 0;
+    grid-column: 1 / -1;
+  }
+
+  .final-body {
+    font-size: 10.5px;
+    color: #333;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 980px) {
+    body { align-items: flex-start; }
+    .outer-frame { width: 100%; }
+    .header { flex-direction: column; }
+    .header-right { text-align: left; min-width: 0; }
+    .author { justify-content: flex-start; }
+    .main-grid { grid-template-columns: 1fr 1fr; }
+    .col:nth-child(2) { border-right: none; }
+    .col:nth-child(3) { padding-left: 0; }
+    .col:nth-child(3),
+    .col:nth-child(4) { border-top: 1.5px solid #bbb; }
+  }
+
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    .outer-frame { padding: 24px 20px; border-width: 4px; }
+    .title-block h1 { font-size: 42px; }
+    .main-grid { grid-template-columns: 1fr; }
+    .col,
+    .col + .col {
+      padding: 18px 0;
+      border-right: none;
+      border-top: 1.5px solid #bbb;
+    }
+    .col:first-child { border-top: none; }
+  }
+</style>
+</head>
+<body>
+<div class="outer-frame">
+  <div class="header">
+    <div class="title-block">
+      <h1>GEO<br>KNOWLEDGE<br>CARD</h1>
+      <p class="subtitle">生成式引擎优化不是单点内容发布，而是一套围绕品牌语义、真实 Prompt、AI 可见性、引用证据与内容机会持续复利的知识系统。</p>
+    </div>
+    <div class="header-right">
+      <span class="label">CORE QUESTION</span>
+      AI 在回答真实问题时，是否理解、提及、引用并推荐你的品牌？
+      <span class="label">SYSTEM VIEW</span>
+      Prompt 是需求入口，Citation 是信任路径，Visibility 是结果面板。
+      <div class="author">
+        <div class="author-avatar">敏</div>
+        <span>敏哥说AI</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+    <div class="col">
+      <div class="col-label">SEMANTIC ROOT</div>
+      <div class="col-title">先建立品牌语义资产</div>
+      <p class="col-body" style="margin-bottom:12px;">GEO 的起点不是关键词，而是让系统理解品牌、产品、竞品和行业关系，形成可持续调用的语义底座。</p>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">品牌画像</div>
+          <p>定义品牌是谁、服务谁、解决什么问题、与哪些概念稳定关联。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">产品画像</div>
+          <p>拆解产品能力、场景、差异点和常见使用语境。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">竞品与行业画像</div>
+          <p>建立对比坐标，让 AI 知道品牌在市场结构中的位置。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-label">DEMAND UNIVERSE</div>
+      <div class="col-title">从真实 Prompt 发现机会</div>
+      <p class="col-body" style="margin-bottom:12px;">用户不会只输入标准关键词。Prompt Universe 追踪真实问题、比较问法和购买前疑虑，把需求转成可运营的问题资产。</p>
+
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">Prompt Universe</div>
+          <p class="item-body">发现真实用户会向 AI 提出的长问题、隐性需求和决策场景。</p>
+        </div>
+      </div>
+
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">Content Opportunity</div>
+          <p class="item-body">从 Prompt 缺口和 Citation 缺口生成内容机会，而不是凭感觉选题。</p>
+        </div>
+      </div>
+
+      <div class="applies-label">ASSET OUTPUT</div>
+      <div class="tag-row">
+        <span class="tag">INPUT</span>
+        <span class="tag-text">问题、场景、比较、替代方案、决策阻力。</span>
+      </div>
+      <div class="tag-row">
+        <span class="tag">OUTPUT</span>
+        <span class="tag-text">可验证的问题库、机会清单和内容优先级。</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-label">AI EVIDENCE</div>
+      <div class="col-title">监控可见性与引用原因</div>
+      <p class="col-body" style="margin-bottom:8px;">AI Visibility 关注品牌是否被提及、引用和推荐；Citation Analysis 反推 AI 为什么信任某些来源。</p>
+
+      <div class="plan-review-bar">
+        <span class="pr-badge">VISIBILITY</span>
+        <span class="work-badge">CITATION</span>
+      </div>
+
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">AI Visibility</div>
+          <p class="item-body">监控 AI 回答中品牌出现的位置、语气、推荐强度和遗漏场景。</p>
+        </div>
+      </div>
+
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">Citation Analysis</div>
+          <p class="item-body">分析哪些内容被引用、为什么被引用、缺少哪些证据结构。</p>
+        </div>
+      </div>
+
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">Share of Voice</div>
+          <p class="item-body">计算品牌与竞品在 AI 回答中的声量份额、趋势和差距。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-label">COMPOUND LOOP</div>
+      <div class="col-title">Brief 先行，内容闭环</div>
+      <p class="col-body" style="margin-bottom:10px;">高质量 GEO 内容从结构化简报开始：明确回答对象、证据、引用目标和可见性指标，再进入生产与监控。</p>
+
+      <div class="compare-grid">
+        <div class="compare-item">
+          <div class="compare-head">Content Brief</div>
+          <p>生成面向 AI 引用和推荐的内容简报。</p>
+        </div>
+        <div class="compare-item">
+          <div class="compare-head">Content</div>
+          <p>围绕问题、证据和结构写正文。</p>
+        </div>
+        <hr class="compare-divider">
+        <div class="compare-item">
+          <div class="compare-head">Monitor</div>
+          <p>持续观察提及率、引用源和竞品声量。</p>
+        </div>
+        <div class="compare-item">
+          <div class="compare-head">Automate</div>
+          <p>自动报告、建议、更新机会库。</p>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <p>GEO 的复利发生在：每次 AI 回答，都反向更新品牌语义、问题库、引用结构和内容计划。</p>
+      </div>
+
+      <p class="final-body">Workflow Automation 把监控、分析、建议和报告串成闭环，让 GEO 从一次性优化变成持续学习系统。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

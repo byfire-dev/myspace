@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI原生线上培训交付平台规划</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Bebas+Neue&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --red: #cc2222;
+    --black: #111;
+    --ink: #333;
+    --muted: #777;
+    --paper: #f5f0e8;
+    --line: #bdb8ae;
+    --deep: #1a1a1a;
+  }
+
+  body {
+    background: var(--deep);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 22px;
+    font-family: 'Noto Sans SC', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  .outer-frame {
+    border: 6px solid var(--red);
+    background: var(--paper);
+    width: min(1080px, 100%);
+    padding: 34px 38px 38px;
+    position: relative;
+    box-shadow: 0 18px 60px rgba(0,0,0,.38);
+  }
+
+  .outer-frame::before,
+  .outer-frame::after {
+    content: '';
+    position: absolute;
+    width: 46px;
+    height: 6px;
+    background: var(--red);
+    top: 16px;
+  }
+
+  .outer-frame::before { left: 22px; }
+  .outer-frame::after { right: 22px; }
+
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 16px;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    background: var(--black);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1.7px;
+    padding: 4px 8px;
+    margin-bottom: 10px;
+  }
+
+  .title-block h1 {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: clamp(48px, 7vw, 76px);
+    line-height: .9;
+    color: var(--black);
+    letter-spacing: 2.5px;
+  }
+
+  .title-block .cn-title {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--black);
+    margin-top: 8px;
+    letter-spacing: .5px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #222;
+    margin-top: 10px;
+    line-height: 1.75;
+    max-width: 560px;
+  }
+
+  .header-right {
+    text-align: right;
+    font-size: 11px;
+    color: var(--ink);
+    line-height: 1.8;
+    min-width: 280px;
+    padding-top: 5px;
+  }
+
+  .header-right .label {
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1.8px;
+    color: var(--red);
+    display: block;
+    margin-top: 7px;
+    text-transform: uppercase;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 7px;
+    margin-top: 12px;
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .brand-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 11px;
+    font-weight: 900;
+  }
+
+  /* Main grid */
+  .main-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+    border-top: 1.5px solid var(--line);
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .col {
+    padding: 18px 16px 18px 0;
+    border-right: 1.5px solid var(--line);
+  }
+
+  .col + .col { padding-left: 16px; }
+  .col:last-child { border-right: none; }
+
+  .col-label {
+    font-size: 8.5px;
+    font-weight: 900;
+    letter-spacing: 1.8px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 7px;
+  }
+
+  .col-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--black);
+    margin-bottom: 8px;
+    line-height: 1.35;
+  }
+
+  .col-body {
+    font-size: 11px;
+    color: var(--ink);
+    line-height: 1.75;
+  }
+
+  /* Steps */
+  .step {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: var(--red);
+    color: white;
+    font-size: 9px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-content .step-title {
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--black);
+    margin-bottom: 2px;
+  }
+
+  .step-content p {
+    font-size: 10.5px;
+    color: #444;
+    line-height: 1.62;
+  }
+
+  /* Shift items */
+  .shift-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .circle-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--red);
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+  }
+
+  .circle-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+
+  .item-title {
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--black);
+    margin-bottom: 2px;
+  }
+
+  .item-body {
+    font-size: 10.5px;
+    color: #444;
+    line-height: 1.62;
+  }
+
+  /* Badges */
+  .badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0 11px;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--black);
+    color: white;
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    padding: 3px 7px;
+  }
+
+  .badge.red { background: var(--red); }
+  .badge.outline {
+    background: transparent;
+    color: var(--red);
+    border: 1.5px solid var(--red);
+  }
+
+  .tag-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .tag {
+    background: var(--black);
+    color: white;
+    font-size: 7.5px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    flex-shrink: 0;
+    margin-top: 3px;
+    min-width: 42px;
+    text-align: center;
+  }
+
+  .tag.red { background: var(--red); }
+
+  .tag-text {
+    font-size: 10px;
+    color: var(--ink);
+    line-height: 1.55;
+  }
+
+  .mini-label {
+    font-size: 8.5px;
+    font-weight: 900;
+    letter-spacing: 1.8px;
+    color: #888;
+    text-transform: uppercase;
+    margin-top: 12px;
+    margin-bottom: 4px;
+  }
+
+  /* Comparison */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 10px 0 10px;
+  }
+
+  .compare-item .compare-head {
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--black);
+    margin-bottom: 3px;
+  }
+
+  .compare-item p {
+    font-size: 9.5px;
+    color: #444;
+    line-height: 1.58;
+  }
+
+  .compare-divider {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 2px 0;
+    grid-column: 1 / -1;
+  }
+
+  .highlight-box {
+    background: var(--black);
+    color: white;
+    padding: 12px 14px;
+    margin: 12px 0 12px;
+  }
+
+  .highlight-box p {
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.55;
+  }
+
+  /* Lower module map */
+  .module-map {
+    display: grid;
+    grid-template-columns: 1.2fr .9fr .9fr .9fr;
+    gap: 0;
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .module-cell {
+    padding: 16px 15px 15px 0;
+    border-right: 1.5px solid var(--line);
+  }
+
+  .module-cell + .module-cell { padding-left: 16px; }
+  .module-cell:last-child { border-right: none; }
+
+  .big-number {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 42px;
+    line-height: .9;
+    letter-spacing: 1px;
+    color: var(--red);
+    float: left;
+    margin-right: 10px;
+    margin-top: 3px;
+  }
+
+  .module-title {
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1.3;
+    color: var(--black);
+    margin-bottom: 5px;
+  }
+
+  .module-body {
+    font-size: 10.3px;
+    color: #444;
+    line-height: 1.65;
+  }
+
+  .pill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+  }
+
+  .pill {
+    border: 1px solid var(--line);
+    color: var(--ink);
+    font-size: 8.2px;
+    font-weight: 700;
+    padding: 3px 6px;
+    background: rgba(255,255,255,.2);
+  }
+
+  /* Bottom */
+  .bottom-strip {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr 1fr;
+    gap: 0;
+  }
+
+  .bottom-cell {
+    padding: 16px 16px 0 0;
+    border-right: 1.5px solid var(--line);
+  }
+
+  .bottom-cell + .bottom-cell { padding-left: 16px; }
+  .bottom-cell:last-child { border-right: none; }
+
+  .north-star {
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1.45;
+    color: var(--black);
+  }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 9px;
+  }
+
+  .metric {
+    border-top: 3px solid var(--red);
+    padding-top: 6px;
+  }
+
+  .metric strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--black);
+    margin-bottom: 2px;
+  }
+
+  .metric span {
+    display: block;
+    font-size: 9.5px;
+    line-height: 1.45;
+    color: #555;
+  }
+
+  .footer-note {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    border-top: 1.5px solid var(--line);
+    margin-top: 18px;
+    padding-top: 12px;
+    font-size: 9.5px;
+    color: #555;
+    line-height: 1.6;
+    letter-spacing: .2px;
+  }
+
+  .footer-note strong { color: var(--black); }
+
+  @media (max-width: 900px) {
+    body { padding: 12px; }
+    .outer-frame { padding: 26px 22px 28px; }
+    .header { flex-direction: column; }
+    .header-right { text-align: left; min-width: 0; }
+    .brand { justify-content: flex-start; }
+    .main-grid, .module-map, .bottom-strip { grid-template-columns: 1fr 1fr; }
+    .col:nth-child(2), .module-cell:nth-child(2), .bottom-cell:nth-child(2) { border-right: none; }
+    .col:nth-child(3), .module-cell:nth-child(3) { border-top: 1.5px solid var(--line); }
+    .col:nth-child(4), .module-cell:nth-child(4) { border-top: 1.5px solid var(--line); }
+    .bottom-cell:nth-child(3) { border-top: 1.5px solid var(--line); }
+  }
+
+  @media (max-width: 560px) {
+    .main-grid, .module-map, .bottom-strip, .metric-grid { grid-template-columns: 1fr; }
+    .col, .module-cell, .bottom-cell { border-right: none !important; border-top: 1.5px solid var(--line); padding-left: 0 !important; }
+    .main-grid .col:first-child { border-top: none; }
+    .footer-note { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="outer-frame">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="title-block">
+      <span class="eyebrow">AI-NATIVE TRAINING PLATFORM</span>
+      <h1>LEARNING<br>OPERATING SYSTEM</h1>
+      <div class="cn-title">AI原生线上培训交付平台规划</div>
+      <p class="subtitle">不是再做一个“视频网校”，而是把课程、直播、作业、垂直 Agent、作品集和增长数据放进同一个交付闭环。</p>
+    </div>
+    <div class="header-right">
+      <span class="label">CORE IDEA</span>
+      让学员每学一节课，都能借助 Agent 完成一个可展示、可复用、可变现的作品。
+      <span class="label">NORTH STAR</span>
+      每周完成有效 AI 作品的活跃学员数。
+      <span class="label">FIRST BET</span>
+      Vibe Coding 训练营 + 社媒账号运营训练营。
+      <div class="brand">
+        <div class="brand-avatar">AI</div>
+        <span>Training Platform Blueprint</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="main-grid">
+
+    <!-- Col 1 -->
+    <div class="col">
+      <div class="col-label">THE LOOP</div>
+      <div class="col-title">从直播获客到作品交付</div>
+      <p class="col-body" style="margin-bottom:12px;">平台的核心不是播放课程，而是让每个用户从线索、成交、学习、实操到复购都被系统承接。</p>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Acquire</div>
+          <p>社媒内容、直播预约、试听课和表单进入轻量 CRM，记录渠道与转化路径。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Learn</div>
+          <p>课程不只是视频目录，而是“短视频 + 讲义 + 模板 + Agent 入口 + 作业”。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Build</div>
+          <p>学员在垂直 Agent 工作台里完成账号方案、代码项目、小说设定或短剧脚本。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Review</div>
+          <p>AI 初评、导师复评、评分 Rubric 和修改记录共同形成可追踪的交付标准。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Compound</div>
+          <p>优秀案例、失败样例、提示词和流程回写到知识库，下一期训练营更好交付。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Col 2 -->
+    <div class="col">
+      <div class="col-label">CORE SYSTEM</div>
+      <div class="col-title">它不是网校，而是交付操作系统</div>
+      <p class="col-body" style="margin-bottom:12px;">真正要自研的是课程资产、Agent 资产、案例资产和学员数据资产的沉淀系统。</p>
+
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">Course Assets</div>
+          <p class="item-body">课程、讲义、模板、直播回放、阶段项目和结营标准。</p>
+        </div>
+      </div>
+
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">Agent Assets</div>
+          <p class="item-body">垂直 Agent、Prompt 版本、工作流、工具调用和安全规则。</p>
+        </div>
+      </div>
+
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">Project Assets</div>
+          <p class="item-body">作业、作品集、优秀案例、反例和导师点评数据。</p>
+        </div>
+      </div>
+
+      <div class="shift-item">
+        <div class="circle-icon"></div>
+        <div>
+          <div class="item-title">Growth Assets</div>
+          <p class="item-body">渠道来源、直播转化、学习留存、复购路径和企业客户线索。</p>
+        </div>
+      </div>
+
+      <div class="mini-label">WRONG FRAME</div>
+      <div class="col-title" style="font-size:13px;">只做“视频 + 聊天框”会很快失去壁垒</div>
+      <p class="col-body">答案本身会过期，真正能复利的是标准、案例、流程、评价和用户行为数据。</p>
+      <div class="badge-row"><span class="badge outline">DON'T JUST SELL VIDEOS</span></div>
+    </div>
+
+    <!-- Col 3 -->
+    <div class="col">
+      <div class="col-label">AGENT WORKBENCH</div>
+      <div class="col-title">每个 Agent 都是任务型工作台</div>
+      <p class="col-body" style="margin-bottom:9px;">Agent 不应只是聊天窗口，而要绑定课程、模板、输入字段、输出格式、工具和评估标准。</p>
+
+      <div class="badge-row">
+        <span class="badge">PLAN</span>
+        <span class="badge red">WORK</span>
+        <span class="badge">REVIEW</span>
+        <span class="badge red">SAVE</span>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag red">VIBE</span>
+        <span class="tag-text">需求澄清、代码生成、错误解释、部署清单和项目作业评分。</span>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag">SOCIAL</span>
+        <span class="tag-text">账号诊断、定位、人设、30天选题、脚本、直播话术和复盘。</span>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag">NOVEL</span>
+        <span class="tag-text">世界观、人物关系、章节大纲、正文草稿和连续性检查。</span>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag">SHORTS</span>
+        <span class="tag-text">短剧卖点、强冲突开局、分集大纲、单集剧本和拍摄清单。</span>
+      </div>
+
+      <div class="mini-label">FIRST THREE</div>
+      <div class="col-title" style="font-size:13px;">MVP 先做 3 个 Agent</div>
+      <p class="col-body">学习规划 Agent、Vibe Coding 教学 Agent、社媒账号运营 Agent。小说与短剧放到第二阶段。</p>
+    </div>
+
+    <!-- Col 4 -->
+    <div class="col">
+      <div class="col-label">ROADMAP</div>
+      <div class="col-title">先跑通交付，再做平台生态</div>
+      <p class="col-body" style="margin-bottom:8px;">第一版目标不是“大而全”，而是验证训练营交付闭环和 Agent 对学习成果的提升。</p>
+
+      <div class="compare-grid">
+        <div class="compare-item">
+          <div class="compare-head">0—3个月</div>
+          <p>课程、作业、回放、3个 Agent、基础后台和数据看板。</p>
+        </div>
+        <div class="compare-item">
+          <div class="compare-head">3—6个月</div>
+          <p>班级管理、助教工作台、AI初评、CRM和会员额度。</p>
+        </div>
+        <hr class="compare-divider">
+        <div class="compare-item">
+          <div class="compare-head">6—12个月</div>
+          <p>Agent 版本管理、企业空间、团队看板和安全审核体系。</p>
+        </div>
+        <div class="compare-item">
+          <div class="compare-head">12个月后</div>
+          <p>Agent 市场、讲师入驻、企业私有 Agent 和行业方案。</p>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <p>先用一门课验证交付，再把 Agent 产品化，最后复制到更多垂直课程。</p>
+      </div>
+
+      <p class="col-body">不要优先自研直播推流、自研大模型、复杂 IM 或 Agent 市场。先把学习、实操、作业和复购跑顺。</p>
+    </div>
+  </div>
+
+  <!-- Module map -->
+  <div class="module-map">
+    <div class="module-cell">
+      <div class="col-label">MODULE MAP</div>
+      <span class="big-number">08</span>
+      <div class="module-title">平台八大模块</div>
+      <p class="module-body">用户会员、课程学习、Agent 中心、作业作品集、直播训练营、CRM 增长、数据看板、安全治理。</p>
+      <div class="pill-list">
+        <span class="pill">用户</span><span class="pill">课程</span><span class="pill">Agent</span><span class="pill">作业</span><span class="pill">CRM</span><span class="pill">数据</span>
+      </div>
+    </div>
+
+    <div class="module-cell">
+      <div class="col-label">MVP SCOPE</div>
+      <div class="module-title">90天必须上线</div>
+      <p class="module-body">登录、课程播放、直播回放、作业提交、3个 Agent、模板库、进度、订单、运营后台、调用日志。</p>
+      <div class="badge-row"><span class="badge red">SHIP LOOP</span><span class="badge">NOT PLATFORM</span></div>
+    </div>
+
+    <div class="module-cell">
+      <div class="col-label">BUSINESS MODEL</div>
+      <div class="module-title">课程 + Agent + 服务</div>
+      <p class="module-body">训练营收入作为第一现金流，Agent 会员形成持续收入，企业内训和私有 Agent 定制拉高客单价。</p>
+      <div class="pill-list"><span class="pill">训练营</span><span class="pill">会员</span><span class="pill">企业内训</span><span class="pill">定制</span></div>
+    </div>
+
+    <div class="module-cell">
+      <div class="col-label">GOVERNANCE</div>
+      <div class="module-title">安全与合规前置</div>
+      <p class="module-body">权限分级、内容审核、隐私政策、Prompt 注入防护、工具调用审批、成本控制和日志审计。</p>
+      <div class="badge-row"><span class="badge outline">HUMAN REVIEW</span></div>
+    </div>
+  </div>
+
+  <!-- Bottom strip -->
+  <div class="bottom-strip">
+    <div class="bottom-cell">
+      <div class="col-label">POSITIONING</div>
+      <div class="north-star">AI时代的学习交付操作系统</div>
+      <p class="col-body" style="margin-top:8px;">把“听课”变成“完成任务”，把“使用 AI”变成“交付作品”。</p>
+    </div>
+
+    <div class="bottom-cell">
+      <div class="col-label">KEY METRICS</div>
+      <div class="metric-grid">
+        <div class="metric"><strong>Activation</strong><span>首日激活<br>7日留存</span></div>
+        <div class="metric"><strong>Delivery</strong><span>作业提交<br>作品完成</span></div>
+        <div class="metric"><strong>Growth</strong><span>复购率<br>Agent订阅</span></div>
+      </div>
+      <p class="col-body" style="margin-top:10px;">核心指标不要只看播放量，而要看学员是否完成了可展示、可复用、可变现的 AI 作品。</p>
+    </div>
+
+    <div class="bottom-cell">
+      <div class="col-label">FIRST PRODUCT</div>
+      <div class="module-title">推荐首发组合</div>
+      <p class="module-body">Vibe Coding 训练营作为技术壁垒样板；社媒运营训练营作为获客与转化样板。两个样板跑通后，再复制到小说、短剧与企业 AI 应用。</p>
+      <div class="badge-row"><span class="badge red">VIBE CODING</span><span class="badge">SOCIAL OPS</span></div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <span><strong>BUILD PRINCIPLE:</strong> 先交付闭环，后复杂平台；先沉淀标准，后规模复制。</span>
+    <span><strong>VERSION:</strong> Platform Planning Poster · v1.0</span>
+  </div>
+</div>
+</body>
+</html>
