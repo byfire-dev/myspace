@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enterprise Slogan Playbook | 经验文档</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Bebas+Neue&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .outer-frame {
+    border: 6px solid #cc2222;
+    background: #f5f0e8;
+    width: 980px;
+    padding: 32px 36px 36px 36px;
+    position: relative;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 28px;
+    margin-bottom: 14px;
+  }
+
+  .title-block h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 1;
+    color: #111;
+    letter-spacing: 2px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #222;
+    margin-top: 10px;
+    line-height: 1.7;
+    max-width: 470px;
+  }
+
+  .header-right {
+    text-align: right;
+    font-size: 11px;
+    color: #333;
+    line-height: 1.8;
+    min-width: 255px;
+  }
+
+  .header-right .label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #cc2222;
+    display: block;
+    margin-top: 6px;
+  }
+
+  .author {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .author-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #cc2222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 10px;
+    font-weight: 900;
+  }
+
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 0;
+    border-top: 1.5px solid #bbb;
+  }
+
+  .col {
+    padding: 18px 16px 16px 0;
+    border-right: 1.5px solid #bbb;
+    padding-right: 16px;
+  }
+
+  .col:first-child { padding-left: 0; }
+  .col:last-child { border-right: none; }
+  .col + .col { padding-left: 16px; }
+
+  .col-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    color: #cc2222;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .col-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .col-body {
+    font-size: 11px;
+    color: #333;
+    line-height: 1.7;
+  }
+
+  .step {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 8px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: #cc2222;
+    color: white;
+    font-size: 9px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-content .step-title {
+    font-size: 12px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 2px;
+  }
+
+  .step-content p {
+    font-size: 10.3px;
+    color: #444;
+    line-height: 1.55;
+  }
+
+  .pattern {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #d2cabd;
+  }
+
+  .pattern:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .pattern-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 5px;
+  }
+
+  .pattern-num {
+    background: #cc2222;
+    color: white;
+    font-size: 8px;
+    font-weight: 900;
+    padding: 2px 6px;
+    letter-spacing: 0.8px;
+  }
+
+  .pattern-title {
+    font-size: 12px;
+    font-weight: 900;
+    color: #111;
+    line-height: 1.3;
+  }
+
+  .example {
+    font-size: 9.5px;
+    color: #444;
+    line-height: 1.55;
+    margin-bottom: 4px;
+  }
+
+  .formula {
+    display: inline-block;
+    background: #111;
+    color: white;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    padding: 3px 6px;
+    line-height: 1.4;
+  }
+
+  .wrong-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    color: #888;
+    text-transform: uppercase;
+    margin-top: 12px;
+    margin-bottom: 4px;
+  }
+
+  .mistake-row {
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    gap: 8px;
+    align-items: start;
+    padding: 6px 0;
+    border-bottom: 1px solid #d2cabd;
+  }
+
+  .mistake-row:last-child { border-bottom: none; }
+
+  .mistake-type {
+    background: #111;
+    color: white;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    padding: 3px 5px;
+    text-align: center;
+  }
+
+  .mistake-body {
+    font-size: 10px;
+    color: #444;
+    line-height: 1.55;
+  }
+
+  .mistake-body strong {
+    display: block;
+    color: #111;
+    font-size: 10.5px;
+    margin-bottom: 2px;
+  }
+
+  .applies-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    color: #cc2222;
+    text-transform: uppercase;
+    margin: 10px 0 4px;
+  }
+
+  .tag-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .tag {
+    background: #111;
+    color: white;
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tag-text {
+    font-size: 10px;
+    color: #333;
+    line-height: 1.5;
+  }
+
+  .highlight-box {
+    background: #111;
+    color: white;
+    padding: 12px 14px;
+    margin: 12px 0 14px;
+  }
+
+  .highlight-box p {
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.5;
+  }
+
+  .final-body {
+    font-size: 10.5px;
+    color: #333;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 980px) {
+    body { align-items: flex-start; padding: 14px; }
+    .outer-frame { width: 100%; padding: 24px 20px; }
+    .header { flex-direction: column; }
+    .header-right { text-align: left; min-width: 0; }
+    .author { justify-content: flex-start; }
+    .main-grid { grid-template-columns: 1fr; }
+    .col {
+      border-right: none;
+      border-bottom: 1.5px solid #bbb;
+      padding: 18px 0;
+    }
+    .col + .col { padding-left: 0; }
+    .col:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body>
+<div class="outer-frame">
+
+  <div class="header">
+    <div class="title-block">
+      <h1>SLOGAN<br>PLAYBOOK</h1>
+      <p class="subtitle">好 Slogan 不是漂亮句子，而是一句话里的定位、差异化、记忆点和长期承诺。</p>
+    </div>
+    <div class="header-right">
+      <span class="label">CORE IDEA</span>
+      一句口号必须让用户马上知道你是谁、为什么重要，以及为什么不是别人。
+      <span class="label">KEY QUESTION</span>
+      这句话竞争对手能不能也说？如果能，它就还不够锋利。
+      <div class="author">
+        <div class="author-avatar">敏</div>
+        <span>敏哥说AI</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <div class="col">
+      <div class="col-label">BASELINE</div>
+      <div class="col-title">好 Slogan 的五条底层标准</div>
+      <p class="col-body" style="margin-bottom:12px;">先过底线，再谈创意。口号不是越华丽越好，而是越可记、可信、可长期占位越好。</p>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">够短</div>
+          <p>3-7 个词，最好 3-5 个。能被用户复述，才有传播资格。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">够清晰</div>
+          <p>只传递一个核心价值主张，不把定位、愿景、使命全塞进去。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">够独特</div>
+          <p>竞争对手说不出来，或者说出来会显得不可信。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">够有力</div>
+          <p>要么打动情绪，要么让人信服；最怕感性和理性两头落空。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">够持久</div>
+          <p>至少撑 5-10 年，不要被热点词、平台词和短期趋势绑架。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-label">PATTERNS 1-3</div>
+      <div class="col-title">三种最稳的说明型范式</div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <span class="pattern-num">01</span>
+          <div class="pattern-title">我是谁 + 我解决什么</div>
+        </div>
+        <p class="example">品牌定位型，适合低认知品牌。例："全球最大的外卖平台"、"搜索引擎"、"随时随地的音乐"。</p>
+        <span class="formula">[品牌名]，你的[价值]</span>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <span class="pattern-num">02</span>
+          <div class="pattern-title">动词 + 使命</div>
+        </div>
+        <p class="example">行动号召型，让用户感到被召唤。例："Just Do It"、"Think Different"、"Impossible is Nothing"。</p>
+        <span class="formula">[强势动词] [受众/信念]</span>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <span class="pattern-num">03</span>
+          <div class="pattern-title">痛点 + 解决方案</div>
+        </div>
+        <p class="example">解决问题型，直击焦虑。例："怕上火，喝王老吉"、"充电 5 分钟，通话 2 小时"。</p>
+        <span class="formula">[痛点/场景]，来[解决方案]</span>
+      </div>
+
+      <div class="highlight-box">
+        <p>品牌越陌生，口号越要先说明价值；别急着高级，先让人听懂。</p>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-label">PATTERNS 4-5</div>
+      <div class="col-title">两种更强的记忆型范式</div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <span class="pattern-num">04</span>
+          <div class="pattern-title">情感共鸣 + 身份认同</div>
+        </div>
+        <p class="example">情感连接型，让用户觉得"这就是我"。例："ThinkPad 思考本"、"农夫山泉，有点甜"。</p>
+        <span class="formula">[情感词] + [身份暗示]</span>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <span class="pattern-num">05</span>
+          <div class="pattern-title">对比 / 反差</div>
+        </div>
+        <p class="example">冲击型，制造记忆点。例："Think Small"、"我们不生产水，我们只是大自然的搬运工"。</p>
+        <span class="formula">[反常识陈述] 或 [否定行业惯例]</span>
+      </div>
+
+      <div class="applies-label">DECISION TREE</div>
+      <div class="tag-row">
+        <span class="tag">低知名度</span>
+        <span class="tag-text">优先用痛点 + 方案，让用户马上知道你是干什么的。</span>
+      </div>
+      <div class="tag-row">
+        <span class="tag">有资产</span>
+        <span class="tag-text">用情感共鸣，放大已有品牌记忆和忠诚度。</span>
+      </div>
+      <div class="tag-row">
+        <span class="tag">B2B</span>
+        <span class="tag-text">用我是谁或痛点范式，强调可信、清晰、效率。</span>
+      </div>
+      <div class="tag-row">
+        <span class="tag">年轻消费</span>
+        <span class="tag-text">用动词 + 使命，给用户一个可参与的姿态。</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-label">FAILURE MODES</div>
+      <div class="col-title">失败 Slogan 最常见的错</div>
+      <p class="col-body" style="margin-bottom:8px;">坏口号通常不是语法错误，而是战略错误：它看起来正确，却没有任何占位能力。</p>
+
+      <div class="mistake-row">
+        <div class="mistake-type">抽象</div>
+        <div class="mistake-body"><strong>"创新驱动未来"</strong>谁都能用，没有差异化。</div>
+      </div>
+      <div class="mistake-row">
+        <div class="mistake-type">复杂</div>
+        <div class="mistake-body"><strong>超过 10 个字</strong>信息太多，用户记不住。</div>
+      </div>
+      <div class="mistake-row">
+        <div class="mistake-type">短期</div>
+        <div class="mistake-body"><strong>蹭热点词</strong>热点过去，口号也一起过时。</div>
+      </div>
+      <div class="mistake-row">
+        <div class="mistake-type">自嗨</div>
+        <div class="mistake-body"><strong>"致力于行业领先"</strong>用户不在乎你致力于什么。</div>
+      </div>
+      <div class="mistake-row">
+        <div class="mistake-type">通用</div>
+        <div class="mistake-body"><strong>"质量第一，顾客至上"</strong>所有公司都这么说。</div>
+      </div>
+
+      <div class="wrong-label">FINAL TEST</div>
+      <div class="highlight-box">
+        <p>把品牌名遮住，如果竞争对手也能用，这句就还不是你的 Slogan。</p>
+      </div>
+      <p class="final-body">好 Slogan 不是一句灵感，而是一套取舍：选一个价值、一个场景、一个情绪或一个反差，然后长期占住它。</p>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
