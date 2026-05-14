@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screenplay Insight | 爽片剧本如何写</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Bebas+Neue&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .outer-frame {
+    border: 6px solid #cc2222;
+    background: #f5f0e8;
+    width: 980px;
+    padding: 32px 36px 36px;
+    position: relative;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 28px;
+    margin-bottom: 14px;
+  }
+
+  .title-block h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 1;
+    color: #111;
+    letter-spacing: 2px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #222;
+    margin-top: 10px;
+    line-height: 1.7;
+    max-width: 470px;
+  }
+
+  .header-right {
+    text-align: right;
+    font-size: 11px;
+    color: #333;
+    line-height: 1.8;
+    min-width: 258px;
+  }
+
+  .header-right .label {
+    display: block;
+    margin-top: 6px;
+    color: #cc2222;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+  }
+
+  .author {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .author-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #cc2222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 10px;
+    font-weight: 900;
+  }
+
+  .main-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1.5px solid #bbb;
+  }
+
+  .col {
+    padding: 18px 16px 16px 0;
+    border-right: 1.5px solid #bbb;
+  }
+
+  .col:first-child { padding-left: 0; }
+  .col:last-child { border-right: none; }
+  .col + .col { padding-left: 16px; }
+
+  .col-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    color: #cc2222;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .col-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 8px;
+    line-height: 1.32;
+  }
+
+  .col-body {
+    font-size: 10.6px;
+    color: #333;
+    line-height: 1.65;
+  }
+
+  .step {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 8px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: #cc2222;
+    color: white;
+    font-size: 9px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-title {
+    font-size: 12px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 2px;
+  }
+
+  .step p {
+    font-size: 10.2px;
+    color: #444;
+    line-height: 1.55;
+  }
+
+  .pattern {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #d2cabd;
+  }
+
+  .pattern:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .pattern-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 5px;
+  }
+
+  .pattern-num {
+    background: #cc2222;
+    color: white;
+    font-size: 8px;
+    font-weight: 900;
+    padding: 2px 6px;
+    letter-spacing: 0.8px;
+    flex-shrink: 0;
+  }
+
+  .pattern-title {
+    font-size: 12px;
+    font-weight: 900;
+    color: #111;
+    line-height: 1.3;
+  }
+
+  .formula {
+    display: inline-block;
+    background: #111;
+    color: white;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    padding: 3px 6px;
+    margin-top: 5px;
+    line-height: 1.4;
+  }
+
+  .quote-box {
+    background: #111;
+    color: white;
+    padding: 12px 14px;
+    margin: 12px 0;
+  }
+
+  .quote-box p {
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1.55;
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .compare-head {
+    font-size: 10px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 4px;
+  }
+
+  .compare-item p {
+    font-size: 9.5px;
+    color: #444;
+    line-height: 1.55;
+  }
+
+  .compare-divider {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 2px 0;
+    grid-column: 1 / -1;
+  }
+
+  .tag-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .tag {
+    background: #111;
+    color: white;
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tag-text {
+    font-size: 10px;
+    color: #333;
+    line-height: 1.5;
+  }
+
+  .warning-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    color: #cc2222;
+    text-transform: uppercase;
+    margin: 11px 0 5px;
+  }
+
+  .dont-badge {
+    display: inline-block;
+    border: 1.5px solid #cc2222;
+    color: #cc2222;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    padding: 3px 8px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 1000px) {
+    body { align-items: flex-start; }
+    .outer-frame { width: 100%; }
+    .main-grid { grid-template-columns: 1fr 1fr; }
+    .col:nth-child(2) { border-right: none; }
+    .col:nth-child(3),
+    .col:nth-child(4) { border-top: 1.5px solid #bbb; }
+  }
+
+  @media (max-width: 640px) {
+    .outer-frame { padding: 24px 20px; }
+    .header { flex-direction: column; }
+    .header-right { text-align: left; min-width: 0; }
+    .author { justify-content: flex-start; }
+    .title-block h1 { font-size: 44px; }
+    .main-grid { grid-template-columns: 1fr; }
+    .col,
+    .col:nth-child(2) {
+      border-right: none;
+      border-top: 1.5px solid #bbb;
+      padding-left: 0;
+    }
+    .col:first-child { border-top: none; }
+  }
+</style>
+</head>
+<body>
+<div class="outer-frame">
+
+  <div class="header">
+    <div class="title-block">
+      <h1>SCREENPLAY<br>INSIGHT</h1>
+      <p class="subtitle">爽片不是简单“打脸”，而是先设计观众大脑的回溯、顿悟、优越感与兑现时机。</p>
+    </div>
+    <div class="header-right">
+      <span class="label">CORE IDEA</span>
+      让观众在某一刻把前文伏笔重新连上，并觉得“我已经看穿了”。
+      <span class="label">KEY QUESTION</span>
+      真相掌握在谁手里：观众、角色，还是两边都不知道？
+      <div class="author">
+        <div class="author-avatar">编</div>
+        <span>爽片剧本方法卡</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <div class="col">
+      <div class="col-label">THE ENGINE</div>
+      <div class="col-title">爽感来自一次被设计好的顿悟</div>
+      <p class="col-body" style="margin-bottom:12px;">Insight 的本质不是信息量，而是观众大脑主动回溯伏笔、重新解释局势，并获得先知先觉的情绪奖励。</p>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Plant</div>
+          <p>先放一个能被记住的伏笔：身份、能力、关系、动机或异常行为。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Trigger</div>
+          <p>安排刁难、误认、揭露或异常事件，逼观众自动回想前文。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Conclude</div>
+          <p>让观众自己得出结论：对手要倒霉、骗子被供起来、旧行为终于说通。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <div class="step-title">Payoff</div>
+          <p>在情绪到位时兑现打脸、拆穿、反转或复仇，完成多巴胺闭环。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-label">GOD VIEW</div>
+      <div class="col-title">观众知道，角色不知道</div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <span class="pattern-num">A</span>
+          <span class="pattern-title">真强者被低估</span>
+        </div>
+        <p class="col-body">先交代皇帝、总裁、高手、学霸等真实身份；再让小人刁难。观众的爽点是“他们马上要完了”。</p>
+        <span class="formula">早交代身份 → 刁难 → 期待打脸 → 尽早兑现</span>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <span class="pattern-num">B</span>
+          <span class="pattern-title">假高手被误捧</span>
+        </div>
+        <p class="col-body">观众知道主角是假的，对手戏角色却把他当大师。快乐来自持续看人误会、追捧、脑补和出洋相。</p>
+        <span class="formula">假身份 → 群体误认 → 捧臭脚 → 最后恍然</span>
+      </div>
+
+      <div class="quote-box">
+        <p>第一种靠期待兑现；第二种靠误会过程本身持续产糖。</p>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-label">HIDDEN TRUTH</div>
+      <div class="col-title">观众缺一块真相</div>
+      <p class="col-body" style="margin-bottom:12px;">进阶 insight 要让前文行为看起来“合情合理但略过分”。真相揭开时，观众会回溯那些不对劲，并突然理解底层逻辑。</p>
+
+      <div class="tag-row">
+        <span class="tag">ODD</span>
+        <span class="tag-text">行为不能完全离谱，要有现实理由，但多一点异常感。</span>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag">ANCHOR</span>
+        <span class="tag-text">关键伏笔要重复成记忆点，例如多次复述案发过程。</span>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag">REVEAL</span>
+        <span class="tag-text">回溯点通常是高潮真相，不宜靠台词解释，优先用画面让观众自己拼上。</span>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag">MERGE</span>
+        <span class="tag-text">也可以让角色和观众都不知道真相，前半段悬疑，后半段用揭露完成顿悟。</span>
+      </div>
+
+      <div class="warning-label">TEST</div>
+      <p class="col-body">揭晓之后，前面每个怪异选择都应变成“原来如此”，而不是“编剧硬拗”。</p>
+    </div>
+
+    <div class="col">
+      <div class="col-label">TIMING RULES</div>
+      <div class="col-title">时机决定爽感有没有被磨掉</div>
+
+      <div class="compare-grid">
+        <div class="compare-item">
+          <div class="compare-head">打脸型</div>
+          <p>期待很强，条件成熟就尽快兑现。</p>
+        </div>
+        <div class="compare-item">
+          <div class="compare-head">误捧型</div>
+          <p>期待较弱，可延长误会来制造喜剧。</p>
+        </div>
+        <hr class="compare-divider">
+        <div class="compare-item">
+          <div class="compare-head">反转型</div>
+          <p>伏笔必须能回想，真相适合压到高潮。</p>
+        </div>
+        <div class="compare-item">
+          <div class="compare-head">组合型</div>
+          <p>先给局部优越感，再用最终真相升级。</p>
+        </div>
+      </div>
+
+      <div class="warning-label">DON'T</div>
+      <p class="col-body">不要第二集制造一个 insight，却拖到最后一集才兑现。期待会过期，爽感会变成疲惫。</p>
+      <div class="dont-badge">ONE INSIGHT CANNOT HOLD A WHOLE SERIES</div>
+
+      <div class="warning-label">WRITING BRIEF</div>
+      <p class="col-body">写戏前先填四格：谁知道真相、谁不知道、观众会回溯哪段伏笔、在哪个事件上兑现或揭露。</p>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pursuit Scene | 追杀戏怎么写</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Bebas+Neue&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .outer-frame {
+    border: 6px solid #cc2222;
+    background: #f5f0e8;
+    width: 980px;
+    padding: 32px 36px 36px;
+    position: relative;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 28px;
+    margin-bottom: 14px;
+  }
+
+  .title-block h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 1;
+    color: #111;
+    letter-spacing: 2px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #222;
+    margin-top: 10px;
+    line-height: 1.7;
+    max-width: 470px;
+  }
+
+  .header-right {
+    text-align: right;
+    font-size: 11px;
+    color: #333;
+    line-height: 1.8;
+    min-width: 258px;
+  }
+
+  .header-right .label {
+    display: block;
+    margin-top: 6px;
+    color: #cc2222;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+  }
+
+  .author {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .author-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #cc2222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 10px;
+    font-weight: 900;
+  }
+
+  .main-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1.5px solid #bbb;
+  }
+
+  .col {
+    padding: 18px 16px 16px 0;
+    border-right: 1.5px solid #bbb;
+  }
+
+  .col:first-child { padding-left: 0; }
+  .col:last-child { border-right: none; }
+  .col + .col { padding-left: 16px; }
+
+  .col-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    color: #cc2222;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .col-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 8px;
+    line-height: 1.32;
+  }
+
+  .col-body {
+    font-size: 10.5px;
+    color: #333;
+    line-height: 1.62;
+  }
+
+  .step {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 8px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: #cc2222;
+    color: white;
+    font-size: 9px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-title {
+    font-size: 12px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 2px;
+  }
+
+  .step p {
+    font-size: 10.1px;
+    color: #444;
+    line-height: 1.55;
+  }
+
+  .pattern {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #d2cabd;
+  }
+
+  .pattern:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .pattern-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 5px;
+  }
+
+  .pattern-num {
+    background: #cc2222;
+    color: white;
+    font-size: 8px;
+    font-weight: 900;
+    padding: 2px 6px;
+    letter-spacing: 0.8px;
+    flex-shrink: 0;
+  }
+
+  .pattern-title {
+    font-size: 12px;
+    font-weight: 900;
+    color: #111;
+    line-height: 1.3;
+  }
+
+  .formula {
+    display: inline-block;
+    background: #111;
+    color: white;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    padding: 3px 6px;
+    margin-top: 5px;
+    line-height: 1.4;
+  }
+
+  .quote-box {
+    background: #111;
+    color: white;
+    padding: 12px 14px;
+    margin: 12px 0;
+  }
+
+  .quote-box p {
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1.55;
+  }
+
+  .tag-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .tag {
+    background: #111;
+    color: white;
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tag-text {
+    font-size: 10px;
+    color: #333;
+    line-height: 1.5;
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .compare-head {
+    font-size: 10px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 4px;
+  }
+
+  .compare-item p {
+    font-size: 9.4px;
+    color: #444;
+    line-height: 1.55;
+  }
+
+  .compare-divider {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 2px 0;
+    grid-column: 1 / -1;
+  }
+
+  .warning-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    color: #cc2222;
+    text-transform: uppercase;
+    margin: 11px 0 5px;
+  }
+
+  .dont-badge {
+    display: inline-block;
+    border: 1.5px solid #cc2222;
+    color: #cc2222;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    padding: 3px 8px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 1000px) {
+    body { align-items: flex-start; }
+    .outer-frame { width: 100%; }
+    .main-grid { grid-template-columns: 1fr 1fr; }
+    .col:nth-child(2) { border-right: none; }
+    .col:nth-child(3),
+    .col:nth-child(4) { border-top: 1.5px solid #bbb; }
+  }
+
+  @media (max-width: 640px) {
+    .outer-frame { padding: 24px 20px; }
+    .header { flex-direction: column; }
+    .header-right { text-align: left; min-width: 0; }
+    .author { justify-content: flex-start; }
+    .title-block h1 { font-size: 44px; }
+    .main-grid { grid-template-columns: 1fr; }
+    .col,
+    .col:nth-child(2) {
+      border-right: none;
+      border-top: 1.5px solid #bbb;
+      padding-left: 0;
+    }
+    .col:first-child { border-top: none; }
+  }
+</style>
+</head>
+<body>
+<div class="outer-frame">
+
+  <div class="header">
+    <div class="title-block">
+      <h1>PURSUIT<br>SCENE</h1>
+      <p class="subtitle">追杀戏不是一直跑，而是持续制造、维持、升级并在高潮处释放紧迫感。</p>
+    </div>
+    <div class="header-right">
+      <span class="label">CORE IDEA</span>
+      每一拍都要让观众感到距离更近、空间更小、时间更少、选择更坏。
+      <span class="label">KEY QUESTION</span>
+      危机有没有在观众疲劳之前升级？释放有没有发生在高潮点？
+      <div class="author">
+        <div class="author-avatar">追</div>
+        <span>追杀戏方法卡</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <div class="col">
+      <div class="col-label">THE ENGINE</div>
+      <div class="col-title">紧迫感的四段循环</div>
+      <p class="col-body" style="margin-bottom:12px;">一场好追杀要先让观众理解危险等级，再用节拍把冲突推进成一轮轮更坏的局面。</p>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Reset</div>
+          <p>上一段危机解除，给一口气；追杀者重新出现，危机重启。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Close</div>
+          <p>压缩双方相对距离或速度差：从走到跑，从隔门到同室。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Upgrade</div>
+          <p>在疲劳前升级危机：更小空间、更快敌人、更失控载具。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <div class="step-title">Release</div>
+          <p>高潮处迅速释放，让观众意犹未尽，而不是把刺激拖到发麻。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-label">PRESSURE DESIGN</div>
+      <div class="col-title">怎么维持并升级危机</div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <span class="pattern-num">A</span>
+          <span class="pattern-title">先铺垫追杀者</span>
+        </div>
+        <p class="col-body">追杀者越早被证明危险，登场时越省解释。杀伤力、恢复力、速度、形态变化都能变成紧迫感本金。</p>
+        <span class="formula">危险铺垫 → 登场即压迫</span>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <span class="pattern-num">B</span>
+          <span class="pattern-title">压缩距离与空间</span>
+        </div>
+        <p class="col-body">从长廊到电梯，从停车场到车身，把冲突推到更小、更难逃、更不可控的空间。</p>
+        <span class="formula">远距离追 → 近身攻防 → 狭小空间</span>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <span class="pattern-num">C</span>
+          <span class="pattern-title">快速换地点</span>
+        </div>
+        <p class="col-body">短时间内切换长廊、电梯、停车场、车上、公路，既换视觉信息，也让观众注意力不断刷新。</p>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-label">BEAT GAME</div>
+      <div class="col-title">把奔跑写成你来我往</div>
+      <p class="col-body" style="margin-bottom:12px;">追杀戏不能只有逃。每个节拍都要有“我方动作、敌方反制、局势变化”，让场景形成博弈感。</p>
+
+      <div class="tag-row">
+        <span class="tag">BEAT</span>
+        <span class="tag-text">我方开枪逃跑，敌方加速追击并还击。</span>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag">BEAT</span>
+        <span class="tag-text">我方进电梯防守，敌方破门或从顶部进攻。</span>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag">BEAT</span>
+        <span class="tag-text">我方抢车撤离，敌方抓车尾，把危机移到车身。</span>
+      </div>
+
+      <div class="warning-label">PARALLEL CLOCK</div>
+      <p class="col-body">最有效的结构是并行倒计时：一边开锁、做炸弹、搬障碍；一边敌人破门、靠近、压迫。</p>
+
+      <div class="quote-box">
+        <p>紧迫感来自“事情还没做完，但敌人已经到了”。</p>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-label">RED HOOK</div>
+      <div class="col-title">红钩：让角色期望落空</div>
+
+      <div class="compare-grid">
+        <div class="compare-item">
+          <div class="compare-head">弱设计</div>
+          <p>发现锁打不开，下一秒就打开；敌人破门也没造成新压力。</p>
+        </div>
+        <div class="compare-item">
+          <div class="compare-head">强设计</div>
+          <p>开锁需要时间，敌人正在破门，炸弹还可能失灵。</p>
+        </div>
+        <hr class="compare-divider">
+        <div class="compare-item">
+          <div class="compare-head">重复障碍</div>
+          <p>连续三道打不开的门，会暴露想象力不足。</p>
+        </div>
+        <div class="compare-item">
+          <div class="compare-head">新障碍</div>
+          <p>每次升级都换压力来源：速度、空间、奇观、倒计时。</p>
+        </div>
+      </div>
+
+      <div class="warning-label">RED HOOK FORMULA</div>
+      <p class="col-body">角色以为炸弹会准时爆炸，就让插头被踩掉；角色以为门能及时打开，就让敌人先闯进同一空间。</p>
+      <div class="dont-badge">EXPECTATION FAILS, PRESSURE SPIKES</div>
+
+      <div class="warning-label">CHECKLIST</div>
+      <p class="col-body">删掉追杀中的闲聊；不要重复同一种障碍；让配角各司其职；高潮释放后留下下一场危机的余味。</p>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disaster Scene | 灾难级场景如何设计</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Bebas+Neue&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .outer-frame {
+    border: 6px solid #cc2222;
+    background: #f5f0e8;
+    width: 980px;
+    padding: 32px 36px 36px;
+    position: relative;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 28px;
+    margin-bottom: 14px;
+  }
+
+  .title-block h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 1;
+    color: #111;
+    letter-spacing: 2px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #222;
+    margin-top: 10px;
+    line-height: 1.7;
+    max-width: 470px;
+  }
+
+  .header-right {
+    text-align: right;
+    font-size: 11px;
+    color: #333;
+    line-height: 1.8;
+    min-width: 258px;
+  }
+
+  .header-right .label {
+    display: block;
+    margin-top: 6px;
+    color: #cc2222;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+  }
+
+  .author {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .author-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #cc2222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 10px;
+    font-weight: 900;
+  }
+
+  .main-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1.5px solid #bbb;
+  }
+
+  .col {
+    padding: 18px 16px 16px 0;
+    border-right: 1.5px solid #bbb;
+  }
+
+  .col:first-child { padding-left: 0; }
+  .col:last-child { border-right: none; }
+  .col + .col { padding-left: 16px; }
+
+  .col-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    color: #cc2222;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .col-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 8px;
+    line-height: 1.32;
+  }
+
+  .col-body {
+    font-size: 10.5px;
+    color: #333;
+    line-height: 1.62;
+  }
+
+  .step {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 8px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: #cc2222;
+    color: white;
+    font-size: 9px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-title {
+    font-size: 12px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 2px;
+  }
+
+  .step p {
+    font-size: 10.1px;
+    color: #444;
+    line-height: 1.55;
+  }
+
+  .pattern {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #d2cabd;
+  }
+
+  .pattern:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .pattern-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 5px;
+  }
+
+  .pattern-num {
+    background: #cc2222;
+    color: white;
+    font-size: 8px;
+    font-weight: 900;
+    padding: 2px 6px;
+    letter-spacing: 0.8px;
+    flex-shrink: 0;
+  }
+
+  .pattern-title {
+    font-size: 12px;
+    font-weight: 900;
+    color: #111;
+    line-height: 1.3;
+  }
+
+  .formula {
+    display: inline-block;
+    background: #111;
+    color: white;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    padding: 3px 6px;
+    margin-top: 5px;
+    line-height: 1.4;
+  }
+
+  .quote-box {
+    background: #111;
+    color: white;
+    padding: 12px 14px;
+    margin: 12px 0;
+  }
+
+  .quote-box p {
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1.55;
+  }
+
+  .tag-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .tag {
+    background: #111;
+    color: white;
+    font-size: 7.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tag-text {
+    font-size: 10px;
+    color: #333;
+    line-height: 1.5;
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .compare-head {
+    font-size: 10px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 4px;
+  }
+
+  .compare-item p {
+    font-size: 9.4px;
+    color: #444;
+    line-height: 1.55;
+  }
+
+  .compare-divider {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 2px 0;
+    grid-column: 1 / -1;
+  }
+
+  .warning-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    color: #cc2222;
+    text-transform: uppercase;
+    margin: 11px 0 5px;
+  }
+
+  .dont-badge {
+    display: inline-block;
+    border: 1.5px solid #cc2222;
+    color: #cc2222;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    padding: 3px 8px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 1000px) {
+    body { align-items: flex-start; }
+    .outer-frame { width: 100%; }
+    .main-grid { grid-template-columns: 1fr 1fr; }
+    .col:nth-child(2) { border-right: none; }
+    .col:nth-child(3),
+    .col:nth-child(4) { border-top: 1.5px solid #bbb; }
+  }
+
+  @media (max-width: 640px) {
+    .outer-frame { padding: 24px 20px; }
+    .header { flex-direction: column; }
+    .header-right { text-align: left; min-width: 0; }
+    .author { justify-content: flex-start; }
+    .title-block h1 { font-size: 44px; }
+    .main-grid { grid-template-columns: 1fr; }
+    .col,
+    .col:nth-child(2) {
+      border-right: none;
+      border-top: 1.5px solid #bbb;
+      padding-left: 0;
+    }
+    .col:first-child { border-top: none; }
+  }
+</style>
+</head>
+<body>
+<div class="outer-frame">
+
+  <div class="header">
+    <div class="title-block">
+      <h1>DISASTER<br>SCENE</h1>
+      <p class="subtitle">大场面不是成本堆砌。每个镜头都必须服务核心冲突、行动压力和情绪递进。</p>
+    </div>
+    <div class="header-right">
+      <span class="label">CORE IDEA</span>
+      灾难级场景的根因不是画面差，而是目标、节奏、博弈和情绪互相脱节。
+      <span class="label">KEY QUESTION</span>
+      观众此刻到底在担心什么？角色此刻到底必须解决什么？
+      <div class="author">
+        <div class="author-avatar">诊</div>
+        <span>场景医生方法卡</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <div class="col">
+      <div class="col-label">DIAGNOSIS</div>
+      <div class="col-title">先问这场戏是不是有效冲突</div>
+      <p class="col-body" style="margin-bottom:12px;">无效冲突的症状是：设定很危险，画面不危险；台词很着急，行动不着急；目标说得很大，场面只在耍帅。</p>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Goal</div>
+          <p>一句话写清楚当下要解决的问题：救人、推翻、撤离、拖延还是反杀。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Stakes</div>
+          <p>不要只靠旁白喊危急，要拍出失败后马上发生的具体代价。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Pressure</div>
+          <p>行动必须被时间、距离、敌人、空间或人群失控持续挤压。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <div class="step-title">Payoff</div>
+          <p>高潮要兑现“拼尽全力才赢”，不能靠主角光环或敌人放水收场。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-label">FOUR FAILURES</div>
+      <div class="col-title">灾难级场景的四个断裂</div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <span class="pattern-num">A</span>
+          <span class="pattern-title">冲突和目标脱节</span>
+        </div>
+        <p class="col-body">救父戏变成展示能打，单挑戏变成展示光环，逃难戏变成展示团结。观众不知道该紧张哪件事。</p>
+        <span class="formula">场景目标 ≠ 展示主题</span>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <span class="pattern-num">B</span>
+          <span class="pattern-title">节奏和情绪脱节</span>
+        </div>
+        <p class="col-body">该快时喊口号，该打时插回忆，该逃时慢慢行礼。情绪刚起来，就被错误节拍截断。</p>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-head">
+          <span class="pattern-num">C</span>
+          <span class="pattern-title">冲突没有博弈</span>
+        </div>
+        <p class="col-body">敌军像纸糊，反派像放水，追兵永远追不上。没有“差一点失败”，就没有情绪波动。</p>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-label">REPAIR KIT</div>
+      <div class="col-title">把大场面修成可感知压力</div>
+      <p class="col-body" style="margin-bottom:12px;">修改不是加更多特效，而是让观众看见危险、看见阻碍、看见角色用行动付出代价。</p>
+
+      <div class="tag-row">
+        <span class="tag">RESCUE</span>
+        <span class="tag-text">救父戏改成闯三道防线加限时处决，每一道都必须差一点失败。</span>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag">DUEL</span>
+        <span class="tag-text">单挑戏删无关回忆，做成商王占上风、姬发濒死、借力反杀的节拍。</span>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag">EXODUS</span>
+        <span class="tag-text">逃难戏用追兵逼近、人群摔倒、亲人失散和路线堵塞制造恐慌感。</span>
+      </div>
+
+      <div class="warning-label">SCENE BRIEF</div>
+      <p class="col-body">按“场景目标 → 冲突节拍 → 镜头证据”写。每个镜头都回答：它让目标更难了吗？让情绪更强了吗？</p>
+
+      <div class="quote-box">
+        <p>大场景的情绪不是喊出来的，是被细节一点点逼出来的。</p>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-label">CONTROL PANEL</div>
+      <div class="col-title">张弛有度，不是张弛无度</div>
+
+      <div class="compare-grid">
+        <div class="compare-item">
+          <div class="compare-head">该快</div>
+          <p>救人、逃难、敌人逼近时，少解释，靠动作推进。</p>
+        </div>
+        <div class="compare-item">
+          <div class="compare-head">该慢</div>
+          <p>关键选择、代价落下、关系裂变时，让观众看清。</p>
+        </div>
+        <hr class="compare-divider">
+        <div class="compare-item">
+          <div class="compare-head">坏慢</div>
+          <p>生死时速里停下来喊话、寒暄、摆姿势。</p>
+        </div>
+        <div class="compare-item">
+          <div class="compare-head">坏快</div>
+          <p>高潮对决里乱切回忆，打断刚建立的压力。</p>
+        </div>
+      </div>
+
+      <div class="warning-label">DOCTOR'S RULE</div>
+      <p class="col-body">先铺垫伤害，再发动行动；先建立优势方，再制造反制；先让角色濒临失败，再允许胜利成立。</p>
+      <div class="dont-badge">NO LOGIC, NO EMOTION</div>
+
+      <div class="warning-label">FINAL CHECK</div>
+      <p class="col-body">删掉不服务目标的耍帅、口号和空特写。留下会改变局势、增加压力、推动情绪的镜头。</p>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
