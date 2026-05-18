@@ -450,6 +450,7 @@
     .section-wrap {
       border-bottom: 1px solid var(--rule);
       padding: 56px 0;
+      scroll-margin-top: 72px;
     }
 
     .section-head-row {
@@ -489,6 +490,172 @@
     .reveal.visible {
       opacity: 1;
       transform: none;
+    }
+
+    /* ═══════════════════════════════════════
+       AI WEEK SECTION
+    ═══════════════════════════════════════ */
+    .ai-week-shell {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      border: 1px solid var(--rule-dark);
+      background: var(--rule-dark);
+      gap: 1px;
+    }
+
+    .ai-week-summary,
+    .ai-week-timeline {
+      background: var(--paper);
+    }
+
+    .ai-week-summary {
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 420px;
+    }
+
+    .ai-week-kicker {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .ai-week-title {
+      font-family: var(--serif);
+      font-size: clamp(2.1rem, 4vw, 3.4rem);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+      margin-bottom: 18px;
+    }
+
+    .ai-week-title span {
+      display: block;
+    }
+
+    .ai-week-note {
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: rgba(13,17,23,0.62);
+    }
+
+    .ai-week-range {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      color: rgba(13,17,23,0.48);
+      text-transform: uppercase;
+      padding-top: 20px;
+      border-top: 1px solid var(--rule);
+      margin-top: 28px;
+    }
+
+    .ai-week-timeline {
+      position: relative;
+      padding: 30px 34px 34px;
+    }
+
+    .ai-week-timeline::before {
+      content: "";
+      position: absolute;
+      left: 132px;
+      top: 36px;
+      bottom: 36px;
+      width: 1px;
+      background: var(--rule-dark);
+    }
+
+    .ai-event {
+      position: relative;
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 38px;
+      padding: 0 0 30px;
+    }
+
+    .ai-event:last-child {
+      padding-bottom: 0;
+    }
+
+    .ai-event::before {
+      content: "";
+      position: absolute;
+      left: 92px;
+      top: 6px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      background: var(--paper);
+      z-index: 1;
+    }
+
+    .ai-event-date {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      line-height: 1.45;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .ai-event-card {
+      padding-bottom: 26px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .ai-event:last-child .ai-event-card {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .ai-event-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 9px;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      color: rgba(13,17,23,0.48);
+      text-transform: uppercase;
+    }
+
+    .ai-event-headline {
+      font-family: var(--cn);
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.55;
+      margin-bottom: 9px;
+    }
+
+    .ai-event-body {
+      font-size: 0.88rem;
+      line-height: 1.8;
+      color: rgba(13,17,23,0.62);
+      margin-bottom: 12px;
+    }
+
+    .ai-event-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      text-transform: uppercase;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .ai-event-link:hover {
+      color: var(--ink);
+      border-color: var(--ink);
     }
 
     /* ═══════════════════════════════════════
@@ -1019,6 +1186,14 @@
         grid-template-columns: 1fr;
       }
 
+      .ai-week-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .ai-week-summary {
+        min-height: auto;
+      }
+
       .project-card,
       .industry-layout {
         grid-template-columns: 1fr;
@@ -1030,6 +1205,8 @@
     @media (max-width: 640px) {
       .wrap { width: calc(100% - 32px); }
 
+      .section-wrap { scroll-margin-top: 72px; }
+
       .topbar-inner {
         flex-direction: column;
         align-items: flex-start;
@@ -1037,8 +1214,7 @@
         gap: 10px;
       }
 
-      .nav { gap: 0; }
-      .nav a { padding: 3px 10px; font-size: 0.68rem; }
+      .nav { display: none; }
 
       h1 { font-size: clamp(2.6rem, 10vw, 4rem); }
 
@@ -1047,6 +1223,22 @@
 
       .project-card { padding: 28px 20px; }
       .industry-main, .industry-aside { padding: 28px 20px; }
+      .ai-week-summary,
+      .ai-week-timeline { padding: 24px 20px; }
+      .ai-week-timeline::before {
+        left: 25px;
+        top: 30px;
+        bottom: 30px;
+      }
+      .ai-event {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding-left: 30px;
+      }
+      .ai-event::before {
+        left: 0;
+        top: 4px;
+      }
       .doc-card,
       .research-cell { padding: 24px 20px; }
 
@@ -1067,6 +1259,7 @@
       </div>
       <nav class="nav" aria-label="页面导航">
         <a href="#profile">简介</a>
+        <a href="#ai-week">一周AI大事</a>
         <a href="#documents">经验文档</a>
         <a href="#research">科研成果</a>
         <a href="#projects">重大项目</a>
@@ -1173,11 +1366,130 @@
 
   <main>
 
+    <!-- ═══ AI WEEK ═══ -->
+    <div class="section-wrap" id="ai-week">
+      <div class="wrap">
+        <div class="section-head-row reveal">
+          <span class="section-index">§ 01</span>
+          <h2>一周 AI 大事</h2>
+          <div class="section-rule"></div>
+        </div>
+
+        <div class="ai-week-shell reveal">
+          <aside class="ai-week-summary">
+            <div>
+              <div class="ai-week-kicker">Weekly Signal</div>
+              <div class="ai-week-title">
+                <span>AI</span>
+                <span>Timeline</span>
+              </div>
+              <p class="ai-week-note">
+                以公开发布为线索，记录模型、Agent、企业落地与安全治理的关键动向。
+              </p>
+            </div>
+            <div class="ai-week-range">May 11-18, 2026</div>
+          </aside>
+
+          <div class="ai-week-timeline">
+            <article class="ai-event">
+              <div class="ai-event-date">May 11<br>Mon</div>
+              <div class="ai-event-card">
+                <div class="ai-event-meta">
+                  <span>OpenAI</span>
+                  <span>Enterprise</span>
+                </div>
+                <h3 class="ai-event-headline">OpenAI 成立 Deployment Company，强化企业 AI 落地能力</h3>
+                <p class="ai-event-body">
+                  OpenAI 宣布成立面向企业部署的新公司，并拟收购 Tomoro，引入约 150 名 Forward Deployed Engineers，帮助客户把 AI 系统嵌入核心流程。
+                </p>
+                <a class="ai-event-link" href="https://openai.com/index/openai-launches-the-deployment-company/" target="_blank" rel="noreferrer">Source →</a>
+              </div>
+            </article>
+
+            <article class="ai-event">
+              <div class="ai-event-date">May 12<br>Tue</div>
+              <div class="ai-event-card">
+                <div class="ai-event-meta">
+                  <span>Google</span>
+                  <span>Android</span>
+                </div>
+                <h3 class="ai-event-headline">Google 发布 Gemini Intelligence，把手机推向主动式 AI 设备</h3>
+                <p class="ai-event-body">
+                  Gemini Intelligence 将进入 Android，覆盖跨应用任务自动化、Chrome 摘要与复杂表单填写等能力，并从夏季开始分批推向部分 Samsung 与 Pixel 设备。
+                </p>
+                <a class="ai-event-link" href="https://blog.google/products-and-platforms/platforms/android/gemini-intelligence/" target="_blank" rel="noreferrer">Source →</a>
+              </div>
+            </article>
+
+            <article class="ai-event">
+              <div class="ai-event-date">May 13<br>Wed</div>
+              <div class="ai-event-card">
+                <div class="ai-event-meta">
+                  <span>Anthropic</span>
+                  <span>SMB</span>
+                </div>
+                <h3 class="ai-event-headline">Anthropic 推出 Claude for Small Business，主攻小企业工作流</h3>
+                <p class="ai-event-body">
+                  Claude for Small Business 连接 QuickBooks、PayPal、HubSpot、Canva、Docusign、Google Workspace 与 Microsoft 365，并提供可直接运行的业务流程与技能。
+                </p>
+                <a class="ai-event-link" href="https://www.anthropic.com/news/claude-for-small-business" target="_blank" rel="noreferrer">Source →</a>
+              </div>
+            </article>
+
+            <article class="ai-event">
+              <div class="ai-event-date">May 13<br>Wed</div>
+              <div class="ai-event-card">
+                <div class="ai-event-meta">
+                  <span>OpenAI</span>
+                  <span>Security</span>
+                </div>
+                <h3 class="ai-event-headline">OpenAI 披露 TanStack npm 供应链攻击响应</h3>
+                <p class="ai-event-body">
+                  OpenAI 表示未发现用户数据或生产系统受影响，并要求 macOS 用户在 2026 年 6 月 12 日前更新相关应用，以完成证书轮换。
+                </p>
+                <a class="ai-event-link" href="https://openai.com/index/our-response-to-the-tanstack-npm-supply-chain-attack/" target="_blank" rel="noreferrer">Source →</a>
+              </div>
+            </article>
+
+            <article class="ai-event">
+              <div class="ai-event-date">May 14<br>Thu</div>
+              <div class="ai-event-card">
+                <div class="ai-event-meta">
+                  <span>OpenAI</span>
+                  <span>Codex</span>
+                </div>
+                <h3 class="ai-event-headline">Codex 进入 ChatGPT 移动端预览，长任务协作延伸到手机</h3>
+                <p class="ai-event-body">
+                  OpenAI 宣布 Codex 可在 ChatGPT 移动端预览使用，用户可以从手机查看线程、审批动作、改变方向，并连接本地或远程开发环境。
+                </p>
+                <a class="ai-event-link" href="https://openai.com/index/work-with-codex-from-anywhere/" target="_blank" rel="noreferrer">Source →</a>
+              </div>
+            </article>
+
+            <article class="ai-event">
+              <div class="ai-event-date">May 14<br>Thu</div>
+              <div class="ai-event-card">
+                <div class="ai-event-meta">
+                  <span>Anthropic</span>
+                  <span>Social Impact</span>
+                </div>
+                <h3 class="ai-event-headline">Anthropic 与 Gates Foundation 建立 2 亿美元公益 AI 合作</h3>
+                <p class="ai-event-body">
+                  合作将在四年内投入资金、Claude 使用额度与技术支持，面向全球健康、生命科学、教育与经济流动性等方向推进 AI 应用。
+                </p>
+                <a class="ai-event-link" href="https://www.anthropic.com/news/gates-foundation-partnership" target="_blank" rel="noreferrer">Source →</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ═══ DOCUMENTS ═══ -->
     <div class="section-wrap" id="documents">
       <div class="wrap">
         <div class="section-head-row reveal">
-          <span class="section-index">§ 01</span>
+          <span class="section-index">§ 02</span>
           <h2>经验文档</h2>
           <div class="section-rule"></div>
         </div>
@@ -1381,7 +1693,7 @@
     <div class="section-wrap" id="research">
       <div class="wrap">
         <div class="section-head-row reveal">
-          <span class="section-index">§ 02</span>
+          <span class="section-index">§ 03</span>
           <h2>科研成果</h2>
           <div class="section-rule"></div>
         </div>
@@ -1428,7 +1740,7 @@
     <div class="section-wrap" id="projects">
       <div class="wrap">
         <div class="section-head-row reveal">
-          <span class="section-index">§ 03</span>
+          <span class="section-index">§ 04</span>
           <h2>重大项目主导</h2>
           <div class="section-rule"></div>
         </div>
@@ -1471,7 +1783,7 @@
     <div class="section-wrap" id="industry">
       <div class="wrap">
         <div class="section-head-row reveal">
-          <span class="section-index">§ 04</span>
+          <span class="section-index">§ 05</span>
           <h2>产业能力</h2>
           <div class="section-rule"></div>
         </div>
@@ -1502,7 +1814,7 @@
     <div class="section-wrap" id="roles">
       <div class="wrap">
         <div class="section-head-row reveal">
-          <span class="section-index">§ 05</span>
+          <span class="section-index">§ 06</span>
           <h2>社会兼职</h2>
           <div class="section-rule"></div>
         </div>
@@ -1532,7 +1844,7 @@
     <div class="section-wrap" id="awards">
       <div class="wrap">
         <div class="section-head-row reveal">
-          <span class="section-index">§ 06</span>
+          <span class="section-index">§ 07</span>
           <h2>获奖</h2>
           <div class="section-rule"></div>
         </div>
