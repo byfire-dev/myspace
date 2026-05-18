@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parallel Codex Workflow | 经验文档</title>
+<meta name="description" content="把 Vibe Coding 从单人串行对话改造成任务卡、多 worktree 并行、自动验收和人类调度合并的结构化经验文档。">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Bebas+Neue&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --red: #c92323;
+    --black: #111;
+    --ink: #303030;
+    --muted: #6f6a62;
+    --paper: #f4efe6;
+    --paper-deep: #ebe3d6;
+    --line: #b9b2a6;
+    --deep: #151515;
+  }
+
+  body {
+    background: var(--deep);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 22px;
+    font-family: 'Noto Sans SC', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  a { color: inherit; }
+
+  .poster {
+    width: min(1120px, 100%);
+    background: var(--paper);
+    border: 6px solid var(--red);
+    box-shadow: 0 18px 60px rgba(0,0,0,.38);
+    padding: 34px 38px 36px;
+    position: relative;
+  }
+
+  .poster::before,
+  .poster::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    width: 46px;
+    height: 6px;
+    background: var(--red);
+  }
+
+  .poster::before { left: 22px; }
+  .poster::after { right: 22px; }
+
+  .top-link {
+    display: inline-block;
+    margin-bottom: 18px;
+    color: var(--red);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 330px;
+    gap: 30px;
+    align-items: start;
+    padding-bottom: 22px;
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .eyebrow {
+    display: inline-block;
+    background: var(--black);
+    color: white;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1.8px;
+    padding: 4px 8px;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: clamp(54px, 8vw, 88px);
+    line-height: .88;
+    color: var(--black);
+    letter-spacing: 2.3px;
+  }
+
+  .cn-title {
+    margin-top: 9px;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--black);
+    letter-spacing: .4px;
+  }
+
+  .subtitle {
+    margin-top: 12px;
+    max-width: 660px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--ink);
+  }
+
+  .hero-aside {
+    border-left: 1.5px solid var(--line);
+    padding-left: 22px;
+  }
+
+  .aside-label {
+    display: block;
+    color: var(--red);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .aside-block {
+    font-size: 11px;
+    line-height: 1.8;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .signal-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--black);
+    color: white;
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    padding: 3px 7px;
+    text-transform: uppercase;
+  }
+
+  .badge.red { background: var(--red); }
+  .badge.outline {
+    background: transparent;
+    color: var(--red);
+    border: 1.5px solid var(--red);
+  }
+
+  .shift-panel {
+    display: grid;
+    grid-template-columns: .95fr 1.2fr .95fr;
+    gap: 0;
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .panel-cell {
+    padding: 18px 18px 18px 0;
+    border-right: 1.5px solid var(--line);
+  }
+
+  .panel-cell + .panel-cell { padding-left: 18px; }
+  .panel-cell:last-child { border-right: none; }
+
+  .section-label {
+    font-size: 8.5px;
+    font-weight: 900;
+    letter-spacing: 1.8px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .cell-title {
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1.35;
+    color: var(--black);
+    margin-bottom: 8px;
+  }
+
+  .cell-body {
+    font-size: 10.8px;
+    color: #444;
+    line-height: 1.7;
+  }
+
+  .equation {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 10px;
+    align-items: center;
+    margin-top: 12px;
+  }
+
+  .equation-box {
+    background: var(--black);
+    color: white;
+    padding: 12px 13px;
+    min-height: 82px;
+  }
+
+  .equation-box.red { background: var(--red); }
+
+  .equation-box strong {
+    display: block;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1.28;
+    margin-bottom: 5px;
+  }
+
+  .equation-box span {
+    display: block;
+    font-size: 9.5px;
+    line-height: 1.5;
+  }
+
+  .arrow {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 34px;
+    color: var(--red);
+  }
+
+  .task-card {
+    background: var(--paper-deep);
+    border: 1.5px solid var(--line);
+    padding: 12px;
+    margin-top: 10px;
+  }
+
+  .task-row {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 9px;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+  }
+
+  .task-row:last-child { border-bottom: none; }
+
+  .task-key {
+    color: var(--red);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .task-value {
+    font-size: 10px;
+    line-height: 1.58;
+    color: var(--ink);
+  }
+
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0;
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .flow-step {
+    padding: 17px 14px 16px 0;
+    border-right: 1.5px solid var(--line);
+    min-height: 145px;
+  }
+
+  .flow-step + .flow-step { padding-left: 14px; }
+  .flow-step:last-child { border-right: none; }
+
+  .step-num {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    color: var(--red);
+    font-size: 38px;
+    line-height: .9;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .step-title {
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--black);
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+
+  .step-body {
+    font-size: 10.2px;
+    line-height: 1.65;
+    color: #444;
+  }
+
+  .lane-map {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .lane {
+    padding: 18px 18px 18px 0;
+    border-right: 1.5px solid var(--line);
+  }
+
+  .lane + .lane { padding-left: 18px; }
+  .lane:last-child { border-right: none; }
+
+  .lane-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 9px;
+  }
+
+  .lane-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--red);
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .lane-dot::after {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+
+  .lane-name {
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--black);
+  }
+
+  .lane-list {
+    list-style: none;
+    margin-top: 10px;
+  }
+
+  .lane-list li {
+    font-size: 10.3px;
+    line-height: 1.62;
+    color: #444;
+    padding: 5px 0 5px 15px;
+    border-top: 1px solid rgba(0,0,0,.1);
+    position: relative;
+  }
+
+  .lane-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 6px;
+    height: 6px;
+    background: var(--red);
+  }
+
+  .matrix {
+    display: grid;
+    grid-template-columns: 1.05fr .95fr;
+    gap: 0;
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .matrix-cell {
+    padding: 18px 18px 18px 0;
+    border-right: 1.5px solid var(--line);
+  }
+
+  .matrix-cell + .matrix-cell {
+    padding-left: 18px;
+    border-right: none;
+  }
+
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .role-card {
+    border-top: 3px solid var(--red);
+    background: rgba(255,255,255,.25);
+    padding: 8px 8px 10px;
+  }
+
+  .role-card strong {
+    display: block;
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--black);
+    margin-bottom: 5px;
+  }
+
+  .role-card span {
+    font-size: 9.5px;
+    line-height: 1.5;
+    color: #444;
+  }
+
+  .rule-table {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1.5px solid var(--line);
+    margin-top: 11px;
+  }
+
+  .rule-cell {
+    padding: 10px 11px;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+  }
+
+  .rule-cell:nth-child(odd) { border-right: 1px solid rgba(0,0,0,.12); }
+  .rule-cell:nth-last-child(-n+2) { border-bottom: none; }
+
+  .rule-cell strong {
+    display: block;
+    font-size: 11px;
+    color: var(--black);
+    margin-bottom: 3px;
+  }
+
+  .rule-cell span {
+    display: block;
+    font-size: 9.8px;
+    line-height: 1.55;
+    color: #444;
+  }
+
+  .prompt-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .prompt-box {
+    padding: 18px 18px 18px 0;
+    border-right: 1.5px solid var(--line);
+  }
+
+  .prompt-box + .prompt-box {
+    padding-left: 18px;
+    border-right: none;
+  }
+
+  pre {
+    background: var(--black);
+    color: white;
+    padding: 13px 14px;
+    margin-top: 10px;
+    white-space: pre-wrap;
+    font-size: 10px;
+    line-height: 1.55;
+    font-family: Consolas, 'JetBrains Mono', monospace;
+    border-left: 5px solid var(--red);
+  }
+
+  .bottom {
+    display: grid;
+    grid-template-columns: .9fr 1.25fr .95fr;
+    gap: 0;
+  }
+
+  .bottom-cell {
+    padding: 17px 18px 0 0;
+    border-right: 1.5px solid var(--line);
+  }
+
+  .bottom-cell + .bottom-cell { padding-left: 18px; }
+  .bottom-cell:last-child { border-right: none; }
+
+  .north-star {
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1.45;
+    color: var(--black);
+  }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .metric {
+    border-top: 3px solid var(--red);
+    padding-top: 6px;
+  }
+
+  .metric strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--black);
+  }
+
+  .metric span {
+    display: block;
+    font-size: 9.2px;
+    line-height: 1.45;
+    color: #555;
+    margin-top: 3px;
+  }
+
+  .source-list {
+    list-style: none;
+    margin-top: 8px;
+  }
+
+  .source-list li {
+    font-size: 9.2px;
+    line-height: 1.5;
+    color: #555;
+    margin-bottom: 4px;
+  }
+
+  .source-list a {
+    color: var(--red);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(201,35,35,.35);
+  }
+
+  .footer-note {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    border-top: 1.5px solid var(--line);
+    margin-top: 18px;
+    padding-top: 12px;
+    font-size: 9.5px;
+    color: #555;
+    line-height: 1.6;
+    letter-spacing: .2px;
+  }
+
+  .footer-note strong { color: var(--black); }
+
+  @media (max-width: 920px) {
+    body { padding: 12px; }
+    .poster { padding: 26px 22px 28px; }
+    .hero,
+    .shift-panel,
+    .flow,
+    .lane-map,
+    .matrix,
+    .prompt-strip,
+    .bottom {
+      grid-template-columns: 1fr 1fr;
+    }
+    .hero-aside {
+      border-left: none;
+      border-top: 1.5px solid var(--line);
+      padding-left: 0;
+      padding-top: 16px;
+    }
+    .panel-cell:nth-child(2),
+    .flow-step:nth-child(2),
+    .flow-step:nth-child(4),
+    .lane:nth-child(2),
+    .bottom-cell:nth-child(2) {
+      border-right: none;
+    }
+    .panel-cell:nth-child(3),
+    .flow-step:nth-child(3),
+    .flow-step:nth-child(5),
+    .lane:nth-child(3),
+    .bottom-cell:nth-child(3) {
+      border-top: 1.5px solid var(--line);
+    }
+    .flow-step:nth-child(5) { grid-column: 1 / -1; }
+  }
+
+  @media (max-width: 620px) {
+    .hero,
+    .shift-panel,
+    .flow,
+    .lane-map,
+    .matrix,
+    .prompt-strip,
+    .bottom,
+    .role-grid,
+    .metric-grid,
+    .rule-table {
+      grid-template-columns: 1fr;
+    }
+    .panel-cell,
+    .flow-step,
+    .lane,
+    .matrix-cell,
+    .prompt-box,
+    .bottom-cell {
+      border-right: none !important;
+      border-top: 1.5px solid var(--line);
+      padding-left: 0 !important;
+    }
+    .shift-panel .panel-cell:first-child,
+    .flow .flow-step:first-child,
+    .lane-map .lane:first-child,
+    .matrix .matrix-cell:first-child,
+    .prompt-strip .prompt-box:first-child,
+    .bottom .bottom-cell:first-child {
+      border-top: none;
+    }
+    .flow-step:nth-child(5) { grid-column: auto; }
+    .rule-cell,
+    .rule-cell:nth-child(odd) {
+      border-right: none;
+    }
+    .rule-cell:nth-last-child(2) {
+      border-bottom: 1px solid rgba(0,0,0,.12);
+    }
+    .equation { grid-template-columns: 1fr; }
+    .arrow { transform: rotate(90deg); justify-self: center; }
+    .footer-note { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<main class="poster">
+  <a class="top-link" href="../">← Back to index</a>
+
+  <section class="hero">
+    <div>
+      <span class="eyebrow">VIBE CODING OPERATING MODEL</span>
+      <h1>PARALLEL<br>CODEX WORKFLOW</h1>
+      <div class="cn-title">把 Vibe Coding 从对话升级为多 Agent 调度系统</div>
+      <p class="subtitle">瓶颈不在于单个 Codex 回答不够快，而在于工作流仍停留在“一个人、一个聊天框、一个任务串行等待”。更高效的模式，是把需求拆成任务卡，让多个线程或 worktree 并行推进，用自动验收和 review agent 控制质量，人类只在调度、取舍和合并处介入。</p>
+    </div>
+
+    <aside class="hero-aside">
+      <span class="aside-label">CORE SHIFT</span>
+      <p class="aside-block">从“逐句提示 AI”转向“管理一组 coding agents”：你不再负责每一步怎么写，而是负责定义任务边界、并行策略、验收标准和最终合并顺序。</p>
+      <span class="aside-label">SYSTEM SHAPE</span>
+      <p class="aside-block">任务拆分 → 多线程 / 多 worktree 并行 → 自动验收 → 实现 agent + review agent + 集成 agent → 人类合并。</p>
+      <div class="signal-row">
+        <span class="badge red">Worktree</span>
+        <span class="badge">Subagents</span>
+        <span class="badge outline">AGENTS.md</span>
+        <span class="badge">Skills</span>
+      </div>
+    </aside>
+  </section>
+
+  <section class="shift-panel">
+    <div class="panel-cell">
+      <div class="section-label">BOTTLENECK</div>
+      <div class="cell-title">不是 Codex 慢，而是你在串行排队</div>
+      <p class="cell-body">旧模式是“任务 A → 等 Codex → review → 修正 → 任务 B”。只要你仍把 Codex 当成单个聊天对象，吞吐量就被你的等待、上下文复述和临时验收卡住。</p>
+      <div class="equation">
+        <div class="equation-box"><strong>CHAT MODE</strong><span>一个问题、一个线程、一个结果，所有任务共享同一个等待队列。</span></div>
+        <div class="arrow">→</div>
+        <div class="equation-box red"><strong>OPS MODE</strong><span>多张任务卡并行流动，人类只处理阻塞、review 和合并。</span></div>
+      </div>
+    </div>
+
+    <div class="panel-cell">
+      <div class="section-label">TASK CARD</div>
+      <div class="cell-title">把“问问题”改成“发任务卡”</div>
+      <p class="cell-body">任务卡要让 agent 少猜：说清目标、上下文、约束和完成标准。OpenAI 的 Codex 最佳实践也建议 prompt 包含 Goal、Context、Constraints、Done when 这四类信息。</p>
+      <div class="task-card">
+        <div class="task-row"><div class="task-key">Goal</div><div class="task-value">实现用户设置页头像上传，支持 png/jpg。</div></div>
+        <div class="task-row"><div class="task-key">Context</div><div class="task-value">相关目录、参考组件、接口文档和现有错误处理方式。</div></div>
+        <div class="task-row"><div class="task-key">Limits</div><div class="task-value">不改 schema，不加依赖，只改功能相关文件。</div></div>
+        <div class="task-row"><div class="task-key">Done</div><div class="task-value">失败提示、测试补充、验证命令和改动摘要。</div></div>
+      </div>
+    </div>
+
+    <div class="panel-cell">
+      <div class="section-label">CONTROL POINT</div>
+      <div class="cell-title">人类的工作变成调度，而不是陪跑</div>
+      <p class="cell-body">你应该把注意力放在任务是否可并行、谁先谁后、哪些文件会冲突、哪些结果值得合并，而不是重复解释“不要用 any”“先跑测试”“别动 unrelated files”。</p>
+      <div class="signal-row">
+        <span class="badge">Scope</span>
+        <span class="badge red">Review</span>
+        <span class="badge">Merge</span>
+        <span class="badge outline">Rules</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="flow">
+    <div class="flow-step">
+      <div class="step-num">01</div>
+      <div class="step-title">拆任务</div>
+      <p class="step-body">先让 Codex 产出可并行子任务：目标、涉及文件、冲突风险、建议 worktree 名称和完成标准。</p>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">02</div>
+      <div class="step-title">开轨道</div>
+      <p class="step-body">修 bug、补测试、写文档、做方案探索，可以分配到不同 thread 或 Git worktree 中并排推进。</p>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">03</div>
+      <div class="step-title">自动验收</div>
+      <p class="step-body">每张卡都带验证命令。lint、typecheck、单测、截图或复现脚本，是 agent 完成任务前必须交付的证据。</p>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">04</div>
+      <div class="step-title">交叉 review</div>
+      <p class="step-body">实现 agent 只负责完成需求；review agent 只看 diff、边界条件、测试缺口和不必要改动。</p>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">05</div>
+      <div class="step-title">集中集成</div>
+      <p class="step-body">通过 review 的任务进入集成队列。人类最终决定合并顺序、冲突处理和是否拆小 PR。</p>
+    </div>
+  </section>
+
+  <section class="lane-map">
+    <div class="lane">
+      <div class="section-label">PARALLEL LANES</div>
+      <div class="lane-head"><div class="lane-dot"></div><div class="lane-name">适合并行</div></div>
+      <p class="cell-body">独立文件、只读分析和验证型任务最适合并行，收益最大、冲突最少。</p>
+      <ul class="lane-list">
+        <li>补单元测试、修不同页面 bug、写文档</li>
+        <li>API 客户端封装、迁移计划、性能分析</li>
+        <li>lint / type error 修复、PR 安全与测试 review</li>
+      </ul>
+    </div>
+
+    <div class="lane">
+      <div class="section-label">CAREFUL LANES</div>
+      <div class="lane-head"><div class="lane-dot"></div><div class="lane-name">谨慎并行</div></div>
+      <p class="cell-body">会碰核心文件或需要统一产品判断的任务，先拆计划，再决定是否分轨。</p>
+      <ul class="lane-list">
+        <li>同一个核心模块、数据库 schema、认证权限</li>
+        <li>支付、跨模块状态管理、大范围 UI/UX 判断</li>
+        <li>全面重构前，先让 Codex 输出分阶段方案</li>
+      </ul>
+    </div>
+
+    <div class="lane">
+      <div class="section-label">WORKTREE RULE</div>
+      <div class="lane-head"><div class="lane-dot"></div><div class="lane-name">用 worktree 隔离改动</div></div>
+      <p class="cell-body">Codex app 的 Worktree 模式会创建独立 Git worktree，让多个任务在同一项目中隔离工作，适合尝试新想法或并排处理独立任务。</p>
+      <ul class="lane-list">
+        <li>worktree-1：修 bug A</li>
+        <li>worktree-2：实现功能 B</li>
+        <li>worktree-3：补测试 C</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="matrix">
+    <div class="matrix-cell">
+      <div class="section-label">AGENT ROLES</div>
+      <div class="cell-title">不要让同一个线程写代码、评审、合并</div>
+      <p class="cell-body">复杂任务要拆成角色，而不是让一个 agent 自己证明自己写得好。实现、review、集成三者分离，会让问题更早暴露，也更容易把责任范围说清。</p>
+      <div class="role-grid">
+        <div class="role-card"><strong>Agent A · 实现</strong><span>只关注完成需求、保持范围、补齐验证。</span></div>
+        <div class="role-card"><strong>Agent B · Review</strong><span>只看 diff、边界、回归、测试缺口。</span></div>
+        <div class="role-card"><strong>Agent C · 集成</strong><span>根据 review 修复、整理最终 PR、解释风险。</span></div>
+      </div>
+    </div>
+
+    <div class="matrix-cell">
+      <div class="section-label">PERSISTENT CONTEXT</div>
+      <div class="cell-title">把重复要求写进 AGENTS.md 和 Skills</div>
+      <p class="cell-body">如果你反复提醒“不要新加依赖”“测试命令是 pnpm test”“PR 摘要要写风险”，说明这些规则应该固化。AGENTS.md 适合项目规则，Skills 适合可重复流程。</p>
+      <div class="rule-table">
+        <div class="rule-cell"><strong>AGENTS.md</strong><span>编码规范、验证命令、PR 输出格式、项目边界。</span></div>
+        <div class="rule-cell"><strong>$pr-review</strong><span>安全、测试、回归风险、可维护性检查。</span></div>
+        <div class="rule-cell"><strong>$bug-fix</strong><span>复现、定位、最小修复、补测试、验证命令。</span></div>
+        <div class="rule-cell"><strong>$test-writer</strong><span>只补测试，不改业务逻辑，覆盖关键路径。</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="prompt-strip">
+    <div class="prompt-box">
+      <div class="section-label">SPLIT PROMPT</div>
+      <div class="cell-title">先拆并行计划，不要立刻写代码</div>
+      <p class="cell-body">当任务大、风险高、冲突文件不明时，先让 Codex 拆任务和排集成顺序。</p>
+      <pre>我想把下面的需求改成并行 Codex 工作流。
+
+需求：
+&lt;粘贴需求&gt;
+
+请先不要写代码。请输出：
+1. 任务拆分
+2. 哪些任务可以并行
+3. 哪些任务必须串行
+4. 每个任务建议的 Codex prompt
+5. 建议使用 Local / Worktree / Cloud
+6. 完成标准
+7. 最终集成顺序
+8. 潜在冲突文件</pre>
+    </div>
+
+    <div class="prompt-box">
+      <div class="section-label">REVIEW PROMPT</div>
+      <div class="cell-title">给 review agent 的指令要像检查清单</div>
+      <p class="cell-body">Review 线程不要改代码，只输出风险等级和给实现 agent 的精确修改指令。</p>
+      <pre>你是 review agent。请只 review 当前分支相对 main 的 diff，不要修改代码。
+
+重点检查：
+- 是否满足需求
+- 是否破坏现有行为
+- 是否有竞态、空值、权限、错误处理问题
+- 测试是否覆盖关键路径
+- 是否有不必要的大范围改动
+
+输出：
+1. 必须修复
+2. 建议修复
+3. 可以接受
+4. 给实现 agent 的精确修改指令</pre>
+    </div>
+  </section>
+
+  <section class="bottom">
+    <div class="bottom-cell">
+      <div class="section-label">DAILY RHYTHM</div>
+      <div class="north-star">早上发卡，白天调度，晚上合并</div>
+      <p class="cell-body" style="margin-top:8px;">早上列出 5-10 个任务卡并标记并行性；白天只看进度、处理阻塞和调整方向；晚上集中 review diff、合并小 PR，并把重复问题写回 AGENTS.md 或 Skill。</p>
+    </div>
+
+    <div class="bottom-cell">
+      <div class="section-label">FIRST THREE BETS</div>
+      <div class="metric-grid">
+        <div class="metric"><strong>01</strong><span>添加 AGENTS.md<br>固化项目规则</span></div>
+        <div class="metric"><strong>02</strong><span>用 Worktree<br>并行补测试/修 bug</span></div>
+        <div class="metric"><strong>03</strong><span>沉淀 Skills<br>pr-review / bug-fix</span></div>
+      </div>
+      <p class="cell-body" style="margin-top:10px;">效率提升通常不是来自单次回答更快，而是来自同时有多个 agent 在推进，且你只在关键节点介入。</p>
+    </div>
+
+    <div class="bottom-cell">
+      <div class="section-label">OFFICIAL REFERENCES</div>
+      <ul class="source-list">
+        <li><a href="https://developers.openai.com/codex/app/features" target="_blank" rel="noreferrer">Codex app features</a>：模式、Git 工具、worktree、skills。</li>
+        <li><a href="https://developers.openai.com/codex/learn/best-practices" target="_blank" rel="noreferrer">Codex best practices</a>：任务 prompt 四要素。</li>
+        <li><a href="https://developers.openai.com/codex/app/worktrees" target="_blank" rel="noreferrer">Worktrees</a>：隔离 checkout 与并行任务。</li>
+        <li><a href="https://developers.openai.com/codex/subagents" target="_blank" rel="noreferrer">Subagents</a>：显式启动并行专门 agent。</li>
+        <li><a href="https://developers.openai.com/codex/app/automations" target="_blank" rel="noreferrer">Automations</a>：后台周期任务与 skills 组合。</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="footer-note">
+    <span><strong>BUILD PRINCIPLE:</strong> 任务先卡片化，卡片再并行化，流程最后沉淀为规则和技能。</span>
+    <span><strong>VERSION:</strong> Agentic Coding Workflow · v1.0</span>
+  </div>
+</main>
+</body>
+</html>
