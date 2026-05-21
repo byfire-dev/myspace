@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI下一桶金藏在哪？150年财富漏斗定律</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #D4A853;
+    --gold-light: #F0C96E;
+    --ink: #0D0D0D;
+    --paper: #F5F0E8;
+    --rust: #C45C2A;
+    --slate: #2C3E50;
+    --cream: #FAF6EE;
+    --border: #D4C5A9;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Noto Serif SC', serif;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    background: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 60px 20px;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,168,83,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  .hero-title {
+    font-size: clamp(36px, 7vw, 80px);
+    font-weight: 900;
+    line-height: 1.05;
+    text-align: center;
+    letter-spacing: -0.02em;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+
+  .hero-title em {
+    font-style: normal;
+    color: var(--gold);
+    position: relative;
+  }
+
+  .hero-title em::after {
+    content: '';
+    position: absolute;
+    bottom: 2px; left: 0; right: 0;
+    height: 3px;
+    background: var(--gold);
+    opacity: 0.4;
+  }
+
+  .hero-subtitle {
+    margin-top: 28px;
+    font-size: 16px;
+    color: rgba(245,240,232,0.55);
+    text-align: center;
+    max-width: 560px;
+    line-height: 1.8;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+
+  .hero-scroll {
+    margin-top: 60px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: rgba(212,168,83,0.5);
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION WRAPPER */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(212,168,83,0.25);
+  }
+
+  .section-title {
+    font-size: clamp(24px, 4vw, 38px);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  /* CORE THESIS - FUNNEL */
+  .funnel-section {
+    background: #111;
+    border-top: 1px solid rgba(212,168,83,0.15);
+    border-bottom: 1px solid rgba(212,168,83,0.15);
+  }
+
+  .funnel-intro {
+    font-size: 18px;
+    color: rgba(245,240,232,0.7);
+    line-height: 1.9;
+    max-width: 700px;
+    margin-bottom: 60px;
+  }
+
+  .funnel-intro strong {
+    color: var(--gold);
+  }
+
+  .funnel-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    position: relative;
+  }
+
+  .funnel-layer {
+    width: 100%;
+    max-width: 720px;
+    background: #1A1A1A;
+    border: 1px solid rgba(212,168,83,0.2);
+    padding: 32px 36px;
+    position: relative;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    cursor: default;
+  }
+
+  .funnel-layer:hover {
+    transform: translateX(6px);
+    border-color: var(--gold);
+    z-index: 2;
+  }
+
+  .funnel-layer::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+  }
+
+  .funnel-layer.l1::before { background: #5B9BD5; }
+  .funnel-layer.l2::before { background: var(--rust); }
+  .funnel-layer.l3::before { background: var(--gold); }
+
+  .funnel-connector {
+    width: 1px;
+    height: 28px;
+    background: linear-gradient(to bottom, rgba(212,168,83,0.4), rgba(212,168,83,0.15));
+    position: relative;
+  }
+
+  .funnel-connector::after {
+    content: '▼';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--gold);
+    font-size: 10px;
+    opacity: 0.5;
+  }
+
+  .layer-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+
+  .l1 .layer-tag { background: rgba(91,155,213,0.15); color: #5B9BD5; border: 1px solid rgba(91,155,213,0.3); }
+  .l2 .layer-tag { background: rgba(196,92,42,0.15); color: #E8835A; border: 1px solid rgba(196,92,42,0.3); }
+  .l3 .layer-tag { background: rgba(212,168,83,0.15); color: var(--gold); border: 1px solid rgba(212,168,83,0.3); }
+
+  .layer-name {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .layer-desc {
+    font-size: 14px;
+    color: rgba(245,240,232,0.6);
+    line-height: 1.8;
+  }
+
+  .layer-badge {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    opacity: 0.12;
+  }
+
+  /* TIMELINE */
+  .timeline-section {
+    background: var(--ink);
+  }
+
+  .timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 1px solid rgba(212,168,83,0.2);
+  }
+
+  @media (max-width: 768px) {
+    .timeline-grid { grid-template-columns: 1fr; }
+  }
+
+  .era-col {
+    padding: 32px 28px;
+    border-right: 1px solid rgba(212,168,83,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .era-col:last-child { border-right: none; }
+
+  .era-col::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .era-col.telegraph::after { background: #5B9BD5; }
+  .era-col.telephone::after { background: var(--rust); }
+  .era-col.internet::after { background: #4CAF50; }
+
+  .era-year {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: rgba(245,240,232,0.4);
+    margin-bottom: 10px;
+  }
+
+  .era-name {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .era-col.telegraph .era-name { color: #7AB3E0; }
+  .era-col.telephone .era-name { color: #E8835A; }
+  .era-col.internet .era-name { color: #7DCE80; }
+
+  .era-layers {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .era-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .era-item-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.7;
+  }
+
+  .era-item-who {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--paper);
+  }
+
+  .era-item-what {
+    font-size: 12px;
+    color: rgba(245,240,232,0.5);
+    line-height: 1.6;
+  }
+
+  .era-divider {
+    height: 1px;
+    background: rgba(212,168,83,0.1);
+    margin: 6px 0;
+  }
+
+  /* KEY INSIGHT CARDS */
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .insight-grid { grid-template-columns: 1fr; }
+  }
+
+  .insight-card {
+    background: #141414;
+    border: 1px solid rgba(212,168,83,0.15);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+  }
+
+  .insight-card:hover {
+    border-color: rgba(212,168,83,0.4);
+  }
+
+  .insight-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(to right, var(--gold), transparent);
+  }
+
+  .insight-icon {
+    font-size: 28px;
+    margin-bottom: 14px;
+  }
+
+  .insight-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--gold-light);
+  }
+
+  .insight-text {
+    font-size: 13px;
+    color: rgba(245,240,232,0.6);
+    line-height: 1.8;
+  }
+
+  /* REUTERS SPOTLIGHT */
+  .spotlight {
+    background: linear-gradient(135deg, #1A1000 0%, #0D0D0D 60%);
+    border: 1px solid rgba(212,168,83,0.3);
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+    margin: 40px 0;
+  }
+
+  .spotlight::before {
+    content: '"';
+    position: absolute;
+    top: -20px; left: 20px;
+    font-size: 200px;
+    color: var(--gold);
+    opacity: 0.06;
+    font-family: Georgia, serif;
+    line-height: 1;
+  }
+
+  .spotlight-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .spotlight-quote {
+    font-size: clamp(18px, 3vw, 26px);
+    font-weight: 600;
+    line-height: 1.6;
+    color: var(--paper);
+    max-width: 680px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .spotlight-quote em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  .spotlight-source {
+    margin-top: 20px;
+    font-size: 13px;
+    color: rgba(245,240,232,0.4);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* AI NOW COMPARISON */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .compare-table th {
+    background: rgba(212,168,83,0.1);
+    color: var(--gold);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px 20px;
+    text-align: left;
+    border-bottom: 1px solid rgba(212,168,83,0.25);
+  }
+
+  .compare-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(212,168,83,0.08);
+    vertical-align: top;
+    color: rgba(245,240,232,0.75);
+    line-height: 1.7;
+  }
+
+  .compare-table tr:hover td {
+    background: rgba(212,168,83,0.03);
+  }
+
+  .compare-table td:first-child {
+    color: var(--paper);
+    font-weight: 600;
+    width: 120px;
+    flex-shrink: 0;
+  }
+
+  .compare-table td.highlight {
+    color: var(--gold-light);
+    font-weight: 600;
+  }
+
+  /* AI LAYERS NOW */
+  .ai-now-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 768px) {
+    .ai-now-grid { grid-template-columns: 1fr; }
+  }
+
+  .ai-layer-card {
+    background: #131313;
+    border: 1px solid rgba(212,168,83,0.15);
+    padding: 28px 24px;
+    position: relative;
+  }
+
+  .ai-layer-card.active {
+    border-color: rgba(212,168,83,0.5);
+    background: #1A1500;
+  }
+
+  .ai-layer-card.active::after {
+    content: '← 当下机会';
+    position: absolute;
+    top: 12px; right: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    background: rgba(212,168,83,0.1);
+    padding: 3px 8px;
+    border: 1px solid rgba(212,168,83,0.3);
+  }
+
+  .ai-layer-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(212,168,83,0.5);
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+
+  .ai-layer-title {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--paper);
+  }
+
+  .ai-layer-status {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 14px;
+  }
+
+  .status-hot { background: rgba(196,92,42,0.2); color: #E8835A; border: 1px solid rgba(196,92,42,0.3); }
+  .status-fast { background: rgba(91,155,213,0.2); color: #7AB3E0; border: 1px solid rgba(91,155,213,0.3); }
+  .status-gold { background: rgba(212,168,83,0.2); color: var(--gold); border: 1px solid rgba(212,168,83,0.4); }
+
+  .ai-layer-desc {
+    font-size: 13px;
+    color: rgba(245,240,232,0.6);
+    line-height: 1.8;
+  }
+
+  .ai-layer-example {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(212,168,83,0.1);
+    font-size: 12px;
+    color: rgba(212,168,83,0.7);
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.7;
+  }
+
+  /* FINAL RULE */
+  .final-rule {
+    background: var(--ink);
+    padding: 100px 24px;
+    text-align: center;
+  }
+
+  .final-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(80px, 20vw, 200px);
+    font-weight: 700;
+    color: var(--gold);
+    opacity: 0.08;
+    line-height: 1;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .final-content {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .final-rule-text {
+    font-size: clamp(22px, 4vw, 40px);
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 24px;
+  }
+
+  .final-rule-text em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  .final-sub {
+    font-size: 15px;
+    color: rgba(245,240,232,0.5);
+    line-height: 1.9;
+  }
+
+  /* PRICE DROP STAT */
+  .stat-row {
+    display: flex;
+    gap: 16px;
+    margin: 32px 0;
+    flex-wrap: wrap;
+  }
+
+  .stat-box {
+    flex: 1;
+    min-width: 180px;
+    background: #111;
+    border: 1px solid rgba(212,168,83,0.2);
+    padding: 20px 24px;
+  }
+
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.4);
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gold);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .stat-note {
+    font-size: 12px;
+    color: rgba(245,240,232,0.5);
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+
+  /* DIVIDER */
+  .gold-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(212,168,83,0.3), transparent);
+    margin: 0;
+  }
+
+  /* EDGE TREND */
+  .edge-section {
+    background: #0A0A0A;
+  }
+
+  .edge-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .edge-grid { grid-template-columns: 1fr; }
+  }
+
+  .edge-card {
+    background: #121212;
+    border: 1px solid rgba(245,240,232,0.08);
+    padding: 28px;
+    transition: border-color 0.3s;
+  }
+
+  .edge-card:hover {
+    border-color: rgba(245,240,232,0.2);
+  }
+
+  .edge-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--paper);
+  }
+
+  .edge-card-text {
+    font-size: 13px;
+    color: rgba(245,240,232,0.55);
+    line-height: 1.8;
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    background: rgba(245,240,232,0.06);
+    border: 1px solid rgba(245,240,232,0.12);
+    color: rgba(245,240,232,0.5);
+    border-radius: 2px;
+  }
+
+  /* STICKY NAV */
+  .sticky-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(13,13,13,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(212,168,83,0.1);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+    transform: translateY(-100%);
+    transition: transform 0.4s ease;
+  }
+
+  .sticky-nav.visible {
+    transform: translateY(0);
+  }
+
+  .nav-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: rgba(245,240,232,0.45);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .spotlight { padding: 32px 24px; }
+    .funnel-layer { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- STICKY NAV -->
+<nav class="sticky-nav" id="stickyNav">
+  <div class="nav-logo">AI财富漏斗</div>
+  <ul class="nav-links">
+    <li><a href="#funnel">三层漏斗</a></li>
+    <li><a href="#history">150年历史</a></li>
+    <li><a href="#ainow">AI当下</a></li>
+    <li><a href="#edge">端侧趋势</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-label">财富密码 · 150年不变的规律</div>
+  <h1 class="hero-title">AI下一桶金<br>藏在<em>哪里</em>？</h1>
+  <p class="hero-subtitle">英伟达5.46万亿美元，SK海力士逼近万亿。但这只是第一波——真正的大钱，往往藏在没人注意的地方。</p>
+  <div class="hero-scroll">
+    <span>SCROLL</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- SECTION 1: 漏斗理论 -->
+<section class="funnel-section" id="funnel">
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01 ——</span>
+      <div class="section-line"></div>
+    </div>
+    <h2 class="section-title" style="margin-bottom:24px;">财富漏斗：<br>钱永远从这三层流下去</h2>
+    <p class="funnel-intro">
+      每一代技术革命，钱走的路径<strong>几乎一模一样</strong>。<br>从1860年代的电报，到1910年代的电话，到2000年代的移动互联网，演了三遍一样的剧情。
+    </p>
+
+    <div class="funnel-container">
+      <div class="funnel-layer l1">
+        <span class="layer-tag">第一层</span>
+        <div class="layer-name">🏗️ 修路的</div>
+        <div class="layer-desc">铺设基础设施，把单位信息成本往死里打。原来贵得离谱的东西，变得人人用得起。吃到第一桶金，但护城河会被侵蚀。</div>
+        <div class="layer-badge">L1</div>
+      </div>
+      <div class="funnel-connector"></div>
+      <div class="funnel-layer l2">
+        <span class="layer-tag">第二层</span>
+        <div class="layer-name">🔧 造车的</div>
+        <div class="layer-desc">在路上跑的工具和技术——更快的传输、更便宜的压缩、更高效的协议。解决路太贵的问题，进一步扩大用户规模。</div>
+        <div class="layer-badge">L2</div>
+      </div>
+      <div class="funnel-connector"></div>
+      <div class="funnel-layer l3">
+        <span class="layer-tag">第三层 · 最狠</span>
+        <div class="layer-name">💰 收过路费的</div>
+        <div class="layer-desc">不修路，不造车，站在用户和信息之间。控制入口，收取流量税。150年来，这一层赚到的钱永远最多。</div>
+        <div class="layer-badge">L3</div>
+      </div>
+    </div>
+
+    <div class="spotlight" style="margin-top:48px;">
+      <div class="spotlight-label">核心洞见</div>
+      <div class="spotlight-quote">
+        不造管道，但知道管道里流的是什么——<em>这才是真正有价值的想法。</em>
+      </div>
+      <div class="spotlight-source">— 路透社创始人 Julius Reuter 的逻辑，150年后依然有效</div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- SECTION 2: 150年历史对比 -->
+<section class="timeline-section" id="history">
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02 ——</span>
+      <div class="section-line"></div>
+    </div>
+    <h2 class="section-title" style="margin-bottom:40px;">同一个剧本，演了三遍</h2>
+
+    <div class="timeline-grid">
+      <!-- 电报 -->
+      <div class="era-col telegraph">
+        <div class="era-year">1850s — 1900s</div>
+        <div class="era-name">⚡ 电报时代</div>
+        <div class="era-layers">
+          <div class="era-item">
+            <div class="era-item-label">第一层 · 修路的</div>
+            <div class="era-item-who">Eastern Telegraph</div>
+            <div class="era-item-what">跨大西洋海底电缆，垄断国际信息传输，10美元收10个字</div>
+          </div>
+          <div class="era-divider"></div>
+          <div class="era-item">
+            <div class="era-item-label">第二层 · 造车的</div>
+            <div class="era-item-who">西联电报（Western Union）</div>
+            <div class="era-item-what">多路复用技术，同一条线传多路信号；电报密码压缩信息成本90%</div>
+          </div>
+          <div class="era-divider"></div>
+          <div class="era-item">
+            <div class="era-item-label">第三层 · 收过路费</div>
+            <div class="era-item-who">路透社（Reuters）</div>
+            <div class="era-item-what">养45只信鸽填补断网缺口，比竞争对手快6小时；批量买电报容量分装卖给银行报社，赚钱比所有电缆公司加起来还多</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 电话 -->
+      <div class="era-col telephone">
+        <div class="era-year">1910s — 1990s</div>
+        <div class="era-name">📞 电话时代</div>
+        <div class="era-layers">
+          <div class="era-item">
+            <div class="era-item-label">第一层 · 修路的</div>
+            <div class="era-item-who">AT&T</div>
+            <div class="era-item-what">垄断全美八成电话线，3分钟跨洲通话收20美元（相当今日600美元）</div>
+          </div>
+          <div class="era-divider"></div>
+          <div class="era-item">
+            <div class="era-item-label">第二层 · 造车的</div>
+            <div class="era-item-who">西部电器 → 朗讯</div>
+            <div class="era-item-what">程控交换机消灭人工接线员；信号放大器降低建设成本；通话费从7美元/分降至6美分，降100倍。1996年美国史上最大IPO</div>
+          </div>
+          <div class="era-divider"></div>
+          <div class="era-item">
+            <div class="era-item-label">第三层 · 收过路费</div>
+            <div class="era-item-who">电话黄页 + 长途分销</div>
+            <div class="era-item-what">黄页收商家版面费；长途分销批量买通话分钟切块卖。黄页→大众点评/Google地图；内部CRM工具→独立成Salesforce（3000亿美元市值）</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 移动互联网 -->
+      <div class="era-col internet">
+        <div class="era-year">2000s — 2020s</div>
+        <div class="era-name">📱 移动互联网</div>
+        <div class="era-layers">
+          <div class="era-item">
+            <div class="era-item-label">第一层 · 修路的</div>
+            <div class="era-item-who">中国移动</div>
+            <div class="era-item-what">2007年市值4100亿美元，全球科技第一，流量几十块一个G，几亿用户乖乖交钱，利润率比奢侈品公司还高</div>
+          </div>
+          <div class="era-divider"></div>
+          <div class="era-item">
+            <div class="era-item-label">第二层 · 造车的</div>
+            <div class="era-item-who">视频压缩技术 / 开发者优化</div>
+            <div class="era-item-what">视频从几G压到几百MB；APP开发者疯狂压缩流量用量——同样100元流量费，用户能看到的内容越来越多</div>
+          </div>
+          <div class="era-divider"></div>
+          <div class="era-item">
+            <div class="era-item-label">第三层 · 收过路费</div>
+            <div class="era-item-who">微信 / 淘宝 / 抖音 / 美团</div>
+            <div class="era-item-what">微信消灭短信和语音收费；平台接管用户时间和钱包。腾讯今日市值4万亿港元，是中国移动两倍。中国移动股价至今未回2007年高点</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KEY INSIGHTS -->
+    <div style="margin-top: 48px;">
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-icon">🔁</div>
+          <div class="insight-title">规律永不变：修管道的干不过收过路费的</div>
+          <div class="insight-text">AT&T垄断了半个世纪的电话线，但最赚钱的生意是黄页和分销商。中国移动躺赚十年，最终输给了微信。150年，一个字没变。</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon">⏱️</div>
+          <div class="insight-title">入口窗口期极短，一旦习惯养成无法翻盘</div>
+          <div class="insight-text">路透社用信鸽填了一个断网缺口，永久占据了金融信息入口。微信上线，飞信瞬间消失。平台把用户习惯养起来，后来者几乎没有翻盘的可能。</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon">💡</div>
+          <div class="insight-title">最大机会往往藏在"看不起眼"的位置</div>
+          <div class="insight-text">黄页看起来和电话技术八竿子打不着，但是AT&T帝国最赚钱的角落。管理账单被迫开发的小工具，后来变成了Salesforce。</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon">📊</div>
+          <div class="insight-title">第二层的价值在于——让第三层成为可能</div>
+          <div class="insight-text">电报密码、多路复用、视频压缩——它们把成本打下去，让更多用户上来，反而催生了更大的入口生意。降本是手段，扩规模才是目的。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- SECTION 3: AI当下 -->
+<section style="background:#0D0D0D;" id="ainow">
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03 ——</span>
+      <div class="section-line"></div>
+    </div>
+    <h2 class="section-title" style="margin-bottom:12px;">AI走到哪一层了？</h2>
+    <p style="font-size:15px; color:rgba(245,240,232,0.5); margin-bottom:40px; line-height:1.8;">对照150年剧本，AI当下正处于第一层向第三层过渡的关键窗口期。</p>
+
+    <!-- 成本下降数据 -->
+    <div style="margin-bottom:40px;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.2em; color:var(--gold); text-transform:uppercase; margin-bottom:16px;">第二层信号：Token成本正在崩塌</div>
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-label">处理100万字成本</div>
+          <div class="stat-value">↓ 90%+</div>
+          <div class="stat-note">一年前：几十~几百元<br>现在：几块钱甚至几毛</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">GPT-4 → DeepSeek</div>
+          <div class="stat-value">↓ 85%</div>
+          <div class="stat-note">同样的长文处理任务<br>从十几元→2元</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">2026年五大巨头AI资本支出</div>
+          <div class="stat-value">$6500亿</div>
+          <div class="stat-note">微软/谷歌/Meta/<br>亚马逊/甲骨文合计</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">降本核心技术</div>
+          <div class="stat-value">MoE</div>
+          <div class="stat-note">混合专家架构<br>只激活2~3个专家，其余"不付工资"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 三层对照 -->
+    <div class="ai-now-grid">
+      <div class="ai-layer-card">
+        <div class="ai-layer-num">LAYER 01</div>
+        <div class="ai-layer-title">修路的：算力基建</div>
+        <div><span class="ai-layer-status status-hot">高位运转·估值充分</span></div>
+        <div class="ai-layer-desc">英伟达、微软、谷歌、Meta等巨头疯狂砸钱建数据中心。但这些标的市值已经把未来好几年的预期都吃完了。</div>
+        <div class="ai-layer-example">代表：NVDA · MSFT · GOOGL<br>风险：从当前位置再翻10倍，难度极大</div>
+      </div>
+      <div class="ai-layer-card">
+        <div class="ai-layer-num">LAYER 02</div>
+        <div class="ai-layer-title">造车的：模型降本</div>
+        <div><span class="ai-layer-status status-fast">快速演进·竞争激烈</span></div>
+        <div class="ai-layer-desc">MoE架构、量化压缩、小模型初筛大模型验证——Token成本每年以数十倍速度下降，与150年前的电报密码如出一辙。</div>
+        <div class="ai-layer-example">代表：DeepSeek · Claude · 各模型厂<br>关键：国内在被卡脖子下依然能追，本身就是稀缺品</div>
+      </div>
+      <div class="ai-layer-card active">
+        <div class="ai-layer-num">LAYER 03</div>
+        <div class="ai-layer-title">收过路费：AI入口派</div>
+        <div><span class="ai-layer-status status-gold">窗口正开·最大机会</span></div>
+        <div class="ai-layer-desc">未来你不会自己挑模型——你会把问题扔给一个调度平台，它替你选最准最便宜的模型处理后递回来。这个平台，就是AI时代的美团。</div>
+        <div class="ai-layer-example">逻辑：路透社不拉电缆，批量买容量分装卖<br>→ 赚的钱比所有电缆公司加起来还多</div>
+      </div>
+    </div>
+
+    <div class="spotlight" style="margin-top:40px;">
+      <div class="spotlight-label">铁律验证</div>
+      <div class="spotlight-quote">
+        谁先成为<em>AI时代的美团</em>，谁就拿到了最后那桶金子。<br>
+        <span style="font-size:0.7em; color:rgba(245,240,232,0.5);">一旦平台把用户习惯养起来，后来者几乎没有翻盘的可能。</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- SECTION 4: 端侧趋势 -->
+<section class="edge-section" id="edge">
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04 ——</span>
+      <div class="section-line"></div>
+    </div>
+    <h2 class="section-title" style="margin-bottom:12px;">隐形赛道：端侧AI供应链</h2>
+    <p style="font-size:15px; color:rgba(245,240,232,0.5); margin-bottom:36px; line-height:1.8;">所有人盯着台前主角，但最后赚到大钱的，往往是那些不起眼的供应商——就像台积电和高通，都是几年后才被重新估值的。</p>
+
+    <div class="edge-grid">
+      <div class="edge-card">
+        <div class="edge-card-title">📱 推理从云端下沉到端侧</div>
+        <div class="edge-card-text">今天绝大多数AI计算在云端数据中心完成，但未来越来越多的推理任务会搬到手机、电脑、甚至汽车里直接跑。苹果在2026年WWDC重点推了端测大模型能力。</div>
+        <div class="tag-list">
+          <span class="tag">Apple端测AI</span>
+          <span class="tag">高通骁龙X NPU</span>
+          <span class="tag">联发科天玑9400</span>
+        </div>
+      </div>
+      <div class="edge-card">
+        <div class="edge-card-title">🏭 整条供应链正在被重写</div>
+        <div class="edge-card-text">端测AI芯片（低功耗）、新型存储、新一代散热模组——每一个品类背后都是一条全新的供应链。这个趋势还在非常早期，类比2008年智能手机产业链刚起步。</div>
+        <div class="tag-list">
+          <span class="tag">低功耗AI芯片</span>
+          <span class="tag">端侧存储</span>
+          <span class="tag">散热模组</span>
+          <span class="tag">推理加速</span>
+        </div>
+      </div>
+      <div class="edge-card">
+        <div class="edge-card-title">🔬 不起眼的供应商，才是真正的矿</div>
+        <div class="edge-card-text">做推理加速的、做量化压缩的——这类公司越来越值钱，但大多数人根本没注意到。就像台积电和高通，都是智能手机风口起来之后才被重新发现的。</div>
+        <div class="tag-list">
+          <span class="tag">推理加速</span>
+          <span class="tag">量化压缩</span>
+          <span class="tag">模型部署工具链</span>
+        </div>
+      </div>
+      <div class="edge-card">
+        <div class="edge-card-title">⏰ 现在的位置类比哪年？</div>
+        <div class="edge-card-text">端测AI供应链，现在大概相当于2008年——iPhone刚出来，智能手机产业链刚刚起步，所有人还在看诺基亚。最好的供应商机会，往往在风口来之前悄悄布局。</div>
+        <div class="tag-list">
+          <span class="tag">极早期</span>
+          <span class="tag">2008类比</span>
+          <span class="tag">供应链机会</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- FINAL RULE -->
+<section class="final-rule" style="position:relative; overflow:hidden;">
+  <div class="final-number">150</div>
+  <div class="final-content">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.3em; color:var(--gold); text-transform:uppercase; margin-bottom:24px;">150年不变的铁律</div>
+    <div class="final-rule-text">
+      每一次技术周期，<br>
+      赚大钱的从来不是<em>基础设施</em>，<br>
+      而是——单位信息价格被压到地板后，<br>
+      <em>开始接管用户入口的那一个</em>。
+    </div>
+    <p class="final-sub">
+      电报时代是路透社，电话时代是黄页和Salesforce的前身，<br>
+      移动互联网时代是微信、淘宝、美团。<br>
+      AI时代的那个"路透社"，现在还没出现——<br>或者，正在悄悄成型。
+    </p>
+  </div>
+</section>
+
+<div style="background:#080808; text-align:center; padding:32px; font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(245,240,232,0.2); letter-spacing:0.15em;">
+  STRUCTURED FROM VIDEO TRANSCRIPT · AI WEALTH FUNNEL · 150 YEARS · ONE PATTERN
+</div>
+
+<script>
+  // Sticky nav
+  const nav = document.getElementById('stickyNav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > window.innerHeight * 0.8) {
+      nav.classList.add('visible');
+    } else {
+      nav.classList.remove('visible');
+    }
+  });
+
+  // Fade in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.funnel-layer, .insight-card, .era-col, .ai-layer-card, .edge-card, .stat-box').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(16px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease, border-color 0.3s ease';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
