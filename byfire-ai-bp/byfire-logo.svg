@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 176 240" role="img" aria-labelledby="title desc">
+  <title id="title">Byfire logo</title>
+  <desc id="desc">Gradient flame and B shaped logo mark.</desc>
+  <defs>
+    <linearGradient id="redCore" x1="28" y1="0" x2="94" y2="158" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff9aa6"/>
+      <stop offset=".42" stop-color="#ff3434"/>
+      <stop offset="1" stop-color="#d7003a"/>
+    </linearGradient>
+    <linearGradient id="pinkFlame" x1="76" y1="0" x2="123" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffc2c9"/>
+      <stop offset=".55" stop-color="#ff7d92"/>
+      <stop offset="1" stop-color="#ee396f"/>
+    </linearGradient>
+    <linearGradient id="blueWing" x1="126" y1="58" x2="161" y2="170" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#cbe6ff"/>
+      <stop offset=".45" stop-color="#68b7ff"/>
+      <stop offset="1" stop-color="#2678ff"/>
+    </linearGradient>
+    <linearGradient id="purpleBase" x1="6" y1="112" x2="146" y2="236" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0d62ff"/>
+      <stop offset=".48" stop-color="#7b2dff"/>
+      <stop offset="1" stop-color="#8a00ff"/>
+    </linearGradient>
+    <linearGradient id="violetOverlay" x1="37" y1="118" x2="162" y2="190" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2d6fff"/>
+      <stop offset=".52" stop-color="#8b43ff"/>
+      <stop offset="1" stop-color="#ce00ff"/>
+    </linearGradient>
+    <filter id="soften" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation=".15"/>
+      <feOffset dy=".1"/>
+      <feComposite in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1"/>
+      <feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .25 0"/>
+      <feBlend in2="SourceGraphic" mode="screen"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#soften)">
+    <path fill="url(#redCore)" d="M.7 100.1C19.6 79.6 42.5 58.9 55.7 33.4 62.4 20.4 68.7 9.1 77.7.2c26.9 21.5 42.5 50.6 42.5 82.1 0 44.8-34.7 81.9-76.6 101.9H.7Z"/>
+    <path fill="url(#pinkFlame)" opacity=".88" d="M77.7.2c39 22.8 62.7 68.9 43 114.8-7.4 17.2-19.7 31.6-36.5 43.1 13.5-52.4 8.6-109.5-6.5-157.9Z"/>
+    <path fill="url(#blueWing)" opacity=".86" d="M106.2 94.5c20-16.6 39.5-32.6 56.1-51.8 18.1 51.4-1.9 102.4-50.5 128.5-16.1 8.7-32.2 13.1-48.1 13.5 25.4-21.8 39.9-52.3 42.5-90.2Z"/>
+    <path fill="url(#violetOverlay)" opacity=".78" d="M.7 139.9c25.3-31.8 72.6-41.8 105.7-19.4 25.5 17.2 36.8 46.6 28 72.8H.7Z"/>
+    <path fill="url(#purpleBase)" d="M.7 160.2h85.9c21.1 0 34.3 9.5 34.3 24.2 0 14.4-12.2 23.2-32.3 23.2H65.4c15.3 2.7 29.2 13.1 29.2 29.5 0 .9 0 1.8-.1 2.7H.7Z"/>
+    <path fill="#111015" d="M37.6 172.1h45.7c16.2 0 25.9 6.1 25.9 16.3 0 10.1-9.3 16.2-25.1 16.2H37.6Z"/>
+    <path fill="#1a6dff" opacity=".75" d="M.7 183.6 39 145.2v94.6H.7Z"/>
+  </g>
+
+  <path fill="#fff" opacity=".12" d="M33.2 72.4h78.6c-2.3 11.1-7.1 21.6-14.7 31.4H33.2Z"/>
+  <path fill="#fff" opacity=".09" d="M33.2 33.8h65.1c6 9.7 10.1 20.1 12.3 31.3H33.2Z"/>
+  <path fill="#fff" opacity=".08" d="M33.2 112.2h70.7c-10.7 13.7-25.3 25.2-43.3 34.6H33.2Z"/>
+</svg>

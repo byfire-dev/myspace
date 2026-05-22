@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Byfire AI — 投资人路演 BP</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --fire: #FF4D1C;
+    --fire-deep: #C93000;
+    --fire-light: #FF7A45;
+    --gold: #FFB340;
+    --dark: #0A0A0F;
+    --dark2: #13131A;
+    --dark3: #1C1C28;
+    --dark4: #252535;
+    --text: #F0EEE8;
+    --text-dim: #9996A8;
+    --text-muted: #5C5A6E;
+    --accent: #FF4D1C;
+    --teal: #00D4AA;
+    --purple: #8B5CF6;
+    --slide-w: 1280px;
+    --slide-h: 720px;
+  }
+
+  html, body {
+    background: #07070C;
+    font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─── */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(7,7,12,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,77,28,0.15);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 52px;
+  }
+  .nav-logo {
+    display: inline-flex; align-items: center; gap: 10px;
+    color: var(--fire); font-weight: 700; font-size: 16px; letter-spacing: 0.05em;
+  }
+  .nav-logo img {
+    width: 24px; height: 33px; display: block; object-fit: contain;
+  }
+  .nav-dots { display: flex; gap: 6px; }
+  .nav-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--dark4); cursor: pointer; transition: all .2s;
+  }
+  .nav-dot.active { background: var(--fire); transform: scale(1.3); }
+  .nav-arrows { display: flex; gap: 8px; }
+  .nav-btn {
+    background: var(--dark3); border: 1px solid var(--dark4);
+    color: var(--text-dim); padding: 6px 14px; border-radius: 6px;
+    cursor: pointer; font-size: 13px; transition: all .2s;
+  }
+  .nav-btn:hover { border-color: var(--fire); color: var(--text); }
+
+  /* ─── SLIDES CONTAINER ─── */
+  .deck { padding-top: 52px; }
+
+  /* ─── SLIDE BASE ─── */
+  .slide {
+    width: 100%; min-height: 100vh;
+    display: none;
+    position: relative; overflow: hidden;
+    padding: 72px 80px 64px;
+  }
+  .slide.active { display: flex; flex-direction: column; }
+
+  /* ─── SLIDE BACKGROUNDS ─── */
+  .slide::before {
+    content: ''; position: absolute; inset: 0; z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Cover */
+  #s1 { background: var(--dark); justify-content: center; align-items: center; text-align: center; }
+  #s1::before {
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 30%, rgba(255,77,28,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255,115,69,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 80% 70%, rgba(139,92,246,0.08) 0%, transparent 60%);
+  }
+  .grid-lines {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255,77,28,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,77,28,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Standard */
+  .slide:not(#s1) { background: var(--dark2); }
+  .slide:not(#s1)::before {
+    background:
+      radial-gradient(ellipse 50% 60% at -10% 50%, rgba(255,77,28,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 110% 20%, rgba(139,92,246,0.05) 0%, transparent 60%);
+  }
+
+  /* ─── CONTENT Z-INDEX ─── */
+  .slide > * { position: relative; z-index: 1; }
+
+  /* ─── SLIDE HEADER ─── */
+  .slide-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,77,28,0.1); border: 1px solid rgba(255,77,28,0.25);
+    color: var(--fire-light); font-size: 12px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 100px; margin-bottom: 28px;
+    width: fit-content;
+  }
+  .slide-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--fire); }
+
+  .slide-num {
+    position: absolute; top: 72px; right: 80px;
+    font-size: 12px; color: var(--text-muted); letter-spacing: 0.1em;
+  }
+
+  /* ─── TYPOGRAPHY ─── */
+  h1.hero { font-size: clamp(48px, 6vw, 80px); font-weight: 800; line-height: 1.1; color: var(--text); letter-spacing: -0.02em; }
+  h1.hero .fire { color: var(--fire); }
+  h1.hero .dim { color: var(--text-dim); }
+
+  h2.title { font-size: clamp(32px, 4vw, 52px); font-weight: 700; line-height: 1.2; color: var(--text); letter-spacing: -0.02em; margin-bottom: 20px; }
+  h2.title .fire { color: var(--fire); }
+  h2.title .teal { color: var(--teal); }
+
+  h3.sub { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+  h3.sub .fire { color: var(--fire); }
+
+  p.lead { font-size: 18px; color: var(--text-dim); line-height: 1.7; max-width: 720px; }
+  p.body { font-size: 15px; color: var(--text-dim); line-height: 1.75; }
+
+  /* ─── COVER SPECIFIC ─── */
+  .cover-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,77,28,0.08); border: 1px solid rgba(255,77,28,0.2);
+    color: var(--fire-light); font-size: 12px; font-weight: 600;
+    letter-spacing: 0.15em; padding: 6px 18px; border-radius: 100px;
+    margin-bottom: 40px; text-transform: uppercase;
+  }
+  .cover-badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--fire); animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
+  .cover-title { margin-bottom: 32px; }
+  .cover-title .line1 { display: block; font-size: clamp(20px, 2.5vw, 30px); color: var(--text-dim); font-weight: 400; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .cover-title .line2 { display: block; font-size: clamp(56px, 7vw, 96px); font-weight: 900; color: var(--text); letter-spacing: -0.03em; line-height: 1; }
+  .cover-title .line2 .fire { color: var(--fire); }
+  .cover-en { font-size: 16px; color: var(--text-muted); letter-spacing: 0.1em; margin-bottom: 60px; }
+
+  .cover-tagline { font-size: clamp(18px, 2.2vw, 26px); color: var(--text); font-weight: 500; margin-bottom: 12px; }
+  .cover-sub { font-size: 15px; color: var(--text-muted); }
+
+  .cover-footer {
+    position: absolute; bottom: 48px; left: 80px; right: 80px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.06); padding-top: 24px;
+    z-index: 1;
+  }
+  .cover-footer-left { font-size: 13px; color: var(--text-muted); }
+  .cover-footer-left strong { color: var(--text-dim); }
+  .cover-footer-right { font-size: 12px; color: var(--text-muted); letter-spacing: 0.08em; }
+
+  /* ─── CARDS ─── */
+  .cards { display: grid; gap: 20px; flex: 1; }
+  .cards.col2 { grid-template-columns: 1fr 1fr; }
+  .cards.col3 { grid-template-columns: 1fr 1fr 1fr; }
+  .cards.col4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+  .card {
+    background: var(--dark3); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px; padding: 28px 28px 24px;
+    transition: border-color .2s;
+  }
+  .card:hover { border-color: rgba(255,77,28,0.25); }
+  .card.fire-border { border-color: rgba(255,77,28,0.3); }
+  .card.teal-border { border-color: rgba(0,212,170,0.3); }
+  .card.purple-border { border-color: rgba(139,92,246,0.3); }
+
+  .card-icon { font-size: 28px; margin-bottom: 14px; }
+  .card-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;
+  }
+  .card-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.3; }
+  .card-body { font-size: 14px; color: var(--text-dim); line-height: 1.7; }
+
+  /* ─── STAT BOXES ─── */
+  .stats { display: grid; gap: 16px; }
+  .stats.col4 { grid-template-columns: repeat(4, 1fr); }
+  .stats.col3 { grid-template-columns: repeat(3, 1fr); }
+  .stat {
+    background: var(--dark3); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px; padding: 24px 20px; text-align: center;
+  }
+  .stat-num { font-size: 36px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+  .stat-num.fire { color: var(--fire); }
+  .stat-num.teal { color: var(--teal); }
+  .stat-num.gold { color: var(--gold); }
+  .stat-num.purple { color: var(--purple); }
+  .stat-label { font-size: 13px; color: var(--text-dim); line-height: 1.4; }
+  .stat-source { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+  /* ─── TAGS ─── */
+  .tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600; padding: 4px 12px;
+    border-radius: 100px; letter-spacing: 0.05em;
+  }
+  .tag.fire { background: rgba(255,77,28,0.12); color: var(--fire-light); border: 1px solid rgba(255,77,28,0.2); }
+  .tag.teal { background: rgba(0,212,170,0.1); color: var(--teal); border: 1px solid rgba(0,212,170,0.2); }
+  .tag.gold { background: rgba(255,179,64,0.1); color: var(--gold); border: 1px solid rgba(255,179,64,0.2); }
+  .tag.purple { background: rgba(139,92,246,0.1); color: #A78BFA; border: 1px solid rgba(139,92,246,0.2); }
+  .tag.gray { background: rgba(255,255,255,0.05); color: var(--text-dim); border: 1px solid rgba(255,255,255,0.1); }
+
+  /* ─── DIVIDER ─── */
+  .divider { width: 100%; height: 1px; background: rgba(255,255,255,0.06); margin: 24px 0; }
+
+  /* ─── TWO COLUMN LAYOUT ─── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; flex: 1; align-items: start; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; flex: 1; align-items: start; }
+
+  /* ─── LIST ─── */
+  .check-list { list-style: none; }
+  .check-list li {
+    font-size: 15px; color: var(--text-dim); line-height: 1.6;
+    padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .check-list li::before { content: '→'; color: var(--fire); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .check-list li:last-child { border-bottom: none; }
+
+  /* ─── PAIN ITEMS ─── */
+  .pain {
+    background: var(--dark3); border: 1px solid rgba(255,255,255,0.06);
+    border-left: 3px solid var(--fire); border-radius: 0 12px 12px 0;
+    padding: 20px 24px; margin-bottom: 16px;
+  }
+  .pain-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .pain-body { font-size: 14px; color: var(--text-dim); line-height: 1.6; }
+
+  /* ─── FLYWHEEL ─── */
+  .flywheel {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0; flex: 1;
+  }
+  .fly-item {
+    background: var(--dark3); border: 1px solid rgba(255,77,28,0.2);
+    border-radius: 12px; padding: 18px 20px; text-align: center;
+    min-width: 140px; flex: 1;
+  }
+  .fly-arrow { color: var(--fire); font-size: 24px; padding: 0 8px; flex-shrink: 0; }
+  .fly-num { font-size: 28px; font-weight: 800; color: var(--fire); line-height: 1; margin-bottom: 6px; }
+  .fly-text { font-size: 13px; color: var(--text-dim); line-height: 1.4; }
+
+  /* ─── MOAT ─── */
+  .moat-item {
+    background: var(--dark3); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px; padding: 24px 26px; margin-bottom: 14px;
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  .moat-icon { font-size: 26px; flex-shrink: 0; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(255,77,28,0.1); border-radius: 10px; }
+  .moat-content .moat-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .moat-content .moat-body { font-size: 14px; color: var(--text-dim); line-height: 1.65; }
+
+  /* ─── PRICING TABLE ─── */
+  .pricing { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; flex: 1; }
+  .price-card {
+    background: var(--dark3); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px; padding: 28px 24px; position: relative; overflow: hidden;
+  }
+  .price-card.featured {
+    border-color: rgba(255,77,28,0.4);
+    background: linear-gradient(135deg, var(--dark3) 0%, rgba(255,77,28,0.05) 100%);
+  }
+  .price-card.featured::before {
+    content: '推荐'; position: absolute; top: 14px; right: -18px;
+    background: var(--fire); color: white; font-size: 11px; font-weight: 700;
+    padding: 4px 28px; transform: rotate(45deg); letter-spacing: 0.05em;
+  }
+  .price-tier { font-size: 12px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+  .price-name { font-size: 24px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .price-range { font-size: 16px; color: var(--fire); font-weight: 700; margin-bottom: 16px; }
+  .price-desc { font-size: 13px; color: var(--text-dim); margin-bottom: 16px; line-height: 1.5; }
+  .price-features { list-style: none; }
+  .price-features li { font-size: 13px; color: var(--text-dim); padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; gap: 8px; }
+  .price-features li::before { content: '✓'; color: var(--teal); font-weight: 700; }
+  .price-features li:last-child { border-bottom: none; }
+
+  /* ─── TIMELINE ─── */
+  .timeline { flex: 1; }
+  .tl-item {
+    display: grid; grid-template-columns: 100px 1fr;
+    gap: 24px; margin-bottom: 20px; position: relative;
+  }
+  .tl-time {
+    text-align: right; padding-top: 4px;
+  }
+  .tl-q { font-size: 13px; font-weight: 700; color: var(--fire); }
+  .tl-year { font-size: 11px; color: var(--text-muted); }
+  .tl-content {
+    background: var(--dark3); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px; padding: 16px 20px;
+    border-left: 3px solid rgba(255,77,28,0.3);
+  }
+  .tl-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .tl-body { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+  .tl-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+
+  /* ─── TEAM ─── */
+  .team-card {
+    background: var(--dark3); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px; padding: 28px 24px; text-align: center;
+  }
+  .team-avatar {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--fire), var(--purple));
+    margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .team-name { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .team-role { font-size: 13px; color: var(--fire-light); font-weight: 600; margin-bottom: 12px; }
+  .team-bio { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+
+  /* ─── FUNDING ─── */
+  .fund-row {
+    display: grid; grid-template-columns: 140px 80px 1fr;
+    gap: 20px; align-items: center; padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .fund-row:last-child { border-bottom: none; }
+  .fund-name { font-size: 14px; color: var(--text); font-weight: 600; }
+  .fund-pct { font-size: 15px; font-weight: 700; color: var(--fire); text-align: right; }
+  .fund-bar-wrap { background: rgba(255,255,255,0.06); border-radius: 100px; height: 6px; }
+  .fund-bar { height: 6px; border-radius: 100px; background: linear-gradient(90deg, var(--fire), var(--fire-light)); }
+
+  /* ─── ARCH DIAGRAM ─── */
+  .arch {
+    background: var(--dark3); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px; padding: 28px 32px; flex: 1;
+  }
+  .arch-row {
+    display: flex; gap: 12px; justify-content: center;
+    align-items: center; margin-bottom: 6px;
+  }
+  .arch-box {
+    background: var(--dark4); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--text-dim);
+    text-align: center; flex: 1; min-width: 0;
+  }
+  .arch-box.fire-b { border-color: rgba(255,77,28,0.35); color: var(--fire-light); background: rgba(255,77,28,0.06); }
+  .arch-box.teal-b { border-color: rgba(0,212,170,0.35); color: var(--teal); background: rgba(0,212,170,0.06); }
+  .arch-box.purple-b { border-color: rgba(139,92,246,0.35); color: #A78BFA; background: rgba(139,92,246,0.06); }
+  .arch-row.label { font-size: 11px; color: var(--text-muted); justify-content: center; margin-bottom: 2px; letter-spacing: 0.08em; }
+  .arch-arrow { font-size: 20px; color: var(--fire); text-align: center; margin: 4px 0; }
+  .arch-spacer { flex: 1; }
+
+  /* ─── GTM STEPS ─── */
+  .gtm-steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; flex: 1; }
+  .gtm-step {
+    background: var(--dark3); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px; padding: 26px 22px; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+  .gtm-step-num {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(255,77,28,0.12); border: 2px solid rgba(255,77,28,0.3);
+    color: var(--fire); font-size: 18px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .gtm-step-title { font-size: 16px; font-weight: 700; color: var(--text); }
+  .gtm-step-body { font-size: 13px; color: var(--text-dim); line-height: 1.65; text-align: left; }
+  .gtm-arrow {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: rgba(255,77,28,0.3);
+  }
+
+  /* ─── QUOTE ─── */
+  .quote-block {
+    background: linear-gradient(135deg, rgba(255,77,28,0.08), rgba(139,92,246,0.06));
+    border: 1px solid rgba(255,77,28,0.2); border-radius: 16px;
+    padding: 32px 36px; margin-top: 28px; position: relative;
+  }
+  .quote-block::before {
+    content: '"'; position: absolute; top: 16px; left: 28px;
+    font-size: 80px; color: rgba(255,77,28,0.15); line-height: 1;
+    font-family: Georgia, serif;
+  }
+  .quote-text { font-size: 18px; color: var(--text); line-height: 1.65; font-weight: 500; padding-left: 16px; }
+  .quote-text .fire { color: var(--fire); }
+
+  /* ─── PART BANNER ─── */
+  .part-banner {
+    background: linear-gradient(90deg, rgba(255,77,28,0.08), transparent);
+    border-left: 3px solid var(--fire); border-radius: 0 8px 8px 0;
+    padding: 10px 20px; margin-bottom: 32px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .part-banner .part-num { font-size: 12px; color: var(--fire); font-weight: 700; letter-spacing: 0.15em; }
+  .part-banner .part-title { font-size: 14px; color: var(--text-dim); }
+
+  /* ─── MILESTONE ─── */
+  .milestone {
+    background: var(--dark3); border-radius: 12px; padding: 20px 24px;
+    margin-bottom: 14px; border: 1px solid rgba(255,255,255,0.06);
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  .milestone.highlight { border-color: rgba(255,77,28,0.3); }
+  .ms-time { min-width: 80px; }
+  .ms-q { font-size: 14px; font-weight: 700; color: var(--fire); }
+  .ms-year { font-size: 11px; color: var(--text-muted); }
+  .ms-body .ms-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+  .ms-body .ms-desc { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+  .ms-tags { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: var(--dark4); border-radius: 3px; }
+
+  /* ─── KBD ─── */
+  kbd {
+    background: var(--dark3); border: 1px solid var(--dark4);
+    color: var(--text-dim); padding: 2px 8px; border-radius: 4px;
+    font-size: 12px; font-family: monospace;
+  }
+
+  .small-note { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">
+    <img src="byfire-logo.svg" alt="Byfire AI logo">
+    <span>BYFIRE AI</span>
+  </div>
+  <div class="nav-dots" id="navDots"></div>
+  <div class="nav-arrows">
+    <button class="nav-btn" onclick="prevSlide()">← 上一页</button>
+    <button class="nav-btn" id="slideCounter" style="cursor:default">1 / 15</button>
+    <button class="nav-btn" onclick="nextSlide()">下一页 →</button>
+  </div>
+</nav>
+
+<div class="deck">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 1 — COVER
+══════════════════════════════════════════════════════════════════ -->
+<section class="slide active" id="s1">
+  <div class="grid-lines"></div>
+
+  <div class="cover-badge">
+    <span></span>
+    2026 天使轮路演材料
+  </div>
+
+  <div class="cover-title">
+    <span class="line1">浴火重生人工智能科技有限公司</span>
+    <span class="line2"><span class="fire">Byfire</span> AI</span>
+  </div>
+
+  <div class="cover-en">BYFIRE AI · AI-NATIVE BRAND GLOBALIZATION OPERATING SYSTEM</div>
+
+  <div class="cover-tagline">让品牌进入 AI 对话流</div>
+  <div class="cover-sub">帮助企业在 AI 时代被理解、被看见、被推荐</div>
+
+  <div class="cover-footer">
+    <div class="cover-footer-left">
+      <strong>BrandNova</strong> · AI 品牌可见度运营系统 &nbsp;|&nbsp;
+      <strong>VibeArt</strong> · 全球化创意内容生成平台
+    </div>
+    <div class="cover-footer-right">CONFIDENTIAL · 2026</div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 2 — WHY NOW: 市场拐点
+══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <div class="slide-num">02 / 15</div>
+
+  <div class="part-banner">
+    <span class="part-num">PART I · 为什么是现在</span>
+    <span class="part-title">市场拐点已到来</span>
+  </div>
+
+  <h2 class="title">从 <span class="fire">Search Era</span><br>到 <span class="teal">Conversation Era</span></h2>
+  <p class="lead" style="margin-bottom: 32px;">品牌增长的入口正在发生根本性迁移——消费者开始直接问 AI，而不是搜索引擎。</p>
+
+  <div class="stats col4" style="margin-bottom: 32px;">
+    <div class="stat">
+      <div class="stat-num fire">25%↓</div>
+      <div class="stat-label">传统搜索引擎流量<br>2026 年前预计下降</div>
+      <div class="stat-source">Gartner, 2024</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num teal">44%</div>
+      <div class="stat-label">AI 搜索用户将其<br>作为首选信息来源</div>
+      <div class="stat-source">McKinsey, 2025</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num gold">$7500亿</div>
+      <div class="stat-label">美国受 AI 搜索影响<br>的收入规模（至2028年）</div>
+      <div class="stat-source">McKinsey, 2025</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num purple">20-50%</div>
+      <div class="stat-label">传统搜索流量<br>潜在风险比例</div>
+      <div class="stat-source">McKinsey, 2025</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h3 class="sub">过去：用户怎么找品牌</h3>
+      <ul class="check-list">
+        <li>在搜索引擎输入品牌名或关键词</li>
+        <li>刷社交媒体看 KOL 推荐</li>
+        <li>在电商平台搜索比价</li>
+        <li>点击品牌广告落地页</li>
+        <li>问朋友/查评论网站</li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="sub" style="color: var(--fire);">现在：用户直接问 AI</h3>
+      <ul class="check-list">
+        <li>「哪个品牌适合我？为什么？」</li>
+        <li>「某品牌和竞品比怎么样？」</li>
+        <li>「中国品牌出海哪个更可靠？」</li>
+        <li>「这个品牌值不值得买？」</li>
+        <li>「某类产品有哪些值得推荐？」</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 3 — WHY NOW: 企业 AI 落地鸿沟
+══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s3">
+  <div class="slide-num">03 / 15</div>
+
+  <div class="part-banner">
+    <span class="part-num">PART I · 为什么是现在</span>
+    <span class="part-title">企业 AI 落地鸿沟</span>
+  </div>
+
+  <h2 class="title">企业用了 AI，<br>但品牌增长<span class="fire">没有跟上</span></h2>
+
+  <div class="cards col3" style="margin: 28px 0 32px;">
+    <div class="card fire-border">
+      <div class="card-icon">🏢</div>
+      <div class="card-label">McKinsey 全球 AI 调研 2025</div>
+      <div class="card-title" style="font-size: 40px; color: var(--fire); font-weight: 900; line-height: 1; margin-bottom: 10px;">78%</div>
+      <div class="card-body">受访组织已在至少一个业务职能中使用 AI，71% 定期使用生成式 AI</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📉</div>
+      <div class="card-label">同一份调研</div>
+      <div class="card-title" style="font-size: 40px; color: var(--gold); font-weight: 900; line-height: 1; margin-bottom: 10px;">39%</div>
+      <div class="card-body">的受访者认为 AI 对企业 EBIT 产生了任何程度的可衡量影响</div>
+    </div>
+    <div class="card teal-border">
+      <div class="card-icon">💡</div>
+      <div class="card-label">Adobe 零售数字趋势 2025</div>
+      <div class="card-title" style="font-size: 40px; color: var(--teal); font-weight: 900; line-height: 1; margin-bottom: 10px;">55%</div>
+      <div class="card-body">创意团队仅能满足约 55% 的跨触点内容需求；47% 同时面临提升转化率的压力</div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <div class="quote-text">
+      企业不缺 AI 工具，缺的是能把 AI 接入<span class="fire">品牌增长、内容生产、全球化运营和可衡量结果</span>的操作系统。
+      这就是 Byfire AI 的机会窗口。
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 4 — 客户痛点：三个断层
+══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s4">
+  <div class="slide-num">04 / 15</div>
+
+  <div class="part-banner">
+    <span class="part-num">PART II · 切入什么刚需</span>
+    <span class="part-title">品牌在 AI 时代的三个断层</span>
+  </div>
+
+  <h2 class="title">不可见 · 说不清 · <span class="fire">做不快</span></h2>
+  <p class="lead" style="margin-bottom: 32px;">企业投了大量资源在传统渠道，但在 AI 时代的品牌竞争中几乎是一张白纸。</p>
+
+  <div class="pain">
+    <div class="pain-title">❶ 品牌不可见 — AI 根本没有提到你</div>
+    <div class="pain-body">企业在官网、社媒、电商平台投入大量内容，但 AI 回答用户问题时并不一定引用或推荐它。很多腰部以上品牌甚至不知道自己在 AI 答案中是否存在，更无从优化。</div>
+  </div>
+
+  <div class="pain">
+    <div class="pain-title">❷ 品牌说不清 — AI 无法准确理解你是谁</div>
+    <div class="pain-body">企业有品牌手册、产品资料、营销方案，但这些资产没有被结构化成 AI 能理解、能引用、能持续更新的"品牌知识系统"。AI 描述该品牌时往往不准确、不完整、甚至混淆竞品信息。</div>
+  </div>
+
+  <div class="pain">
+    <div class="pain-title">❸ 内容做不快 — 全球化内容生产是瓶颈</div>
+    <div class="pain-body">全球化运营需要多语言、多渠道、多文化语境的内容适配，传统创意生产链路成本高、周期长、复用难。Adobe 数据显示创意团队只能满足约 55% 的跨触点内容需求。</div>
+  </div>
+
+  <div style="margin-top: 20px; display: flex; gap: 12px;">
+    <span class="tag fire">品牌可见度 = 0</span>
+    <span class="tag gold">AI 描述不准确</span>
+    <span class="tag purple">内容效率极低</span>
+    <span class="tag gray">全球化成本极高</span>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 5 — 解决方案总览
+══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s5">
+  <div class="slide-num">05 / 15</div>
+
+  <div class="part-banner">
+    <span class="part-num">PART II · 切入什么刚需</span>
+    <span class="part-title">我们的解决方案</span>
+  </div>
+
+  <h2 class="title">Byfire AI =<br><span class="fire">BrandNova</span> + <span class="teal">VibeArt</span></h2>
+
+  <div class="cards col2" style="margin: 28px 0 28px; gap: 28px;">
+    <div class="card fire-border" style="padding: 32px;">
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:20px;">
+        <div style="width:48px;height:48px;border-radius:12px;background:rgba(255,77,28,0.15);display:flex;align-items:center;justify-content:center;font-size:24px;">🔭</div>
+        <div>
+          <div style="font-size:22px;font-weight:800;color:var(--text);">BrandNova</div>
+          <div style="font-size:13px;color:var(--fire-light);">品牌可见度运营操作系统</div>
+        </div>
+      </div>
+      <p class="body" style="margin-bottom:16px;">让品牌<strong style="color:var(--text)">被 AI 正确理解、持续引用、正向推荐</strong>。监测、诊断、优化品牌在 AI 对话与 AI 搜索中的可见度、引用源、情绪倾向和推荐概率。</p>
+      <ul class="check-list">
+        <li>AI Brand Visibility Audit</li>
+        <li>Prompt Demand Map 用户问题地图</li>
+        <li>Brand Knowledge Base 品牌知识库</li>
+        <li>Citation & Source Optimization</li>
+        <li>AI Conversation Dashboard</li>
+      </ul>
+    </div>
+    <div class="card teal-border" style="padding: 32px;">
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:20px;">
+        <div style="width:48px;height:48px;border-radius:12px;background:rgba(0,212,170,0.1);display:flex;align-items:center;justify-content:center;font-size:24px;">🎨</div>
+        <div>
+          <div style="font-size:22px;font-weight:800;color:var(--text);">VibeArt</div>
+          <div style="font-size:13px;color:var(--teal);">创意内容生成与营销视频平台</div>
+        </div>
+      </div>
+      <p class="body" style="margin-bottom:16px;">让品牌<strong style="color:var(--text)">被用户喜欢、被全球看见</strong>。基于 BrandNova 洞察，快速生成高质量多语言多渠道创意内容。</p>
+      <ul class="check-list">
+        <li>Brand DNA 提取与创意方向生成</li>
+        <li>Script & Storyboard Agent</li>
+        <li>Video & Visual Generation Workflow</li>
+        <li>多语言 Localization Agent</li>
+        <li>Compliance & IP 合规审核</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="quote-block" style="margin-top: 0;">
+    <div class="quote-text" style="font-size:16px; text-align:center;">
+      <span class="fire">诊断</span> → <span class="fire">策略</span> → <span class="fire">生成</span> → <span class="fire">发布</span> → <span class="fire">监测</span> → <span class="fire">优化</span> — 这是一个完整的品牌运营闭环，不是孤立工具。
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 6 — BrandNova 详细
+══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s6">
+  <div class="slide-num">06 / 15</div>
+
+  <h2 class="title"><span class="fire">BrandNova</span><br>品牌可见度运营操作系统</h2>
+
+  <div class="cards col3" style="margin: 24px 0 24px; flex: 1;">
+    <div class="card">
+      <div class="card-icon">🔍</div>
+      <div class="card-label">模块 01</div>
+      <div class="card-title">AI Brand Visibility Audit</div>
+      <div class="card-body">检测品牌在主流 AI 对话与 AI 搜索中的出现频率、排名、语义描述和情绪倾向。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🗺️</div>
+      <div class="card-label">模块 02</div>
+      <div class="card-title">Prompt Demand Map</div>
+      <div class="card-body">构建用户向 AI 提问的高价值问题地图：「哪个品牌适合……」「某行业解决方案推荐」「某品牌是否可靠」。</div>
+    </div>
+    <div class="card fire-border">
+      <div class="card-icon">📚</div>
+      <div class="card-label">模块 03 · 核心</div>
+      <div class="card-title">Brand Knowledge Base</div>
+      <div class="card-body">把品牌资料、产品信息、案例、FAQ、创始人故事结构化成 AI 可读取、可引用、可持续更新的品牌真相层。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📎</div>
+      <div class="card-label">模块 04</div>
+      <div class="card-title">Citation & Source Optimization</div>
+      <div class="card-body">识别 AI 答案引用了哪些来源，帮助品牌补齐权威来源、第三方内容、行业背书和内容缺口。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚔️</div>
+      <div class="card-label">模块 05</div>
+      <div class="card-title">Competitor Benchmarking</div>
+      <div class="card-body">对比竞品在 AI 答案中的可见度、语义位置、推荐理由和内容策略。</div>
+    </div>
+    <div class="card teal-border">
+      <div class="card-icon">📊</div>
+      <div class="card-label">模块 06 · 输出</div>
+      <div class="card-title">AI Conversation Dashboard</div>
+      <div class="card-body">AI Share of Voice · Citation Coverage · Sentiment Score · Recommendation Probability · Brand Consistency Score</div>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:10px; flex-wrap:wrap;">
+    <span class="tag fire">国内版：消费/文旅/教育/连锁</span>
+    <span class="tag teal">国际版：出海电商/美妆/消费电子/AI SaaS</span>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 7 — VibeArt 详细
+══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s7">
+  <div class="slide-num">07 / 15</div>
+
+  <h2 class="title"><span class="teal">VibeArt</span><br>创意内容生成与营销视频平台</h2>
+  <p class="lead" style="margin-bottom: 24px;">不是孤立的 AI 生成工具，而是绑定 BrandNova 洞察的创意营销流程标准化系统。</p>
+
+  <div class="cards col3" style="flex: 1;">
+    <div class="card">
+      <div class="card-icon">🧬</div>
+      <div class="card-label">模块 01</div>
+      <div class="card-title">Brand DNA 提取</div>
+      <div class="card-body">识别品牌调性、审美偏好、价值主张、目标用户和表达边界，建立创意生成的品牌约束层。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📝</div>
+      <div class="card-label">模块 02</div>
+      <div class="card-title">Creative Brief Agent</div>
+      <div class="card-body">自动生成营销简报、传播主题、创意方向和内容策略，压缩策划周期。</div>
+    </div>
+    <div class="card teal-border">
+      <div class="card-icon">🎬</div>
+      <div class="card-label">模块 03 · 核心</div>
+      <div class="card-title">Script & Storyboard Agent</div>
+      <div class="card-body">生成短视频脚本、分镜、旁白、镜头语言和节奏建议，支持全球化场景适配。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🖼️</div>
+      <div class="card-label">模块 04</div>
+      <div class="card-title">Visual & Video Generation</div>
+      <div class="card-body">输出视觉素材、短视频、广告概念片、社媒内容变体，多格式适配各渠道。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌍</div>
+      <div class="card-label">模块 05</div>
+      <div class="card-title">Localization Agent</div>
+      <div class="card-body">面向不同国家、语言、文化语境生成本地化创意版本，支持海外市场快速落地。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚖️</div>
+      <div class="card-label">模块 06</div>
+      <div class="card-title">Compliance & IP Review</div>
+      <div class="card-body">针对商标、版权、肖像权、品牌一致性和内容合规进行审核，降低出海法律风险。</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 8 — 产品架构
+══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s8">
+  <div class="slide-num">08 / 15</div>
+
+  <h2 class="title">产品架构<br><span class="fire">三层 + 两端</span></h2>
+  <p class="lead" style="margin-bottom: 28px;">我们把品牌资产变成 AI 能理解、能引用、能推荐、能持续生成内容的操作系统。</p>
+
+  <div class="arch" style="flex: 1;">
+    <div class="arch-row label">数据输入层</div>
+    <div class="arch-row">
+      <div class="arch-box">品牌官网 & 手册</div>
+      <div class="arch-box">社媒 & 内容</div>
+      <div class="arch-box">产品资料 & FAQ</div>
+      <div class="arch-box">案例 & 背书</div>
+      <div class="arch-box">竞品信息</div>
+      <div class="arch-box">第三方来源</div>
+    </div>
+    <div class="arch-arrow">↓</div>
+
+    <div class="arch-row label">智能图谱层</div>
+    <div class="arch-row">
+      <div class="arch-box fire-b" style="flex: 1.3;">Brand DNA Graph<br><span style="font-size:11px;opacity:.7;">品牌基因图谱</span></div>
+      <div class="arch-box fire-b" style="flex: 1.3;">Prompt Demand Graph<br><span style="font-size:11px;opacity:.7;">用户提问图谱</span></div>
+      <div class="arch-box fire-b" style="flex: 1.3;">Citation Source Graph<br><span style="font-size:11px;opacity:.7;">引用来源图谱</span></div>
+    </div>
+    <div class="arch-arrow">↓</div>
+
+    <div class="arch-row label">智能体层</div>
+    <div class="arch-row">
+      <div class="arch-box purple-b">洞察智能体</div>
+      <div class="arch-box purple-b">策略智能体</div>
+      <div class="arch-box purple-b">内容智能体</div>
+      <div class="arch-box purple-b">合规智能体</div>
+    </div>
+    <div class="arch-arrow">↓</div>
+
+    <div class="arch-row label">产品层（用户端）</div>
+    <div class="arch-row">
+      <div class="arch-box teal-b" style="flex: 1.5; padding: 16px 20px;">
+        <strong>BrandNova</strong><br>
+        <span style="font-size:12px;">AI 可见度运营看板</span>
+      </div>
+      <div class="arch-box teal-b" style="flex: 1.5; padding: 16px 20px;">
+        <strong>VibeArt</strong><br>
+        <span style="font-size:12px;">创意内容生产平台</span>
+      </div>
+    </div>
+    <div class="arch-arrow">↓</div>
+
+    <div class="arch-row">
+      <div class="arch-box fire-b" style="flex: 1;">AI 可见度提升</div>
+      <div class="arch-box fire-b" style="flex: 1;">内容效率提升</div>
+      <div class="arch-box fire-b" style="flex: 1;">全球化品牌增长</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 9 — 数据增长飞轮
+══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s9">
+  <div class="slide-num">09 / 15</div>
+
+  <div class="part-banner">
+    <span class="part-num">PART III · 为什么能成为基础设施</span>
+    <span class="part-title">数据增长飞轮</span>
+  </div>
+
+  <h2 class="title">Brand Intelligence<br><span class="fire">Flywheel</span></h2>
+  <p class="lead" style="margin-bottom: 32px;">核心壁垒不是单个模型，而是持续积累的数据运营闭环。</p>
+
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; flex: 1; align-items: center;">
+    <div class="card fire-border" style="text-align:center;">
+      <div style="font-size:36px;font-weight:900;color:var(--fire);line-height:1;margin-bottom:8px;">①</div>
+      <div class="card-title">更多品牌客户接入</div>
+      <div class="card-body">覆盖多行业、多体量品牌，积累真实运营数据</div>
+    </div>
+    <div class="card">
+      <div style="font-size:36px;font-weight:900;color:var(--gold);line-height:1;margin-bottom:8px;">②</div>
+      <div class="card-title">积累行业品牌与用户问题数据</div>
+      <div class="card-body">品牌资料、用户问题地图、AI 回答、引用来源持续沉淀</div>
+    </div>
+    <div class="card">
+      <div style="font-size:36px;font-weight:900;color:var(--teal);line-height:1;margin-bottom:8px;">③</div>
+      <div class="card-title">形成行业级 Prompt & Citation Map</div>
+      <div class="card-body">行业语义地图越来越精准，新客户接入成本持续下降</div>
+    </div>
+    <div class="card">
+      <div style="font-size:36px;font-weight:900;color:var(--purple);line-height:1;margin-bottom:8px;">④</div>
+      <div class="card-title">帮助品牌更快优化结果</div>
+      <div class="card-body">AI 可见度提升周期缩短，内容策略建议更精准</div>
+    </div>
+    <div class="card">
+      <div style="font-size:36px;font-weight:900;color:var(--fire-light);line-height:1;margin-bottom:8px;">⑤</div>
+      <div class="card-title">客户获得结果，续费与扩容</div>
+      <div class="card-body">90 天内 AI 可见度或内容效率可量化提升，驱动续费</div>
+    </div>
+    <div class="card fire-border">
+      <div style="font-size:36px;font-weight:900;color:var(--fire);line-height:1;margin-bottom:8px;">⑥</div>
+      <div class="card-title">更多数据强化系统能力</div>
+      <div class="card-body">飞轮持续转动，竞争壁垒随时间指数级加深</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 10 — 四层核心壁垒
+══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s10">
+  <div class="slide-num">10 / 15</div>
+
+  <h2 class="title">四层核心<span class="fire">竞争壁垒</span></h2>
+  <p class="lead" style="margin-bottom: 28px;">每一层都难以被单纯的技术复制。</p>
+
+  <div class="moat-item">
+    <div class="moat-icon">🎨</div>
+    <div class="moat-content">
+      <div class="moat-title">壁垒一：审美、品味与创意判断系统</div>
+      <div class="moat-body">AI 工具解决"生成"，品牌需要的是"判断"：什么内容高级，什么表达有效，什么创意符合品牌。Byfire AI 把艺术审美、品牌策略、营销逻辑和 AI Agent 工作流结合，形成可复用的创意判断系统。</div>
+    </div>
+  </div>
+
+  <div class="moat-item">
+    <div class="moat-icon">🔄</div>
+    <div class="moat-content">
+      <div class="moat-title">壁垒二：行业生态闭环</div>
+      <div class="moat-body">连接品牌方、创意人才、AI 工具链、内容渠道、知识产权与商业化场景——不只是提供工具，而是从品牌诊断到创意执行的运营闭环。</div>
+    </div>
+  </div>
+
+  <div class="moat-item">
+    <div class="moat-icon">📈</div>
+    <div class="moat-content">
+      <div class="moat-title">壁垒三：Brand Intelligence 数据飞轮</div>
+      <div class="moat-body">每服务一个品牌，系统积累行业问题、AI 回答、竞品表现、引用来源、内容表现和创意反馈，让下一次服务更精准、更快、更低成本。数据护城河随时间加深。</div>
+    </div>
+  </div>
+
+  <div class="moat-item">
+    <div class="moat-icon">⚡</div>
+    <div class="moat-content">
+      <div class="moat-title">壁垒四：AI-native 高人效组织能力</div>
+      <div class="moat-body">用 AI Agent 重构研发、销售、内容、交付和客户成功流程，持续提升每人 ARR。目标：10 人以内团队，验证 AI-native 组织模型，而非口号。</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 11 — 商业模式
+══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s11">
+  <div class="slide-num">11 / 15</div>
+
+  <h2 class="title">商业模式<br><span class="fire">年费 + 积分消费</span></h2>
+  <p class="lead" style="margin-bottom: 28px;">可预期的订阅收入 + 深度使用的弹性消费，驱动高续费与扩容。</p>
+
+  <div class="pricing">
+    <div class="price-card">
+      <div class="price-tier">入门</div>
+      <div class="price-name">Starter</div>
+      <div class="price-range">10–20 万/年</div>
+      <div class="price-desc">适合初步需要 AI 品牌诊断的企业</div>
+      <ul class="price-features">
+        <li>AI 可见度检测（按季度）</li>
+        <li>竞品对比基础报告</li>
+        <li>品牌知识库搭建</li>
+        <li>内容建议与改善方向</li>
+        <li>VibeArt 基础积分包</li>
+      </ul>
+    </div>
+    <div class="price-card featured">
+      <div class="price-tier">成长</div>
+      <div class="price-name">Growth</div>
+      <div class="price-range">30–60 万/年</div>
+      <div class="price-desc">有持续品牌运营需求的腰部企业</div>
+      <ul class="price-features">
+        <li>BrandNova 全功能（月度优化）</li>
+        <li>Prompt Demand Map 定制</li>
+        <li>Citation Source 专项优化</li>
+        <li>多平台内容策略</li>
+        <li>VibeArt 标准积分包</li>
+        <li>季度品牌声量报告</li>
+      </ul>
+    </div>
+    <div class="price-card">
+      <div class="price-tier">全球化</div>
+      <div class="price-name">Global</div>
+      <div class="price-range">80–100 万+/年</div>
+      <div class="price-desc">出海品牌与集团型客户</div>
+      <ul class="price-features">
+        <li>多语言 · 多市场品牌运营</li>
+        <li>专属策略团队深度交付</li>
+        <li>海外 AI 搜索引用优化</li>
+        <li>本地化创意全流程</li>
+        <li>VibeArt 高级积分包</li>
+        <li>知识产权与合规支持</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top: 20px; display: flex; gap: 24px; flex-wrap: wrap;">
+    <div style="font-size:13px;color:var(--text-dim);">💡 <strong style="color:var(--text)">ARR 目标</strong>：2026 年 <span style="color:var(--fire);font-weight:700;">1000 万人民币</span>（经常性订阅收入，不含一次性项目制）</div>
+    <div style="font-size:13px;color:var(--text-dim);">📊 <strong style="color:var(--text)">客户数目标</strong>：100+ 成交品牌企业</div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 12 — GTM
+══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s12">
+  <div class="slide-num">12 / 15</div>
+
+  <h2 class="title">Go-to-Market<br><span class="fire">诊断报告</span>作为销售切入口</h2>
+  <p class="lead" style="margin-bottom: 28px;">最强销售工具：让客户亲眼看到自己在 AI 时代是否可见。</p>
+
+  <div style="display: grid; grid-template-columns: 1fr 32px 1fr 32px 1fr; gap: 0; flex: 1; align-items: center;">
+    <div class="gtm-step" style="flex-direction: column; align-items: flex-start; text-align: left;">
+      <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
+        <div class="gtm-step-num">1</div>
+        <div style="font-size:16px;font-weight:700;color:var(--text);">AI 品牌可见度<br>诊断报告获客</div>
+      </div>
+      <div class="gtm-step-body">
+        让客户看到具体数据：<br><br>
+        · AI 是否提到我？怎么描述？<br>
+        · 竞品是否比我更常被推荐？<br>
+        · 我的品牌资料哪里缺失？<br>
+        · 哪些内容源影响 AI 判断？
+      </div>
+    </div>
+
+    <div style="font-size:28px;color:rgba(255,77,28,0.4);text-align:center;">→</div>
+
+    <div class="gtm-step" style="flex-direction: column; align-items: flex-start; text-align: left;">
+      <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
+        <div class="gtm-step-num">2</div>
+        <div style="font-size:16px;font-weight:700;color:var(--text);">转化<br>BrandNova 年费</div>
+      </div>
+      <div class="gtm-step-body">
+        从一次性诊断升级为年度运营：<br><br>
+        · 月度 AI 可见度监测<br>
+        · 季度品牌声量优化<br>
+        · 多平台内容策略<br>
+        · 品牌知识库持续维护
+      </div>
+    </div>
+
+    <div style="font-size:28px;color:rgba(255,77,28,0.4);text-align:center;">→</div>
+
+    <div class="gtm-step" style="flex-direction: column; align-items: flex-start; text-align: left; border-color: rgba(0,212,170,0.3);">
+      <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
+        <div class="gtm-step-num" style="background:rgba(0,212,170,0.1);border-color:rgba(0,212,170,0.3);color:var(--teal);">3</div>
+        <div style="font-size:16px;font-weight:700;color:var(--text);">VibeArt 扩大<br>客户使用深度</div>
+      </div>
+      <div class="gtm-step-body">
+        从"看报告"进入内容生产闭环：<br><br>
+        · 持续生产多语言创意内容<br>
+        · 短视频脚本与视觉生成<br>
+        · 全球化市场内容适配<br>
+        · 持续优化 AI 可见度结果
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div style="display: flex; gap: 24px;">
+    <div style="font-size:13px;color:var(--text-dim);">🎯 <strong style="color:var(--text)">优先行业</strong>：新消费 · 美妆个护 · 消费电子 · 服饰潮流 · 教育 · 跨境电商 · B2B SaaS · 文化IP</div>
+    <div style="font-size:13px;color:var(--text-dim);">📋 <strong style="color:var(--text)">理想客户</strong>：年营销预算 500 万以上，有品牌升级或全球化需求</div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 13 — 2026 路线图
+══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s13">
+  <div class="slide-num">13 / 15</div>
+
+  <h2 class="title">2026 <span class="fire">执行路线图</span></h2>
+  <p class="lead" style="margin-bottom: 28px;">每个节点都有可验证的里程碑，不是愿景，而是可交付的结果。</p>
+
+  <div class="timeline">
+    <div class="milestone">
+      <div class="ms-time"><div class="ms-q">Q2 2026</div><div class="ms-year">当前阶段</div></div>
+      <div class="ms-body">
+        <div class="ms-title">MVP & 设计客户验证</div>
+        <div class="ms-desc">跑通 AI 可见度诊断 Demo、品牌知识库搭建流程、VibeArt 内容生成 Demo，完成 3–5 家设计客户首次付费。</div>
+        <div class="ms-tags"><span class="tag fire">AI 诊断 Demo</span><span class="tag gray">首批付费客户</span></div>
+      </div>
+    </div>
+    <div class="milestone highlight">
+      <div class="ms-time"><div class="ms-q">Q3 2026</div></div>
+      <div class="ms-body">
+        <div class="ms-title">BrandNova 国内版 PMF</div>
+        <div class="ms-desc">完成付费客户验证，形成产品商业化运营闭环，启动国内主体。20+ 付费试点客户，90 天内 AI 可见度或内容效率有可量化提升。</div>
+        <div class="ms-tags"><span class="tag fire">20+ 付费客户</span><span class="tag gold">国内 PMF</span></div>
+      </div>
+    </div>
+    <div class="milestone highlight">
+      <div class="ms-time"><div class="ms-q">Q4 2026</div></div>
+      <div class="ms-body">
+        <div class="ms-title">BrandNova 国际版 PMF + VibeArt 上线</div>
+        <div class="ms-desc">完成海外 AI 搜索与多语言品牌运营验证，香港主体承接国际业务；将创意营销视频制作流程标准化，集成到 BrandNova 并推出 VibeArt 独立版本。</div>
+        <div class="ms-tags"><span class="tag teal">国际 PMF</span><span class="tag purple">VibeArt 上线</span></div>
+      </div>
+    </div>
+    <div class="milestone" style="border: 1px solid rgba(255,77,28,0.3); background: rgba(255,77,28,0.04);">
+      <div class="ms-time"><div class="ms-q">2026 年底</div></div>
+      <div class="ms-body">
+        <div class="ms-title" style="color: var(--fire);">商业化目标</div>
+        <div class="ms-desc">服务/成交 <strong style="color:var(--text)">100+ 品牌企业</strong>，实现 <strong style="color:var(--fire);">1000 万级人民币 ARR</strong>，团队控制在 10 人以内，验证 AI-native 高人效模型。</div>
+        <div class="ms-tags"><span class="tag fire">1000万 ARR</span><span class="tag gold">100+ 品牌客户</span><span class="tag gray">≤10人团队</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 14 — 团队
+══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s14">
+  <div class="slide-num">14 / 15</div>
+
+  <h2 class="title">团队<br>AI · 艺术 · 营销 · 知识产权 · 商业化的<span class="fire">稀缺组合</span></h2>
+  <p class="lead" style="margin-bottom: 28px;">既不是纯技术团队，也不是传统广告团队——我们同时理解 AI、审美、品牌、营销和知识产权。</p>
+
+  <div class="three-col" style="flex: 1; gap: 24px;">
+    <div class="team-card">
+      <div class="team-avatar">🎓</div>
+      <div class="team-name">懂 AI 的艺考状元</div>
+      <div class="team-role">创意 & 用户洞察</div>
+      <div class="team-bio">理解审美、视觉表达、创意判断和年轻用户的感知逻辑。能把品牌理念转化为令人记住的创意语言，是 VibeArt 的灵魂驱动力。</div>
+    </div>
+    <div class="team-card" style="border-color: rgba(255,77,28,0.3);">
+      <div class="team-avatar" style="background: linear-gradient(135deg, var(--fire), var(--gold));">🤖</div>
+      <div class="team-name">懂艺术的 AI 大模型专家</div>
+      <div class="team-role">技术 & 产品</div>
+      <div class="team-bio">能把大模型能力转化为品牌策略、智能体工作流和可落地产品。AI 能力与艺术审美双修，构建 BrandNova 的技术底座和 VibeArt 的生成能力。</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar" style="background: linear-gradient(135deg, var(--teal), var(--purple));">⚖️</div>
+      <div class="team-name">懂商业的知识产权专家</div>
+      <div class="team-role">商业化 & 合规</div>
+      <div class="team-bio">处理品牌资产、版权、商标、内容合规、IP 商业化和全球化法律风险。是出海品牌服务不可或缺的安全底线，也是打开客户信任的关键信用背书。</div>
+    </div>
+  </div>
+
+  <div class="quote-block" style="margin-top: 24px; padding: 24px 32px;">
+    <div class="quote-text" style="font-size: 16px;">
+      我们用 AI Agent 重构研发、销售、内容、交付和客户成功流程，持续提升每人 ARR。这是 <span class="fire">Byfire AI 的组织实验</span>，也是我们认为最重要的长期优势。
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 15 — 融资计划
+══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s15">
+  <div class="slide-num">15 / 15</div>
+
+  <h2 class="title">融资计划<br><span class="fire">天使轮 / 种子轮</span></h2>
+
+  <div class="two-col" style="flex: 1; align-items: start;">
+    <div>
+      <h3 class="sub">资金用途分配</h3>
+      <div style="margin-top: 16px;">
+        <div class="fund-row">
+          <div class="fund-name">🛠 产品研发</div>
+          <div class="fund-pct">40%</div>
+          <div class="fund-bar-wrap"><div class="fund-bar" style="width:40%"></div></div>
+        </div>
+        <div class="fund-row">
+          <div class="fund-name">📣 市场与销售</div>
+          <div class="fund-pct">30%</div>
+          <div class="fund-bar-wrap"><div class="fund-bar" style="width:30%"></div></div>
+        </div>
+        <div class="fund-row">
+          <div class="fund-name">☁️ AI 与数据成本</div>
+          <div class="fund-pct">15%</div>
+          <div class="fund-bar-wrap"><div class="fund-bar" style="width:15%"></div></div>
+        </div>
+        <div class="fund-row">
+          <div class="fund-name">🌐 生态与内容</div>
+          <div class="fund-pct">10%</div>
+          <div class="fund-bar-wrap"><div class="fund-bar" style="width:10%"></div></div>
+        </div>
+        <div class="fund-row">
+          <div class="fund-name">⚖️ 合规与知识产权</div>
+          <div class="fund-pct">5%</div>
+          <div class="fund-bar-wrap"><div class="fund-bar" style="width:5%"></div></div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;font-size:13px;color:var(--text-dim);line-height:1.7;">
+        <div>· 产品研发：BrandNova、VibeArt、数据看板、智能体工作流</div>
+        <div>· 市场与销售：设计客户、渠道合作、品牌诊断报告获客</div>
+        <div>· AI 与数据：模型调用、数据采集、监测系统、内容生成基础设施</div>
+        <div>· 生态与内容：创意人才网络、行业模板、品牌案例</div>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="sub">18 个月里程碑</h3>
+      <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+        <div class="card" style="padding: 16px 20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div style="font-size:14px;font-weight:700;color:var(--text);">BrandNova 国内 + 国际版 PMF</div>
+            <span class="tag fire">核心</span>
+          </div>
+          <div style="font-size:13px;color:var(--text-dim);">完成两个市场的产品商业化验证</div>
+        </div>
+        <div class="card" style="padding: 16px 20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div style="font-size:14px;font-weight:700;color:var(--text);">VibeArt 独立版本上线</div>
+            <span class="tag teal">产品</span>
+          </div>
+          <div style="font-size:13px;color:var(--text-dim);">将创意营销视频制作流程标准化</div>
+        </div>
+        <div class="card" style="padding: 16px 20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div style="font-size:14px;font-weight:700;color:var(--text);">成交 100+ 品牌企业</div>
+            <span class="tag gold">商业化</span>
+          </div>
+          <div style="font-size:13px;color:var(--text-dim);">覆盖 3 个以上可复制行业场景</div>
+        </div>
+        <div class="card fire-border" style="padding: 16px 20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div style="font-size:15px;font-weight:800;color:var(--fire);">实现 1000 万人民币 ARR</div>
+            <span class="tag fire">目标</span>
+          </div>
+          <div style="font-size:13px;color:var(--text-dim);">团队控制在 10 人以内，验证 AI-native 高人效模型</div>
+        </div>
+      </div>
+
+      <div class="quote-block" style="margin-top: 20px; padding: 20px 24px;">
+        <div class="quote-text" style="font-size: 15px;">
+          我们不是从抽象的人才平台开始，而是从<span class="fire">品牌客户的真实付费需求切入</span>，逐步把创意能力、AI 智能体和全球化品牌需求连接成全球人才价值流动的基础设施。
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  const navDots = document.getElementById('navDots');
+  const counter = document.getElementById('slideCounter');
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    navDots.appendChild(d);
+  });
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    document.querySelectorAll('.nav-dot')[current].classList.remove('active');
+    current = Math.max(0, Math.min(n, total - 1));
+    slides[current].classList.add('active');
+    document.querySelectorAll('.nav-dot')[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + total;
+    window.scrollTo(0, 0);
+  }
+
+  function nextSlide() { goTo(current + 1); }
+  function prevSlide() { goTo(current - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prevSlide(); }
+  });
+
+  // Touch / swipe
+  let tx = 0;
+  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    const dx = tx - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 50) dx > 0 ? nextSlide() : prevSlide();
+  });
+</script>
+</body>
+</html>
