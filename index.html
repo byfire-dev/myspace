@@ -679,6 +679,10 @@
       transition: background 0.15s, transform 0.15s;
     }
 
+    .doc-card[hidden] {
+      display: none !important;
+    }
+
     .doc-card:hover {
       background: var(--paper-2);
       transform: translateY(-2px);
@@ -1652,7 +1656,7 @@
               <span class="doc-arrow" aria-hidden="true">→</span>
             </div>
           </a>
-          <a class="doc-card" href="brandnova-os/" aria-label="查看 BrandNova OS 经验文档">
+          <a class="doc-card" href="brandnova-os/" aria-label="查看 BrandNova OS 经验文档" hidden aria-hidden="true">
             <div class="doc-meta">
               <span>Experience Note</span>
               <span>Investor Deck</span>
@@ -1673,7 +1677,7 @@
               <span class="doc-arrow" aria-hidden="true">→</span>
             </div>
           </a>
-          <a class="doc-card" href="vibeart-os/" aria-label="查看 VibeArt OS 经验文档">
+          <a class="doc-card" href="vibeart-os/" aria-label="查看 VibeArt OS 经验文档" hidden aria-hidden="true">
             <div class="doc-meta">
               <span>Experience Note</span>
               <span>BP v2</span>
