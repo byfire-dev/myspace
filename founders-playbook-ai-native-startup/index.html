@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 原生创业者作战手册</title>
+<meta name="description" content="基于 The Founder's Playbook: Building an AI-Native Startup 重构的中文经验文档：从 Idea、MVP、Launch 到 Scale 的 AI 原生创业路线图。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #111111;
+    --ink-soft: #34322f;
+    --paper: #f5f0e8;
+    --paper-deep: #ebe1d1;
+    --paper-line: #d8c8b2;
+    --red: #c8261d;
+    --red-deep: #8f1e18;
+    --gold: #c59a45;
+    --blue: #1f5f82;
+    --green: #476f52;
+    --max: 1180px;
+    --serif: "Noto Serif SC", serif;
+    --sans: "Noto Sans SC", sans-serif;
+    --mono: "JetBrains Mono", monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    min-height: 100vh;
+    background:
+      linear-gradient(90deg, rgba(17,17,17,0.04) 1px, transparent 1px),
+      linear-gradient(rgba(17,17,17,0.035) 1px, transparent 1px),
+      var(--paper);
+    background-size: 44px 44px;
+    color: var(--ink);
+    font-family: var(--serif);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+    opacity: 0.75;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .wrap {
+    width: min(calc(100% - 40px), var(--max));
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(245,240,232,0.94);
+    border-bottom: 1px solid rgba(17,17,17,0.2);
+    backdrop-filter: blur(12px);
+  }
+
+  .topbar-inner {
+    min-height: 54px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .brand {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--red);
+  }
+
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: rgba(17,17,17,0.58);
+  }
+
+  .nav a:hover { color: var(--red); }
+
+  .hero {
+    padding: 58px 0 64px;
+    border-bottom: 6px solid var(--ink);
+  }
+
+  .hero-frame {
+    border: 6px solid var(--red);
+    background: var(--paper);
+    display: grid;
+    grid-template-columns: 1.25fr 0.75fr;
+    min-height: 620px;
+  }
+
+  .hero-main {
+    padding: 46px 50px;
+    border-right: 1px solid var(--paper-line);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 40px;
+    min-width: 0;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--red);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin-top: 22px;
+    font-family: var(--sans);
+    font-size: 4.7rem;
+    line-height: 0.96;
+    font-weight: 900;
+  }
+
+  .subtitle {
+    margin-top: 24px;
+    max-width: 760px;
+    color: var(--ink-soft);
+    font-size: 1.18rem;
+    line-height: 1.9;
+  }
+
+  .hero-meta {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--paper-line);
+    border-left: 1px solid var(--paper-line);
+  }
+
+  .meta-cell {
+    min-height: 110px;
+    padding: 16px 14px;
+    border-right: 1px solid var(--paper-line);
+    border-bottom: 1px solid var(--paper-line);
+  }
+
+  .meta-label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    color: var(--red);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .meta-value {
+    display: block;
+    font-family: var(--sans);
+    font-size: 1.02rem;
+    font-weight: 900;
+    line-height: 1.35;
+  }
+
+  .hero-side {
+    padding: 42px 36px;
+    background: #151515;
+    color: var(--paper);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 28px;
+    min-width: 0;
+  }
+
+  .side-title {
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    color: var(--gold);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .thesis {
+    font-size: 1.52rem;
+    line-height: 1.55;
+    font-weight: 700;
+  }
+
+  .thesis strong { color: var(--gold); }
+
+  .stage-stack {
+    display: grid;
+    gap: 12px;
+  }
+
+  .stage-chip {
+    border: 1px solid rgba(245,240,232,0.22);
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .stage-chip span:last-child { color: var(--gold); }
+
+  .download {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 16px;
+    border: 1px solid rgba(245,240,232,0.38);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .download:hover {
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .section {
+    padding: 74px 0;
+    border-bottom: 1px solid rgba(17,17,17,0.18);
+  }
+
+  .section-head {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: 36px;
+    align-items: start;
+    margin-bottom: 38px;
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    color: var(--red);
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding-top: 11px;
+    border-top: 3px solid var(--red);
+  }
+
+  h2 {
+    font-family: var(--sans);
+    font-size: 2.65rem;
+    line-height: 1.15;
+    font-weight: 900;
+  }
+
+  .lead {
+    margin-top: 18px;
+    max-width: 820px;
+    color: var(--ink-soft);
+    font-size: 1.08rem;
+    line-height: 1.95;
+  }
+
+  .matrix {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 2px solid var(--ink);
+    border-left: 1px solid var(--paper-line);
+  }
+
+  .matrix-cell {
+    min-height: 300px;
+    padding: 24px 20px;
+    background: rgba(255,255,255,0.22);
+    border-right: 1px solid var(--paper-line);
+    border-bottom: 1px solid var(--paper-line);
+    min-width: 0;
+  }
+
+  .matrix-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--red);
+    font-weight: 700;
+    margin-bottom: 18px;
+  }
+
+  .matrix-cell h3 {
+    font-family: var(--sans);
+    font-size: 1.36rem;
+    line-height: 1.35;
+    margin-bottom: 12px;
+  }
+
+  .matrix-cell p,
+  .matrix-cell li {
+    color: var(--ink-soft);
+    font-size: 0.94rem;
+    line-height: 1.8;
+  }
+
+  ul { list-style: none; }
+
+  .plain-list li {
+    position: relative;
+    padding-left: 18px;
+    margin-top: 8px;
+  }
+
+  .plain-list li::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    background: var(--red);
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+  }
+
+  .black-band {
+    background: #151515;
+    color: var(--paper);
+  }
+
+  .black-band .lead,
+  .black-band .matrix-cell p,
+  .black-band .matrix-cell li { color: rgba(245,240,232,0.76); }
+
+  .black-band .matrix-cell {
+    background: rgba(255,255,255,0.035);
+    border-color: rgba(245,240,232,0.16);
+  }
+
+  .black-band .matrix { border-color: var(--gold); }
+  .black-band .section-num { color: var(--gold); border-color: var(--gold); }
+  .black-band .matrix-label { color: var(--gold); }
+
+  .stage {
+    display: grid;
+    grid-template-columns: 0.82fr 1.18fr;
+    gap: 34px;
+    align-items: start;
+    padding: 42px 0;
+    border-top: 1px solid rgba(17,17,17,0.18);
+  }
+
+  .stage:first-of-type { border-top: 2px solid var(--ink); }
+
+  .stage-kicker {
+    font-family: var(--mono);
+    color: var(--red);
+    font-size: 0.76rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  .stage h3 {
+    font-family: var(--sans);
+    font-size: 2.2rem;
+    line-height: 1.12;
+    font-weight: 900;
+    margin-bottom: 16px;
+  }
+
+  .stage-summary {
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.9;
+  }
+
+  .stage-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--paper-line);
+    border-left: 1px solid var(--paper-line);
+  }
+
+  .stage-box {
+    min-height: 230px;
+    padding: 18px 18px 20px;
+    border-right: 1px solid var(--paper-line);
+    border-bottom: 1px solid var(--paper-line);
+    background: rgba(255,255,255,0.24);
+    min-width: 0;
+  }
+
+  .stage-box h4 {
+    font-family: var(--mono);
+    color: var(--red-deep);
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .stage-box p,
+  .stage-box li {
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.76;
+  }
+
+  .playbook {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .play {
+    border: 1px solid var(--paper-line);
+    border-top: 4px solid var(--red);
+    background: rgba(255,255,255,0.26);
+    padding: 24px;
+    min-height: 230px;
+    min-width: 0;
+  }
+
+  .play h3 {
+    font-family: var(--sans);
+    font-size: 1.35rem;
+    margin-bottom: 12px;
+  }
+
+  .play p {
+    color: var(--ink-soft);
+    line-height: 1.85;
+    font-size: 0.98rem;
+  }
+
+  .quote-strip {
+    border-top: 6px solid var(--red);
+    border-bottom: 6px solid var(--red);
+    padding: 44px 0;
+    margin: 24px 0 8px;
+  }
+
+  .quote-strip p {
+    font-family: var(--sans);
+    font-size: 2.2rem;
+    line-height: 1.32;
+    font-weight: 900;
+    max-width: 980px;
+  }
+
+  .resources {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+  }
+
+  .resource-group {
+    border: 1px solid rgba(245,240,232,0.18);
+    padding: 22px;
+    min-height: 260px;
+    min-width: 0;
+  }
+
+  .resource-group h3 {
+    font-family: var(--sans);
+    color: var(--gold);
+    font-size: 1.15rem;
+    margin-bottom: 14px;
+  }
+
+  .resource-group li {
+    color: rgba(245,240,232,0.76);
+    font-size: 0.92rem;
+    line-height: 1.75;
+    margin-top: 10px;
+  }
+
+  .footer {
+    padding: 34px 0 46px;
+    font-family: var(--mono);
+    color: rgba(17,17,17,0.56);
+    font-size: 0.72rem;
+  }
+
+  @media (max-width: 980px) {
+    .hero-frame,
+    .stage,
+    .section-head {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-main { border-right: 0; border-bottom: 1px solid var(--paper-line); }
+    h1 { font-size: 3.2rem; }
+    .matrix { grid-template-columns: repeat(2, 1fr); }
+    .stage-grid,
+    .resources { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 640px) {
+    * { min-width: 0; }
+    .wrap { width: min(calc(100% - 24px), var(--max)); }
+    .topbar-inner { align-items: flex-start; flex-direction: column; padding: 12px 0; }
+    .nav { gap: 10px; }
+    .hero { padding: 22px 0 30px; }
+    .hero-frame { display: block; border-width: 4px; min-height: auto; overflow: hidden; }
+    .hero-main,
+    .hero-side { padding: 28px 22px; }
+    h1 { font-size: 2.05rem; line-height: 1.12; }
+    h2 { font-size: 2rem; }
+    h1,
+    h2,
+    .thesis,
+    .subtitle,
+    .lead,
+    .meta-value,
+    .matrix-cell,
+    .stage-box,
+    .play,
+    .quote-strip p {
+      overflow-wrap: anywhere;
+      word-break: break-all;
+      line-break: anywhere;
+    }
+    .thesis,
+    .thesis strong {
+      font-size: 1.16rem;
+      overflow-wrap: anywhere;
+      word-break: break-all;
+      line-break: anywhere;
+    }
+    .stage-chip { display: grid; grid-template-columns: 1fr; }
+    .subtitle,
+    .lead { font-size: 1rem; }
+    .hero-meta,
+    .matrix,
+    .playbook { grid-template-columns: 1fr; }
+    .section { padding: 52px 0; }
+    .quote-strip p { font-size: 1.55rem; }
+  }
+
+  @media (max-width: 520px) {
+    .wrap {
+      width: min(300px, calc(100% - 24px));
+    }
+  }
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="../">BYFIRE.AI / EXPERIENCE NOTE</a>
+      <nav class="nav" aria-label="文档导航">
+        <a href="#model">MODEL</a>
+        <a href="#stages">STAGES</a>
+        <a href="#claude">CLAUDE</a>
+        <a href="#resources">RESOURCES</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero-frame">
+          <div class="hero-main">
+            <div>
+              <div class="eyebrow">AI-NATIVE STARTUP / 2026 PLAYBOOK</div>
+              <h1>AI 原生创业者作战手册</h1>
+              <p class="subtitle">
+                这不是一份“怎么用 AI 做更多事”的工具清单，而是一张创业生命周期的新地图：当研究、编码、运营都可以被 AI 放大，创始人真正稀缺的能力变成判断、取舍、编排和持续校准。
+              </p>
+            </div>
+            <div class="hero-meta">
+              <div class="meta-cell">
+                <span class="meta-label">SOURCE</span>
+                <span class="meta-value">Founder's Playbook</span>
+              </div>
+              <div class="meta-cell">
+                <span class="meta-label">SCOPE</span>
+                <span class="meta-value">Idea / MVP / Launch / Scale</span>
+              </div>
+              <div class="meta-cell">
+                <span class="meta-label">FORMAT</span>
+                <span class="meta-value">中文重构版经验文档</span>
+              </div>
+              <div class="meta-cell">
+                <span class="meta-label">CORE</span>
+                <span class="meta-value">AI 是基础设施，不是外挂</span>
+              </div>
+            </div>
+          </div>
+
+          <aside class="hero-side">
+            <div>
+              <div class="side-title">The new bottleneck</div>
+              <p class="thesis">
+                AI 把“能不能做”压缩成低成本问题，创始人的瓶颈转移到：<strong>该不该做、先做什么、做到什么程度、何时停止。</strong>
+              </p>
+            </div>
+            <div class="stage-stack" aria-label="创业阶段">
+              <div class="stage-chip"><span>01 IDEA</span><span>证据先于原型</span></div>
+              <div class="stage-chip"><span>02 MVP</span><span>范围先于速度</span></div>
+              <div class="stage-chip"><span>03 LAUNCH</span><span>系统先于增长</span></div>
+              <div class="stage-chip"><span>04 SCALE</span><span>护城河先于规模</span></div>
+            </div>
+            <a class="download" href="../docs/The%20founder%27s%20playbook%20-%20Building%20an%20AI-native%20startup.pdf">打开原始 PDF</a>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="model">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-num">§ 01</div>
+          <div>
+            <h2>创业生命周期被重新压缩</h2>
+            <p class="lead">
+              传统路径默认每进入一个新阶段，就需要更多融资、更多团队、更多专业角色。AI 原生公司把这个假设拆掉：研究可以由 AI 做深，产品可以由编码 Agent 快速构建，运营可以由自动化工作流承担。团队变小，但系统能力变大。
+            </p>
+          </div>
+        </div>
+
+        <div class="matrix" aria-label="AI 原生创业模型">
+          <div class="matrix-cell">
+            <div class="matrix-label">RESEARCH</div>
+            <h3>随叫随到的领域专家</h3>
+            <p>竞争分析、市场规模、投资人备忘录、客户访谈提纲、反方论证，都可以在早期被系统化产出。关键不在“让 AI 证明我对”，而在让它找出我错在哪里。</p>
+          </div>
+          <div class="matrix-cell">
+            <div class="matrix-label">BUILD</div>
+            <h3>不再被工程门槛卡住</h3>
+            <p>非技术创始人可以用自然语言推动真实代码、测试、调试和重构。技术创始人也可以把 GTM、财务模型、销售材料等非工程工作补齐。</p>
+          </div>
+          <div class="matrix-cell">
+            <div class="matrix-label">OPERATE</div>
+            <h3>自动化的早期运营层</h3>
+            <p>CRM 更新、周报、客户反馈、文档同步、合规追踪和日程协调，不再都压在创始人身上。运营能力可以先被系统化，再决定是否招聘。</p>
+          </div>
+          <div class="matrix-cell">
+            <div class="matrix-label">ORCHESTRATE</div>
+            <h3>创始人成为编排者</h3>
+            <p>创始人的角色从亲自执行转向设定方向、定义约束、校准证据、组织 Agent 和小团队共同工作。真正重要的是判断系统该朝哪里走。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section black-band">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-num">§ 02</div>
+          <div>
+            <h2>新规则：构建越容易，验证越不能省</h2>
+            <p class="lead">
+              AI 让产品看起来更快成形，也让错误方向更快固化。2026 年的创始人不应该把“我已经做出来了”误读为“市场已经验证了”。原型是访谈道具，不是证据本身。
+            </p>
+          </div>
+        </div>
+
+        <div class="matrix">
+          <div class="matrix-cell">
+            <div class="matrix-label">DANGER 01</div>
+            <h3>把构建误当验证</h3>
+            <p>工作原型可以帮你获得真实反应，但不能替代用户访谈、问题频率、替代方案和付费意愿。先证明问题真实，再让 AI 扩大执行。</p>
+          </div>
+          <div class="matrix-cell">
+            <div class="matrix-label">DANGER 02</div>
+            <h3>过早扩大执行</h3>
+            <p>编码 Agent 会同样热情地围绕一个错误假设生成、测试和重构代码。这个阶段的第一原则是：理解速度必须领先构建速度。</p>
+          </div>
+          <div class="matrix-cell">
+            <div class="matrix-label">DANGER 03</div>
+            <h3>确认偏误被研究引擎放大</h3>
+            <p>你让 AI 找支持证据，它就能找出一套看似严谨的论证。反过来使用它：让 AI 主动寻找反证、失败案例、替代解释和结构性障碍。</p>
+          </div>
+          <div class="matrix-cell">
+            <div class="matrix-label">DANGER 04</div>
+            <h3>速度掩盖安全与债务</h3>
+            <p>能运行不等于能上线。AI 生成的功能代码需要架构边界、测试、权限、数据暴露检查和安全复核，否则技术债会以倍速复利。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="stages">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-num">§ 03</div>
+          <div>
+            <h2>四个阶段的创始人路线图</h2>
+            <p class="lead">
+              每个阶段的 AI 用法都不同。Idea 阶段 AI 是研究和反方辩手，MVP 阶段 AI 是受约束的施工队，Launch 阶段 AI 是产品和公司系统化的操作层，Scale 阶段 AI 是把知识、数据和工作流复利成护城河的基础设施。
+            </p>
+          </div>
+        </div>
+
+        <article class="stage">
+          <div>
+            <div class="stage-kicker">01 / IDEA STAGE</div>
+            <h3>先找到真实问题，再让 AI 写第一行代码</h3>
+            <p class="stage-summary">
+              目标不是“尽快做个东西”，而是建立足够证据：问题真实、具体、高频，有明确人群正在被它折磨，并且你的方案真的解决了验证过程发现的问题。
+            </p>
+          </div>
+          <div class="stage-grid">
+            <div class="stage-box">
+              <h4>退出标准</h4>
+              <ul class="plain-list">
+                <li>能说清谁遇到问题、频率多高、影响多重。</li>
+                <li>方案解决的是访谈揭示的问题，不只是最初假设。</li>
+                <li>有足够定性信号支撑进入 MVP，而不是凭信仰开工。</li>
+              </ul>
+            </div>
+            <div class="stage-box">
+              <h4>关键动作</h4>
+              <ul class="plain-list">
+                <li>把模糊观察改写成可检验假设。</li>
+                <li>让 AI 绘制竞争格局，并替竞争对手辩护。</li>
+                <li>设计不诱导受访者的用户访谈问题。</li>
+              </ul>
+            </div>
+            <div class="stage-box">
+              <h4>AI 的位置</h4>
+              <p>用 Chat 做快速推敲，用 Claude Cowork 汇总访谈、评论和市场资料，用 Claude Code 只构建最小交互原型，作为下一轮访谈道具。</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="stage">
+          <div>
+            <div class="stage-kicker">02 / MVP STAGE</div>
+            <h3>把验证过的问题变成可学习的最小产品</h3>
+            <p class="stage-summary">
+              MVP 仍然不是完整产品，而是关于解决方案的证据收集机器。你要证明一群可识别用户愿意使用、回来、付费或推荐，同时避免让 AI 速度制造结构混乱。
+            </p>
+          </div>
+          <div class="stage-grid">
+            <div class="stage-box">
+              <h4>退出标准</h4>
+              <ul class="plain-list">
+                <li>留存、收入或推荐中至少出现可重复的 PMF 信号。</li>
+                <li>核心架构和范围被文档化，后续会话不需要反复解释。</li>
+                <li>上线前完成基础安全、权限、输入校验和依赖检查。</li>
+              </ul>
+            </div>
+            <div class="stage-box">
+              <h4>关键动作</h4>
+              <ul class="plain-list">
+                <li>先写架构原则、依赖约束、MVP 范围和新增功能准入标准。</li>
+                <li>建立 Day 7、Day 30、激活和留存指标。</li>
+                <li>每轮迭代只朝证据前进，不朝“功能完整”前进。</li>
+              </ul>
+            </div>
+            <div class="stage-box">
+              <h4>AI 的位置</h4>
+              <p>Claude 负责定义架构和范围，Claude Code 在这些边界内执行，Claude Cowork 维护早期用户反馈、访谈排期和每周综合报告。</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="stage">
+          <div>
+            <div class="stage-kicker">03 / LAUNCH STAGE</div>
+            <h3>从产品能用，走向业务能增长</h3>
+            <p class="stage-summary">
+              Launch 阶段要证明的不只是产品存在价值，而是公司值得增长：获客可重复、基础设施能承受生产负载、运营不再依赖创始人亲自记住每件事。
+            </p>
+          </div>
+          <div class="stage-grid">
+            <div class="stage-box">
+              <h4>退出标准</h4>
+              <ul class="plain-list">
+                <li>增长来自可解释渠道，CAC、LTV、回本周期可被捍卫。</li>
+                <li>可靠性、安全、合规和生产工作负载准备就绪。</li>
+                <li>支持、分诊、计划、报告等流程不再被创始人卡住。</li>
+              </ul>
+            </div>
+            <div class="stage-box">
+              <h4>关键动作</h4>
+              <ul class="plain-list">
+                <li>做一次架构审计，优先偿还会阻碍下一阶段的债务。</li>
+                <li>盘点所有创始人亲自处理的任务，分类为自动化、委派和保留。</li>
+                <li>把产品管理、缺陷分诊、周报、用户反馈循环变成固定系统。</li>
+              </ul>
+            </div>
+            <div class="stage-box">
+              <h4>AI 的位置</h4>
+              <p>Claude Code 做技术债、测试和安全审计；Claude 负责排序和制度设计；Claude Cowork 运行周期性运营流程，让小团队具备大公司节奏。</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="stage">
+          <div>
+            <div class="stage-kicker">04 / SCALE STAGE</div>
+            <h3>把知识、数据和工作流复利成护城河</h3>
+            <p class="stage-summary">
+              Scale 阶段的创始人从 builder 转向面向外部的经营者。产品仍是核心，但组织治理、合规、财务控制、企业采购信任、资本市场叙事都成为公司能否持续的部分。
+            </p>
+          </div>
+          <div class="stage-grid">
+            <div class="stage-box">
+              <h4>退出标准</h4>
+              <ul class="plain-list">
+                <li>公司即使不依赖创始人日常介入，也能持续增长。</li>
+                <li>治理、合规、审计和可靠性经得起外部审查。</li>
+                <li>面对资金充足的复制者，用户仍有充分理由留下。</li>
+              </ul>
+            </div>
+            <div class="stage-box">
+              <h4>关键动作</h4>
+              <ul class="plain-list">
+                <li>识别创始人脑中的制度知识，把它变成可审计、可转移的系统。</li>
+                <li>构建企业级文档、SLA、支持流程、监控和事件响应。</li>
+                <li>建立真正的 GTM：分层市场、信息架构、销售剧本和分析师叙事。</li>
+              </ul>
+            </div>
+            <div class="stage-box">
+              <h4>AI 的位置</h4>
+              <p>Claude 整理领域知识和战略叙事，Claude Code 做集成、API、Demo 环境和可靠性工程，Claude Cowork 运行支持、续约、报告和 GTM 节奏。</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section black-band" id="claude">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-num">§ 04</div>
+          <div>
+            <h2>三种 Claude 表面的正确分工</h2>
+            <p class="lead">
+              底层模型相同，差别在工作空间。把任务放错位置，会把 AI 能力变成噪声；把任务放对位置，才会形成持续复利。
+            </p>
+          </div>
+        </div>
+
+        <div class="matrix">
+          <div class="matrix-cell">
+            <div class="matrix-label">CHAT</div>
+            <h3>快速问题、改写、脑暴</h3>
+            <p>适合不用离开当前应用的小任务：提炼一句结论、检查一个主张、整理一段长讨论、快速生成反方观点。</p>
+          </div>
+          <div class="matrix-cell">
+            <div class="matrix-label">CLAUDE COWORK</div>
+            <h3>跨文件、跨系统的完整知识工作</h3>
+            <p>适合从资料夹、表格、CRM、日历、邮件和数据源中产出完成品：研究报告、周报、客户访谈综合、竞争格局、固定周期任务。</p>
+          </div>
+          <div class="matrix-cell">
+            <div class="matrix-label">CLAUDE CODE</div>
+            <h3>写、测、改、发真实软件</h3>
+            <p>适合接触代码库的工作：生成代码、迁移旧系统、修复缺陷、做安全审计、补测试、维护架构上下文和版本控制流程。</p>
+          </div>
+          <div class="matrix-cell">
+            <div class="matrix-label">FOUNDER</div>
+            <h3>定义问题、判断证据、设定边界</h3>
+            <p>AI 可以执行和反驳，但不能替你承担方向责任。创始人必须决定目标、约束、退出标准，以及什么时候该停、改、转向。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-num">§ 05</div>
+          <div>
+            <h2>把手册落地成 8 个创始人动作</h2>
+            <p class="lead">
+              原文的练习可以合并成一套更可执行的循环：每次推进阶段前，都先把假设、证据、边界和系统写下来，再让 AI 扩大执行。
+            </p>
+          </div>
+        </div>
+
+        <div class="playbook">
+          <div class="play">
+            <h3>1. 把问题写成可证伪假设</h3>
+            <p>不要写“大家报销很痛苦”，要写“某类公司里的某类角色，每周因为某个流程断点损失多少时间”。越具体，越能验证。</p>
+          </div>
+          <div class="play">
+            <h3>2. 让 AI 主动反驳你</h3>
+            <p>要求 AI 找失败竞品、替代方案、负面信号、预算阻力和错误市场规模假设。它越能推翻你，你越接近真实判断。</p>
+          </div>
+          <div class="play">
+            <h3>3. 先审访谈问题，再访谈用户</h3>
+            <p>让 AI 标出诱导性、未来式、过宽泛、容易得到礼貌答案的问题，并补充追问。访谈要问过去真实行为，不问未来想象。</p>
+          </div>
+          <div class="play">
+            <h3>4. 只构建核心交互原型</h3>
+            <p>Idea 末尾的原型只服务下一轮反馈。不要把它包装成产品，也不要让它替代人对解决方案的真实反应。</p>
+          </div>
+          <div class="play">
+            <h3>5. 写下架构和范围边界</h3>
+            <p>在 Claude Code 开工前，写清依赖、模式、取舍、禁止事项、MVP 不做什么，以及新增功能需要哪类用户证据。</p>
+          </div>
+          <div class="play">
+            <h3>6. 上线前做安全复核</h3>
+            <p>认证、会话、API 数据暴露、输入校验、注入风险、依赖漏洞和密钥管理，是真实用户触达前的最低门槛。</p>
+          </div>
+          <div class="play">
+            <h3>7. 把创始人注意力做成流程图</h3>
+            <p>列出每个必须经过你的任务和决策，标记可自动化、可委派、必须保留。凡是你缺席一周就停摆的流程，都要重构。</p>
+          </div>
+          <div class="play">
+            <h3>8. 把领域知识变成护城河</h3>
+            <p>把行业术语、监管细节、边缘案例、用户选择和拒绝行为写入可搜索上下文、测试场景、数据反馈和集成工作流。</p>
+          </div>
+        </div>
+
+        <div class="quote-strip">
+          <p>AI 时代，创始人的工作没有变：找到真实问题，做出有效解法，把它扩展成重要公司。变的是路径：季度被压缩成周，瓶颈从“能不能做”变成“该做什么”。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section black-band" id="resources">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-num">§ 06</div>
+          <div>
+            <h2>资源索引的中文重排</h2>
+            <p class="lead">
+              原 PDF 的资源可以分成三组：学习 Claude 的构建方式、阅读 AI 原生公司的真实案例、寻找创业支持和社区。
+            </p>
+          </div>
+        </div>
+
+        <div class="resources">
+          <div class="resource-group">
+            <h3>构建方法</h3>
+            <ul>
+              <li>AI Agents for Startups：如何用 Agent 减少创始人依赖。</li>
+              <li>Claude Code 文档与最佳实践：上下文、权限、计划、验证、并行会话。</li>
+              <li>CLAUDE.md：把项目级约束写成 AI 每次都会读取的持久上下文。</li>
+              <li>Claude Cowork 入门：技能、插件、连接器和周期性工作流。</li>
+            </ul>
+          </div>
+          <div class="resource-group">
+            <h3>公司案例</h3>
+            <ul>
+              <li>YC 公司用 Claude Code 把原型更快推向市场。</li>
+              <li>法律、医疗、采购、家护、非营利等垂直场景用 Claude 编排复杂流程。</li>
+              <li>这些案例共同证明：领域知识进入产品系统后，非技术背景也能成为产品优势。</li>
+            </ul>
+          </div>
+          <div class="resource-group">
+            <h3>支持与机会</h3>
+            <ul>
+              <li>Anthropic Startups Program：面向合作 VC 生态中的创业公司。</li>
+              <li>Claude community：与构建者交流问题和实践。</li>
+              <li>Live learning resources：会议、直播、录播和教程。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      中文重构：基于公开 PDF 内容做结构化转写，保留观点脉络，改写为经验文档阅读形态。
+    </div>
+  </footer>
+</body>
+</html>
