@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自建 VPS 代理导入 Clash Verge Rev 全实战指南</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
+
+  :root {
+    --signal-red: #E8294A;
+    --signal-orange: #FF6B35;
+    --deep-blue: #14213D;
+    --mid-blue: #2855A3;
+    --sky-blue: #6B8FD4;
+    --mint: #1E8A66;
+    --amber: #D18A00;
+    --ink: #0D1117;
+    --ink-soft: #2B3245;
+    --slate: #5F667A;
+    --mist: #E9EDF5;
+    --cream: #F8F9FC;
+    --white: #FFFFFF;
+    --page-w: 794px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: #D9DDE7;
+    color: var(--ink);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    width: var(--page-w);
+    min-height: 1123px;
+    margin: 0 auto 32px;
+    background: var(--white);
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+  }
+
+  .print-btn {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 10;
+    border: 1px solid rgba(255,255,255,0.22);
+    background: var(--deep-blue);
+    color: white;
+    padding: 12px 18px;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 14px 32px rgba(13,17,23,0.28);
+  }
+
+  @media print {
+    body { background: white; }
+    .page { margin: 0; page-break-after: always; box-shadow: none; }
+    .print-btn { display: none; }
+    @page { size: A4; margin: 0; }
+  }
+
+  .cover {
+    background: var(--ink);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .cover-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(135deg, rgba(20,33,61,0.96), rgba(13,17,23,0.92)),
+      radial-gradient(ellipse 120% 80% at 112% -10%, rgba(255,107,53,0.36) 0%, transparent 55%),
+      radial-gradient(ellipse 84% 60% at -18% 112%, rgba(40,85,163,0.58) 0%, transparent 52%),
+      radial-gradient(ellipse 56% 36% at 80% 78%, rgba(30,138,102,0.22) 0%, transparent 54%);
+  }
+
+  .cover-noise {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.036'/%3E%3C/svg%3E");
+    opacity: 0.65;
+  }
+
+  .cover-inner {
+    position: relative;
+    z-index: 2;
+    min-height: 1123px;
+    padding: 64px 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .cover-top,
+  .cover-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
+  }
+
+  .cover-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 21px;
+    letter-spacing: 0.14em;
+    color: rgba(255,255,255,0.64);
+  }
+
+  .cover-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    color: rgba(255,255,255,0.46);
+    text-transform: uppercase;
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  .cover-hero {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 0 42px;
+  }
+
+  .cover-eyebrow {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    color: var(--signal-orange);
+    margin-bottom: 28px;
+  }
+
+  .cover-title {
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+    font-size: 62px;
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .cover-title em {
+    font-style: italic;
+    color: #D7E2FF;
+  }
+
+  .cover-subtitle {
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+    font-size: 23px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.58);
+    margin-top: 20px;
+    line-height: 1.5;
+    max-width: 520px;
+  }
+
+  .cover-divider {
+    width: 64px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--signal-orange), transparent);
+    margin: 36px 0;
+  }
+
+  .cover-tagline {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.72);
+    letter-spacing: 0.04em;
+    line-height: 1.9;
+    max-width: 520px;
+  }
+
+  .cover-bottom {
+    align-items: flex-end;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .cover-company {
+    font-size: 11px;
+    color: rgba(255,255,255,0.38);
+    letter-spacing: 0.08em;
+    line-height: 2;
+  }
+
+  .cover-badge {
+    background: rgba(255,107,53,0.14);
+    border: 1px solid rgba(255,107,53,0.42);
+    padding: 8px 18px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--signal-orange);
+    text-transform: uppercase;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .inner { padding: 0; }
+
+  .page-header {
+    display: flex;
+    align-items: stretch;
+    height: 72px;
+    border-bottom: 1px solid var(--mist);
+  }
+
+  .page-header-accent {
+    width: 6px;
+    background: linear-gradient(180deg, var(--signal-orange), var(--mid-blue));
+    flex-shrink: 0;
+  }
+
+  .page-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px 0 28px;
+    flex: 1;
+  }
+
+  .page-title-block {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+
+  .page-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    color: var(--mist);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-right: 16px;
+  }
+
+  .page-section-label {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--signal-orange);
+    font-weight: 600;
+  }
+
+  .page-section-title {
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+
+  .header-mark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 0.12em;
+    color: rgba(40,85,163,0.28);
+  }
+
+  .page-body { padding: 36px 54px 52px 40px; }
+
+  h2 {
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+
+  h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 16px 0 8px;
+  }
+
+  h4 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mid-blue);
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 12.5px;
+    line-height: 1.85;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+
+  .lead {
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--ink);
+    margin-bottom: 18px;
+  }
+
+  .pull-quote {
+    border-left: 3px solid var(--signal-orange);
+    padding: 16px 24px;
+    margin: 20px 0;
+    background: linear-gradient(135deg, rgba(20,33,61,0.04), rgba(255,107,53,0.05));
+  }
+
+  .pull-quote p {
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .callout {
+    background: linear-gradient(135deg, var(--deep-blue), var(--mid-blue));
+    color: white;
+    padding: 24px 28px;
+    margin: 20px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .callout::before {
+    content: '';
+    position: absolute;
+    right: -40px;
+    top: -40px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+
+  .callout p {
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+    font-size: 17px;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.92);
+    margin: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .callout strong { color: white; }
+
+  .s-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 18px 0 14px;
+  }
+
+  .s-divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--mist);
+  }
+
+  .s-divider-label {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--mid-blue);
+    font-weight: 600;
+  }
+
+  .bp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+    margin: 16px 0;
+  }
+
+  .bp-table thead tr {
+    background: var(--deep-blue);
+    color: white;
+  }
+
+  .bp-table th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .bp-table tbody tr {
+    border-bottom: 1px solid var(--mist);
+  }
+
+  .bp-table tbody tr:nth-child(even) {
+    background: var(--cream);
+  }
+
+  .bp-table td {
+    padding: 10px 14px;
+    color: var(--ink-soft);
+    vertical-align: top;
+    line-height: 1.55;
+  }
+
+  .bp-table td:first-child {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    margin: 16px 0;
+  }
+
+  .three-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .step-card {
+    border: 1px solid var(--mist);
+    background: var(--cream);
+    padding: 16px 18px;
+  }
+
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    line-height: 1;
+    color: rgba(40,85,163,0.22);
+    margin-bottom: 6px;
+  }
+
+  .step-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .step-card p {
+    font-size: 11.6px;
+    margin: 0;
+  }
+
+  .feature-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .feature-list li {
+    display: flex;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--mist);
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    align-items: flex-start;
+  }
+
+  .feature-list li:last-child { border-bottom: none; }
+
+  .feature-list li::before {
+    content: '';
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--signal-orange), var(--mid-blue));
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    margin-top: 2px;
+  }
+
+  .feature-list li strong { color: var(--ink); }
+
+  .code-block {
+    background: #0D1117;
+    border: 1px solid rgba(107,143,212,0.25);
+    padding: 18px 20px;
+    margin: 14px 0;
+    font-family: 'Courier New', Consolas, monospace;
+    font-size: 11.3px;
+    line-height: 1.68;
+    color: rgba(255,255,255,0.78);
+    white-space: pre-wrap;
+  }
+
+  .code-block .c-comment { color: rgba(255,255,255,0.38); }
+  .code-block .c-key { color: #8BC4FF; }
+  .code-block .c-val { color: #A6E3A1; }
+  .code-block .c-warn { color: #FFD166; }
+
+  code {
+    font-family: Consolas, Monaco, monospace;
+    background: rgba(20,33,61,0.06);
+    color: var(--deep-blue);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.92em;
+  }
+
+  .alert,
+  .success {
+    padding: 14px 18px;
+    margin: 14px 0;
+    border-left: 4px solid;
+    background: var(--cream);
+  }
+
+  .alert {
+    border-color: var(--signal-red);
+    color: #6C1D2A;
+  }
+
+  .success {
+    border-color: var(--mint);
+    color: #145742;
+  }
+
+  .alert p,
+  .success p {
+    color: inherit;
+    margin: 0;
+    font-size: 12px;
+  }
+
+  .page-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    padding: 0 40px 0 46px;
+    justify-content: space-between;
+    border-top: 1px solid var(--mist);
+  }
+
+  .footer-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: rgba(40,85,163,0.28);
+  }
+
+  .footer-note {
+    font-size: 9px;
+    color: rgba(95,102,122,0.5);
+    letter-spacing: 0.08em;
+  }
+
+  mark {
+    background: rgba(255,107,53,0.1);
+    color: var(--signal-orange);
+    padding: 0 3px;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+<button class="print-btn" onclick="window.print()">导出 PDF</button>
+
+<div class="page cover">
+  <div class="cover-bg"></div>
+  <div class="cover-noise"></div>
+  <div class="cover-inner">
+    <div class="cover-top">
+      <div class="cover-logo">NETWORK 路 TUN GUIDE</div>
+      <div class="cover-label">
+        Clash Verge Rev 实战手册<br>
+        VPS 节点导入与防漏损配置
+      </div>
+    </div>
+
+    <div class="cover-hero">
+      <div class="cover-eyebrow">VPS Proxy 路 Clash Verge Rev 路 Claude Code</div>
+      <div class="cover-title">
+        自建 VPS 代理<br>
+        <em>导入 Clash Verge</em>
+      </div>
+      <div class="cover-subtitle">
+        从 Shadowsocks 参数到 TUN 虚拟网卡的全链路实战指南
+      </div>
+      <div class="cover-divider"></div>
+      <div class="cover-tagline">
+        目标不是“浏览器能访问海外网站”，而是让浏览器、终端、Git、Node.js、curl 与 AI 开发工具共享同一个出口网络身份。<br><br>
+        本文把节点参数、YAML 配置、Clash Verge Rev 导入、TUN 模式开启和终端验证整理成可打印的分页手册。
+      </div>
+    </div>
+
+    <div class="cover-bottom">
+      <div class="cover-company">
+        适用系统：Windows / macOS / Linux<br>
+        核心技术：YAML 配置重构 / TUN 虚拟网卡 / 终端出口验证
+      </div>
+      <div class="cover-badge">PDF READY 路 2026.05</div>
+    </div>
+  </div>
+</div>
+
+<div class="page inner">
+  <div class="page-header">
+    <div class="page-header-accent"></div>
+    <div class="page-header-content">
+      <div class="page-title-block">
+        <span class="page-num">01</span>
+        <div>
+          <div class="page-section-label">Principle 路 防漏损原理</div>
+          <div class="page-section-title">为什么系统代理不够安全</div>
+        </div>
+      </div>
+      <div class="header-mark">LAYER 3</div>
+    </div>
+  </div>
+  <div class="page-body">
+    <p class="lead">在开发环境中，高频 AI 工具、命令行、包管理器和脚本请求并不总是遵守浏览器代理设置。真正要避免网络身份漂移，必须把代理从“应用层设置”下沉到“系统路由层”。</p>
+
+    <div class="two-col">
+      <div>
+        <h3>传统系统代理的边界</h3>
+        <p>传统 Shadowsocks 客户端的“全局模式”通常只是修改系统的 HTTP/HTTPS 代理设置。浏览器、部分桌面应用可以识别这些设置，但终端、Git、Node.js、curl、Python 脚本并不一定会自动继承。</p>
+        <div class="alert">
+          <p><strong>核心风险：</strong>浏览器显示海外 IP，但本地终端或 AI CLI 工具仍然用真实网络直连，导致同一账号出现跨区域访问轨迹。</p>
+        </div>
+      </div>
+      <div>
+        <h3>TUN 模式的工作方式</h3>
+        <p>Clash Verge Rev 的 TUN 模式会创建一张系统级虚拟网卡，把离机前的三层 IP 流量接管到 Clash 内核，再按规则分流到代理节点或直连出口。</p>
+        <div class="success">
+          <p><strong>关键收益：</strong>不依赖单个应用是否支持代理配置，浏览器、终端、开发工具链和 CLI 请求都能被统一纳入同一套出口策略。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="s-divider"><div class="s-divider-line"></div><div class="s-divider-label">应用层代理 vs 路由层接管</div><div class="s-divider-line"></div></div>
+
+    <table class="bp-table">
+      <thead>
+        <tr>
+          <th>维度</th>
+          <th>系统 HTTP 代理</th>
+          <th>Clash TUN 模式</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>作用层级</td>
+          <td>应用层，由应用主动读取代理设置</td>
+          <td>网络层，由系统路由表把流量送入虚拟网卡</td>
+        </tr>
+        <tr>
+          <td>覆盖对象</td>
+          <td>浏览器、部分桌面软件</td>
+          <td>浏览器、终端、CLI、后台脚本、包管理器</td>
+        </tr>
+        <tr>
+          <td>典型风险</td>
+          <td>终端绕过代理，账号环境出现真实 IP</td>
+          <td>配置错误时可能影响 DNS 或局域网访问，需要验证</td>
+        </tr>
+        <tr>
+          <td>适用场景</td>
+          <td>轻量网页浏览</td>
+          <td>开发者日常、AI CLI、统一出口身份控制</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pull-quote">
+      <p>判断代理是否可靠，不看浏览器页面能不能打开，而看 PowerShell 里的 <code>curl https://ipinfo.io</code> 是否返回同一个海外 VPS 出口。</p>
+    </div>
+  </div>
+  <div class="page-footer">
+    <div class="footer-brand">CLASH VERGE VPS GUIDE</div>
+    <div class="footer-note">PAGE 01 路 PRINCIPLE</div>
+  </div>
+</div>
+
+<div class="page inner">
+  <div class="page-header">
+    <div class="page-header-accent"></div>
+    <div class="page-header-content">
+      <div class="page-title-block">
+        <span class="page-num">02</span>
+        <div>
+          <div class="page-section-label">Mapping 路 参数提取</div>
+          <div class="page-section-title">把 VPS 节点翻译成 Clash 字段</div>
+        </div>
+      </div>
+      <div class="header-mark">YAML</div>
+    </div>
+  </div>
+  <div class="page-body">
+    <p class="lead">Clash 核心读取的是 YAML 配置。你需要先从 VPS 面板或原 Shadowsocks 客户端中拿到四个关键参数，再一一映射到 Clash 的 <code>proxies</code> 节点定义里。</p>
+
+    <table class="bp-table">
+      <thead>
+        <tr>
+          <th>原始信息</th>
+          <th>你需要确认什么</th>
+          <th>Clash YAML 字段</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Server</td>
+          <td>VPS 公网 IP 或域名</td>
+          <td><code>server: 67.216.195.130</code></td>
+        </tr>
+        <tr>
+          <td>Port</td>
+          <td>服务端开放的入站端口</td>
+          <td><code>port: 46123</code></td>
+        </tr>
+        <tr>
+          <td>Password</td>
+          <td>节点鉴权密码</td>
+          <td><code>password: "YourSecurePassword"</code></td>
+        </tr>
+        <tr>
+          <td>Cipher</td>
+          <td>加密算法，例如 <code>aes-256-gcm</code></td>
+          <td><code>cipher: chacha20-ietf-poly1305</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="three-col">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-title">先确认节点可用</div>
+        <p>不要急着写 Clash 配置，先确认原客户端能正常连接，密码、端口和加密方式没有过期或填错。</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-title">再写最小配置</div>
+        <p>先只保留一个节点、一个选择组和基础规则，跑通后再加复杂分流，降低排错成本。</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-title">最后开启 TUN</div>
+        <p>普通代理可用后再开启 TUN。若一开始就打开系统级接管，配置错误会让问题更难定位。</p>
+      </div>
+    </div>
+
+    <div class="alert">
+      <p><strong>YAML 规则：</strong>缩进只能用空格，不能用 Tab；冒号后必须有空格；节点字段必须缩进在 <code>proxies</code> 列表项下面，不能散落在顶层。</p>
+    </div>
+
+    <div class="callout">
+      <p><strong>可复用判断：</strong>如果 Clash 报语法错误，优先检查缩进层级；如果能启动但不能连接，优先检查端口、密码、加密方式和服务端防火墙。</p>
+    </div>
+  </div>
+  <div class="page-footer">
+    <div class="footer-brand">CLASH VERGE VPS GUIDE</div>
+    <div class="footer-note">PAGE 02 路 MAPPING</div>
+  </div>
+</div>
+
+<div class="page inner">
+  <div class="page-header">
+    <div class="page-header-accent"></div>
+    <div class="page-header-content">
+      <div class="page-title-block">
+        <span class="page-num">03</span>
+        <div>
+          <div class="page-section-label">Profile 路 标准配置</div>
+          <div class="page-section-title">可直接改写的本地 YAML 模板</div>
+        </div>
+      </div>
+      <div class="header-mark">PROFILE</div>
+    </div>
+  </div>
+  <div class="page-body">
+    <p class="lead">下面是一份单节点 Shadowsocks 模板。把示例 IP、端口、密码和加密方式换成你自己的 VPS 信息后，再导入 Clash Verge Rev。</p>
+
+    <div class="code-block"><span class="c-comment"># Profile Template for Clash Verge Rev</span>
+<span class="c-key">mixed-port</span>: <span class="c-val">7890</span>
+<span class="c-key">allow-lan</span>: <span class="c-val">false</span>
+<span class="c-key">mode</span>: <span class="c-val">rule</span>
+<span class="c-key">log-level</span>: <span class="c-val">info</span>
+<span class="c-key">external-controller</span>: <span class="c-val">127.0.0.1:9090</span>
+
+<span class="c-comment"># 1. 节点基础定义</span>
+<span class="c-key">proxies</span>:
+  - <span class="c-key">name</span>: <span class="c-val">"自建 VPS"</span>
+    <span class="c-key">type</span>: <span class="c-val">ss</span>
+    <span class="c-key">server</span>: <span class="c-val">67.216.195.130</span> <span class="c-warn"># 改成你的实际 VPS 公网 IP</span>
+    <span class="c-key">port</span>: <span class="c-val">46123</span> <span class="c-warn"># 改成你的实际端口</span>
+    <span class="c-key">cipher</span>: <span class="c-val">chacha20-ietf-poly1305</span> <span class="c-warn"># 按实际加密方式修改</span>
+    <span class="c-key">password</span>: <span class="c-val">"YourSecurePassword"</span> <span class="c-warn"># 改成你的连接密码</span>
+    <span class="c-key">udp</span>: <span class="c-val">true</span>
+
+<span class="c-comment"># 2. 策略组控制</span>
+<span class="c-key">proxy-groups</span>:
+  - <span class="c-key">name</span>: <span class="c-val">"节点选择"</span>
+    <span class="c-key">type</span>: <span class="c-val">select</span>
+    <span class="c-key">proxies</span>:
+      - <span class="c-val">"自建 VPS"</span>
+      - <span class="c-val">DIRECT</span>
+
+<span class="c-comment"># 3. 基础及 Claude 相关分流规则</span>
+<span class="c-key">rules</span>:
+  - <span class="c-val">DOMAIN-SUFFIX,anthropic.com,节点选择</span>
+  - <span class="c-val">DOMAIN-SUFFIX,claude.ai,节点选择</span>
+  - <span class="c-val">DOMAIN-KEYWORD,claude,节点选择</span>
+  - <span class="c-val">GEOIP,CN,DIRECT</span>
+  - <span class="c-val">MATCH,节点选择</span></div>
+
+    <div class="two-col">
+      <div class="success">
+        <p><strong>推荐保存方式：</strong>在 Clash Verge Rev 中创建 Local Profile 后直接编辑保存，避免系统文本编辑器自动改后缀或编码。</p>
+      </div>
+      <div class="alert">
+        <p><strong>不要照抄示例：</strong><code>67.216.195.130</code>、<code>46123</code> 和 <code>YourSecurePassword</code> 都只是占位内容，必须替换。</p>
+      </div>
+    </div>
+  </div>
+  <div class="page-footer">
+    <div class="footer-brand">CLASH VERGE VPS GUIDE</div>
+    <div class="footer-note">PAGE 03 路 PROFILE</div>
+  </div>
+</div>
+
+<div class="page inner">
+  <div class="page-header">
+    <div class="page-header-accent"></div>
+    <div class="page-header-content">
+      <div class="page-title-block">
+        <span class="page-num">04</span>
+        <div>
+          <div class="page-section-label">Operation 路 软件实操</div>
+          <div class="page-section-title">在 Clash Verge Rev 中导入本地配置</div>
+        </div>
+      </div>
+      <div class="header-mark">LOCAL</div>
+    </div>
+  </div>
+  <div class="page-body">
+    <p class="lead">导入动作本身很短，但要把“创建、替换、保存、激活”四个步骤一次做完整。任何一步漏掉，Clash 内核都可能仍在使用旧配置。</p>
+
+    <div class="three-col">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-title">新建 Local Profile</div>
+        <p>打开 Clash Verge Rev，进入 Profiles，点击 Create，把 Type 设为 Local，Name 可填写 <code>MyVPS</code>。</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-title">清空默认内容</div>
+        <p>右键新生成的配置卡片，选择 Edit。先用 <code>Ctrl + A</code> 全选，再删除原有模板内容。</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-title">粘贴并保存</div>
+        <p>粘贴第 03 页的模板，替换自己的节点参数，点击 Save。保存后回到 Profiles 页面确认卡片存在。</p>
+      </div>
+    </div>
+
+    <div class="s-divider"><div class="s-divider-line"></div><div class="s-divider-label">激活与初步排错</div><div class="s-divider-line"></div></div>
+
+    <table class="bp-table">
+      <thead>
+        <tr>
+          <th>动作</th>
+          <th>成功信号</th>
+          <th>如果失败，先查什么</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>激活配置卡片</td>
+          <td>卡片出现选中态或高亮边框</td>
+          <td>是否保存到正确的 Local Profile</td>
+        </tr>
+        <tr>
+          <td>打开代理开关</td>
+          <td>系统代理端口可用，浏览器可访问目标站点</td>
+          <td>Clash 日志是否提示 YAML 解析错误</td>
+        </tr>
+        <tr>
+          <td>选择节点</td>
+          <td>策略组中的“自建 VPS”处于选中状态</td>
+          <td>节点名称是否与规则、策略组完全一致</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <p><strong>操作顺序：</strong>先让普通代理跑通，再开启 TUN。这样可以把问题拆成两层：节点是否可用，以及系统级接管是否生效。</p>
+    </div>
+  </div>
+  <div class="page-footer">
+    <div class="footer-brand">CLASH VERGE VPS GUIDE</div>
+    <div class="footer-note">PAGE 04 路 OPERATION</div>
+  </div>
+</div>
+
+<div class="page inner">
+  <div class="page-header">
+    <div class="page-header-accent"></div>
+    <div class="page-header-content">
+      <div class="page-title-block">
+        <span class="page-num">05</span>
+        <div>
+          <div class="page-section-label">TUN Mode 路 底层接管</div>
+          <div class="page-section-title">开启 TUN 并验证终端出口</div>
+        </div>
+      </div>
+      <div class="header-mark">VERIFY</div>
+    </div>
+  </div>
+  <div class="page-body">
+    <p class="lead">这是让 Claude Code、curl、Git、Node.js 等开发工具链不绕过代理的关键步骤。验证必须在终端里完成，而不是只看浏览器。</p>
+
+    <div class="two-col">
+      <div>
+        <h3>开启 TUN 模式</h3>
+        <ul class="feature-list">
+          <li><strong>进入 Settings：</strong>在 Clash Verge Rev 左侧导航打开设置页。</li>
+          <li><strong>打开 TUN Mode：</strong>找到 TUN Mode 开关并启用。</li>
+          <li><strong>授权系统权限：</strong>Windows 首次开启时会弹出 UAC 管理员权限申请，选择允许。</li>
+          <li><strong>等待虚拟网卡就绪：</strong>开启后稍等数秒，再进行终端验证。</li>
+        </ul>
+      </div>
+      <div>
+        <h3>终端验证命令</h3>
+        <p>打开 PowerShell、VS Code Terminal 或 macOS Terminal，执行：</p>
+        <div class="code-block">curl https://ipinfo.io</div>
+        <p>返回结果里的 <code>ip</code> 应该是你的 VPS 出口 IP，<code>country</code> 应该与 VPS 所在地区一致。</p>
+      </div>
+    </div>
+
+    <div class="s-divider"><div class="s-divider-line"></div><div class="s-divider-label">验证标准</div><div class="s-divider-line"></div></div>
+
+    <table class="bp-table">
+      <thead>
+        <tr>
+          <th>结果</th>
+          <th>含义</th>
+          <th>下一步</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>返回 VPS IP</td>
+          <td>终端流量已被 TUN 接管并走代理</td>
+          <td>可以继续使用 AI CLI、Git、curl 等开发工具</td>
+        </tr>
+        <tr>
+          <td>返回本地真实 IP</td>
+          <td>TUN 未生效，终端仍在直连</td>
+          <td>检查 TUN 开关、系统权限、Clash 日志和路由规则</td>
+        </tr>
+        <tr>
+          <td>请求超时或 DNS 错误</td>
+          <td>可能是 DNS、虚拟网卡或防火墙冲突</td>
+          <td>关闭 TUN 回退验证，再逐项排查 DNS 与安全软件</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="alert">
+      <p><strong>重要提醒：</strong>不要用“浏览器能访问”替代终端验证。开发工具链里的风险，只有在真实命令行请求里才能看见。</p>
+    </div>
+  </div>
+  <div class="page-footer">
+    <div class="footer-brand">CLASH VERGE VPS GUIDE</div>
+    <div class="footer-note">PAGE 05 路 TUN MODE</div>
+  </div>
+</div>
+
+<div class="page inner">
+  <div class="page-header">
+    <div class="page-header-accent"></div>
+    <div class="page-header-content">
+      <div class="page-title-block">
+        <span class="page-num">06</span>
+        <div>
+          <div class="page-section-label">Checklist 路 使用与维护</div>
+          <div class="page-section-title">把配置变成稳定日常流程</div>
+        </div>
+      </div>
+      <div class="header-mark">RUNBOOK</div>
+    </div>
+  </div>
+  <div class="page-body">
+    <p class="lead">一次配置成功不代表长期稳定。节点、系统权限、Clash 版本和安全软件都可能变化，建议把下面的检查清单作为日常 runbook。</p>
+
+    <div class="two-col">
+      <div>
+        <h3>每次启动 AI CLI 前</h3>
+        <ul class="feature-list">
+          <li><strong>确认 Clash Verge 已启动：</strong>代理开关和策略组处于正确状态。</li>
+          <li><strong>确认 TUN 仍开启：</strong>系统更新或软件重启后可能需要重新授权。</li>
+          <li><strong>执行出口测试：</strong>运行 <code>curl https://ipinfo.io</code>，确认终端出口是 VPS。</li>
+          <li><strong>再启动工具：</strong>出口验证通过后，再运行 Claude Code 或其他 AI CLI。</li>
+        </ul>
+      </div>
+      <div>
+        <h3>常见问题定位</h3>
+        <table class="bp-table">
+          <thead>
+            <tr>
+              <th>症状</th>
+              <th>优先检查</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>配置无法保存</td>
+              <td>YAML 缩进、冒号空格、引号闭合</td>
+            </tr>
+            <tr>
+              <td>节点不可用</td>
+              <td>IP、端口、密码、cipher、服务端状态</td>
+            </tr>
+            <tr>
+              <td>终端不走代理</td>
+              <td>TUN 开关、管理员权限、虚拟网卡</td>
+            </tr>
+            <tr>
+              <td>国内网站异常</td>
+              <td>规则顺序、GEOIP 数据库、DNS 设置</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><strong>最终标准：</strong>浏览器、终端和 AI CLI 的出口 IP 必须一致。只要任一入口显示不同网络身份，就还不能视为“防漏损配置完成”。</p>
+    </div>
+
+    <div class="s-divider"><div class="s-divider-line"></div><div class="s-divider-label">打印与离线保存</div><div class="s-divider-line"></div></div>
+    <p>本页面已经按 A4 分页设计。点击右下角“导出 PDF”，或使用浏览器打印快捷键 <code>Ctrl + P</code> / <code>Cmd + P</code>，选择“另存为 PDF”，即可保存为离线手册。</p>
+  </div>
+  <div class="page-footer">
+    <div class="footer-brand">CLASH VERGE VPS GUIDE</div>
+    <div class="footer-note">PAGE 06 路 CHECKLIST</div>
+  </div>
+</div>
+
+<div class="page cover">
+  <div class="cover-bg"></div>
+  <div class="cover-noise"></div>
+  <div class="cover-inner">
+    <div class="cover-top">
+      <div class="cover-logo">FINAL CHECK</div>
+      <div class="cover-label">核心结论 路 Key Takeaway</div>
+    </div>
+
+    <div class="cover-hero">
+      <div class="cover-eyebrow">One Network Identity 路 同一出口身份</div>
+      <div style="font-family:'Cormorant Garamond','Noto Serif SC',serif;font-size:36px;font-weight:300;color:white;line-height:1.45;margin-bottom:40px;max-width:600px;">
+        代理配置的目标，<br>不是“某个应用能联网”，<br>而是让所有开发入口都共享同一套 <em style="color:#D7E2FF;">可信出口路径</em>。
+      </div>
+
+      <div class="cover-divider"></div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;max-width:620px;">
+        <div style="border-top:2px solid var(--signal-orange);padding-top:16px;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:0.2em;color:var(--signal-orange);margin-bottom:8px;">STEP 01</div>
+          <div style="font-size:12.5px;color:rgba(255,255,255,0.76);line-height:1.75;">提取 VPS 参数<br>写入正确 YAML<br>先让普通代理跑通</div>
+        </div>
+        <div style="border-top:2px solid #D7E2FF;padding-top:16px;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:0.2em;color:#D7E2FF;margin-bottom:8px;">STEP 02</div>
+          <div style="font-size:12.5px;color:rgba(255,255,255,0.76);line-height:1.75;">激活 Local Profile<br>选择自建 VPS<br>打开 TUN Mode</div>
+        </div>
+        <div style="border-top:2px solid rgba(30,138,102,0.88);padding-top:16px;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:0.2em;color:rgba(118,224,181,0.9);margin-bottom:8px;">STEP 03</div>
+          <div style="font-size:12.5px;color:rgba(255,255,255,0.76);line-height:1.75;">终端执行 curl<br>确认返回 VPS IP<br>再启动 AI CLI</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cover-bottom">
+      <div class="cover-company">
+        建议保存为 PDF，并在每次更换节点、重装系统或升级 Clash Verge Rev 后重新执行验证。<br>
+        <span style="color:rgba(255,255,255,0.2);">本文不包含任何真实密码；页面中的 IP、端口和密码均为占位示例。</span>
+      </div>
+      <div class="cover-badge" style="border-color:rgba(255,255,255,0.22);color:rgba(255,255,255,0.45);">END</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
