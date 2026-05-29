@@ -554,6 +554,28 @@
       margin-top: 28px;
     }
 
+    .ai-week-actions {
+      margin-top: 18px;
+    }
+
+    .ai-week-archive-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      text-transform: uppercase;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .ai-week-archive-link:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
     .ai-week-timeline {
       position: relative;
       padding: 30px 34px 34px;
@@ -640,6 +662,23 @@
       margin-bottom: 12px;
     }
 
+    .ai-event-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 0 0 12px;
+    }
+
+    .ai-event-tags span {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: rgba(13,17,23,0.5);
+      border: 1px solid var(--rule);
+      padding: 3px 7px;
+      text-transform: uppercase;
+    }
+
     .ai-event-link {
       display: inline-flex;
       align-items: center;
@@ -656,6 +695,14 @@
     .ai-event-link:hover {
       color: var(--ink);
       border-color: var(--ink);
+    }
+
+    .ai-week-empty {
+      border: 1px solid var(--rule);
+      background: var(--paper-2);
+      padding: 24px;
+      font-size: 0.9rem;
+      color: rgba(13,17,23,0.62);
     }
 
     /* ═══════════════════════════════════════
@@ -1387,133 +1434,20 @@
                 <span>AI</span>
                 <span>Timeline</span>
               </div>
-              <p class="ai-week-note">
+              <p class="ai-week-note" data-ai-week-note>
                 以公开发布为线索，记录模型、Agent、企业落地与安全治理的关键动向。
               </p>
             </div>
-            <div class="ai-week-range">May 18-22, 2026</div>
+            <div>
+              <div class="ai-week-range" data-ai-week-range>Loading latest week</div>
+              <div class="ai-week-actions">
+                <a class="ai-week-archive-link" href="ai-week/" data-ai-week-archive-link>查看全部 AI 大事 →</a>
+              </div>
+            </div>
           </aside>
 
-          <div class="ai-week-timeline">
-            <article class="ai-event">
-              <div class="ai-event-date">May 18<br>Mon</div>
-              <div class="ai-event-card">
-                <div class="ai-event-meta">
-                  <span>Anthropic</span>
-                  <span>Agents</span>
-                </div>
-                <h3 class="ai-event-headline">Anthropic 收购 Stainless，补强 Claude 的 API 与 MCP 连接层</h3>
-                <p class="ai-event-body">
-                  Stainless 长期为 Anthropic 官方 SDK 提供生成能力，并覆盖 SDK、CLI 与 MCP server tooling。Anthropic 将其纳入平台团队，指向一个明确判断：Agent 的能力越来越取决于它能可靠连接多少真实系统。
-                </p>
-                <a class="ai-event-link" href="https://www.anthropic.com/news/anthropic-acquires-stainless" target="_blank" rel="noreferrer">Source →</a>
-              </div>
-            </article>
-
-            <article class="ai-event">
-              <div class="ai-event-date">May 19<br>Tue</div>
-              <div class="ai-event-card">
-                <div class="ai-event-meta">
-                  <span>Google</span>
-                  <span>Models</span>
-                </div>
-                <h3 class="ai-event-headline">Google I/O：Gemini 3.5 Flash 发布，主打“frontier intelligence with action”</h3>
-                <p class="ai-event-body">
-                  Google 发布 Gemini 3.5 系列，先推出 3.5 Flash，面向长程 Agent、代码和复杂工作流；它进入 Gemini app、AI Mode、Google Antigravity、Gemini API、AI Studio、Android Studio 与企业平台。
-                </p>
-                <a class="ai-event-link" href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/" target="_blank" rel="noreferrer">Source →</a>
-              </div>
-            </article>
-
-            <article class="ai-event">
-              <div class="ai-event-date">May 19<br>Tue</div>
-              <div class="ai-event-card">
-                <div class="ai-event-meta">
-                  <span>Google</span>
-                  <span>Multimodal</span>
-                </div>
-                <h3 class="ai-event-headline">Google I/O：Gemini Omni 把“任意输入生成视频”推向 Gemini、Flow 与 YouTube</h3>
-                <p class="ai-event-body">
-                  Gemini Omni Flash 支持从文本、图片、音频、视频等输入生成和多轮编辑视频，并强调物理一致性、角色一致性与 SynthID 水印；首批进入 Gemini app、Google Flow、YouTube Shorts 和 YouTube Create。
-                </p>
-                <a class="ai-event-link" href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni/" target="_blank" rel="noreferrer">Source →</a>
-              </div>
-            </article>
-
-            <article class="ai-event">
-              <div class="ai-event-date">May 19<br>Tue</div>
-              <div class="ai-event-card">
-                <div class="ai-event-meta">
-                  <span>Google</span>
-                  <span>Search</span>
-                </div>
-                <h3 class="ai-event-headline">Google I/O：Search 进入 Agent 阶段，AI Mode 月活超 10 亿</h3>
-                <p class="ai-event-body">
-                  Google 宣布 AI Mode 已超过 10 亿月活，并把 Gemini 3.5 Flash 作为新默认模型；Search agents、Personal Intelligence、智能搜索框与自定义 mini apps 让搜索从回答问题走向持续跟踪和执行任务。
-                </p>
-                <a class="ai-event-link" href="https://blog.google/products-and-platforms/products/search/search-io-2026/" target="_blank" rel="noreferrer">Source →</a>
-              </div>
-            </article>
-
-            <article class="ai-event">
-              <div class="ai-event-date">May 19<br>Tue</div>
-              <div class="ai-event-card">
-                <div class="ai-event-meta">
-                  <span>Google</span>
-                  <span>Developers</span>
-                </div>
-                <h3 class="ai-event-headline">Google I/O：Antigravity 2.0、Managed Agents 与 AI Studio 加速应用生成</h3>
-                <p class="ai-event-body">
-                  Google 将 Antigravity 扩展成独立桌面应用、CLI 与 SDK，并在 Gemini API 推出 Managed Agents；AI Studio 支持原生 Android vibe coding、Workspace 集成和移动端创意捕获。
-                </p>
-                <a class="ai-event-link" href="https://blog.google/innovation-and-ai/technology/developers-tools/google-io-2026-developer-highlights/" target="_blank" rel="noreferrer">Source →</a>
-              </div>
-            </article>
-
-            <article class="ai-event">
-              <div class="ai-event-date">May 19<br>Tue</div>
-              <div class="ai-event-card">
-                <div class="ai-event-meta">
-                  <span>Google</span>
-                  <span>Trust</span>
-                </div>
-                <h3 class="ai-event-headline">Google I/O：SynthID 与 C2PA 扩展到更多生成媒体，内容溯源成为基础设施</h3>
-                <p class="ai-event-body">
-                  Google 表示 SynthID 已为超过 1000 亿张图片和视频、6 万年音频加水印，并在更多生成式媒体工具中使用 C2PA Content Credentials；同时推出面向 Gemini Enterprise Agent Platform 的 AI Content Detection API。
-                </p>
-                <a class="ai-event-link" href="https://blog.google/innovation-and-ai/products/identifying-ai-generated-media-online/" target="_blank" rel="noreferrer">Source →</a>
-              </div>
-            </article>
-
-            <article class="ai-event">
-              <div class="ai-event-date">May 20<br>Wed</div>
-              <div class="ai-event-card">
-                <div class="ai-event-meta">
-                  <span>OpenAI</span>
-                  <span>Research</span>
-                </div>
-                <h3 class="ai-event-headline">OpenAI 模型推翻离散几何核心猜想，AI 数学发现进入新阶段</h3>
-                <p class="ai-event-body">
-                  OpenAI 称其内部模型解决了 Erdős 1946 年提出的 planar unit distance problem，推翻长期以来关于方格构造最优的猜想。它不只是刷榜，而是一次被数学家认真审阅的研究里程碑。
-                </p>
-                <a class="ai-event-link" href="https://openai.com/index/model-disproves-discrete-geometry-conjecture/" target="_blank" rel="noreferrer">Source →</a>
-              </div>
-            </article>
-
-            <article class="ai-event">
-              <div class="ai-event-date">May 21<br>Thu</div>
-              <div class="ai-event-card">
-                <div class="ai-event-meta">
-                  <span>Microsoft</span>
-                  <span>Enterprise</span>
-                </div>
-                <h3 class="ai-event-headline">Microsoft 与 EY 投入超 10 亿美元，把企业 AI 从试点推向规模化</h3>
-                <p class="ai-event-body">
-                  双方宣布深化联盟，围绕 Azure、Microsoft 365 Copilot、Foundry、Fabric 与安全能力构建“从 pilot 到 production”的交付模型，并把 FDE 与 EY 转型团队结合进入客户现场。
-                </p>
-                <a class="ai-event-link" href="https://blogs.microsoft.com/blog/2026/05/21/from-ai-pilots-to-enterprise-impact-why-execution-is-the-new-differentiator/" target="_blank" rel="noreferrer">Source →</a>
-              </div>
-            </article>
+          <div class="ai-week-timeline" data-ai-week-timeline>
+            <div class="ai-week-empty">Loading latest AI week.</div>
           </div>
         </div>
       </div>
@@ -1674,6 +1608,27 @@
                 <span class="doc-tag">GEO</span>
                 <span class="doc-tag">Agent</span>
                 <span class="doc-tag">Platform</span>
+              </div>
+              <span class="doc-arrow" aria-hidden="true">→</span>
+            </div>
+          </a>
+          <a class="doc-card" href="agent-memory-framework/" aria-label="查看 Agent Memory Framework 经验文档">
+            <div class="doc-meta">
+              <span>Experience Note</span>
+              <span>Agent Memory</span>
+            </div>
+            <div class="doc-title">
+              <span>Agent</span>
+              <span>Memory</span>
+              <span>Framework</span>
+            </div>
+            <p class="doc-desc">
+              依据 CoALA 论文，把智能体记忆拆成工作记忆、情景记忆、语义记忆、程序记忆，以及取回、推理、学习和决策循环。
+            </p>
+            <div class="doc-footer">
+              <div class="doc-tags">
+                <span>CoALA</span>
+                <span>Agent Architecture</span>
               </div>
               <span class="doc-arrow" aria-hidden="true">→</span>
             </div>
@@ -2114,6 +2069,8 @@
     </div>
   </footer>
 
+  <script src="ai-week/data.js"></script>
+  <script src="ai-week/ai-week.js"></script>
   <script>
     // ── Scroll Reveal ──
     const revealEls = document.querySelectorAll('.reveal');
