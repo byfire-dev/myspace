@@ -39,6 +39,11 @@
       ? `${event.displayDate}<br>${escapeHtml(event.weekRange)}`
       : `${event.displayDate}<br>${event.weekday}`;
     const sourceName = event.sourceName || "Source";
+    const source = event.sourceUrl
+      ? `<a class="ai-event-link" href="${escapeHtml(event.sourceUrl)}" target="_blank" rel="noreferrer">${escapeHtml(sourceName)} →</a>`
+      : sourceName
+        ? `<span class="ai-event-source-note">${escapeHtml(sourceName)}</span>`
+        : "";
 
     return `
       <article class="ai-event">
@@ -54,7 +59,7 @@
               ${event.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
             </div>
           ` : ""}
-          <a class="ai-event-link" href="${escapeHtml(event.sourceUrl)}" target="_blank" rel="noreferrer">${escapeHtml(sourceName)} →</a>
+          ${source}
         </div>
       </article>
     `;
