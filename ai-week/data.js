@@ -1,6 +1,65 @@
 window.AI_WEEK_ARCHIVE = {
-  updatedAt: "2026-05-28",
+  updatedAt: "2026-05-31",
   weeks: [
+    {
+      id: "2026-05-25_2026-05-31",
+      range: "May 25-31, 2026",
+      title: "Claude 重夺焦点，AI 工具、安全与教育加速落地",
+      summary: "本周 Claude Opus 4.8 把前沿模型竞争重新拉回推理、长上下文和 Agent 可靠性；同时，低门槛工具、安全治理与教育 AI 正在进入更日常的使用场景。",
+      events: [
+        {
+          date: "2026-05-28",
+          displayDate: "May 28",
+          weekday: "Thu",
+          org: "Anthropic",
+          category: "Models",
+          headline: "Claude Opus 4.8 引发“最强模型”讨论，复杂任务与 Agent 可靠性成为看点",
+          body: "Anthropic 发布 Claude Opus 4.8，并强调其在编码、知识工作、指令遵循和复杂 Agent 任务上的提升。对普通用户来说，这次更新的关键不只是跑分，而是复杂问题拆解、多轮对话衔接和长任务执行是否更稳。",
+          sourceUrl: "https://www.anthropic.com/news/claude-opus-4-8",
+          sourceName: "Anthropic",
+          tags: ["Claude", "Models", "Agent Reliability"],
+          priority: 1
+        },
+        {
+          date: "2026-05-28",
+          displayDate: "May 28",
+          weekday: "Thu",
+          org: "OpenAI",
+          category: "Governance",
+          headline: "OpenAI 发布 Frontier Governance Framework，前沿模型安全进入制度化阶段",
+          body: "OpenAI 公布 Frontier Governance Framework，将安全与安保实践映射到新兴法律要求，并覆盖风险评估、模型报告、外部专家输入、事故响应和框架更新。大厂 AI 安全正在从原则表态走向可审计的治理流程。",
+          sourceUrl: "https://openai.com/index/openai-frontier-governance-framework/",
+          sourceName: "OpenAI",
+          tags: ["AI Safety", "Governance", "Compliance"],
+          priority: 1
+        },
+        {
+          date: "2026-05-31",
+          displayDate: "May 31",
+          weekday: "Sun",
+          org: "AI Tools",
+          category: "Productivity",
+          headline: "轻量化 AI 工具继续爆发，“零门槛”成为办公与创意产品的新卖点",
+          body: "本周的应用层信号很明确：越来越多工具把文案生成、数据处理、素材设计和多模型调用包装成普通用户可直接上手的工作流。AI 产品竞争正在从“模型能力有多强”转向“谁能更快嵌入日常任务”。",
+          sourceName: "用户提供材料",
+          tags: ["Productivity", "Creative Tools", "No-Code AI"],
+          priority: 2
+        },
+        {
+          date: "2026-05-31",
+          displayDate: "May 31",
+          weekday: "Sun",
+          org: "EdTech",
+          category: "Education",
+          headline: "教育 AI 从答疑工具转向学习路径规划，个性化辅导继续加速落地",
+          body: "智能辅导产品正在把错题解析、学习历史、下一步推荐和教师辅助连成更完整的学习闭环。K12、语言学习和成人教育场景的共同方向，是让 AI 不只回答问题，而是持续理解学习者状态并给出更合适的路径。",
+          sourceUrl: "https://blog.khanacademy.org/how-khan-academy-is-building-a-better-ai-tutor-our-most-recent-learnings/",
+          sourceName: "Khan Academy Blog",
+          tags: ["Education", "AI Tutor", "Personalization"],
+          priority: 2
+        }
+      ]
+    },
     {
       id: "2026-05-20_2026-05-28",
       range: "May 20-28, 2026",
