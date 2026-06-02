@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Opus 4.8 特性研究 | 经验文档</title>
+<meta name="description" content="Claude Opus 4.8 的结构化研究文档：模型定位、核心特性、长程 Agent 工作流、编码协作、诚实性改进、价格接入与采用建议。">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --red: #c92323;
+    --ink: #101010;
+    --muted: #5f5a52;
+    --paper: #f5f0e8;
+    --paper-2: #ebe3d6;
+    --line: #b9b2a6;
+    --dark: #151515;
+    --blue: #1f5574;
+    --green: #2e6c46;
+    --gold: #a57927;
+  }
+
+  body {
+    min-height: 100vh;
+    background: var(--dark);
+    color: var(--ink);
+    font-family: "Noto Sans SC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    padding: 22px;
+  }
+
+  a { color: inherit; }
+
+  .poster {
+    width: min(1180px, 100%);
+    margin: 0 auto;
+    background: var(--paper);
+    border: 6px solid var(--red);
+    box-shadow: 0 18px 60px rgba(0,0,0,.38);
+    padding: 34px 38px 38px;
+    position: relative;
+  }
+
+  .poster::before,
+  .poster::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    width: 46px;
+    height: 6px;
+    background: var(--red);
+  }
+
+  .poster::before { left: 22px; }
+  .poster::after { right: 22px; }
+
+  .top-link {
+    display: inline-block;
+    margin-bottom: 18px;
+    color: var(--red);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 30px;
+    align-items: stretch;
+    padding-bottom: 22px;
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .eyebrow {
+    display: inline-block;
+    background: var(--ink);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1.8px;
+    padding: 4px 8px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: "Bebas Neue", Impact, sans-serif;
+    font-size: clamp(58px, 9vw, 104px);
+    line-height: .88;
+    letter-spacing: 2.3px;
+  }
+
+  .cn-title {
+    margin-top: 10px;
+    font-size: 23px;
+    font-weight: 900;
+    letter-spacing: .4px;
+  }
+
+  .subtitle {
+    margin-top: 12px;
+    max-width: 720px;
+    font-size: 13px;
+    line-height: 1.85;
+    color: #303030;
+  }
+
+  .hero-aside {
+    border-left: 1.5px solid var(--line);
+    padding-left: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .aside-label {
+    display: block;
+    color: var(--red);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .aside-block {
+    font-size: 11px;
+    line-height: 1.8;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .signal-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--ink);
+    color: white;
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    padding: 3px 7px;
+    text-transform: uppercase;
+  }
+
+  .badge.red { background: var(--red); }
+  .badge.blue { background: var(--blue); }
+  .badge.green { background: var(--green); }
+  .badge.outline {
+    background: transparent;
+    color: var(--red);
+    border: 1.5px solid var(--red);
+  }
+
+  .thesis {
+    display: grid;
+    grid-template-columns: .95fr 1.2fr .95fr;
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .panel-cell {
+    padding: 18px 18px 18px 0;
+    border-right: 1.5px solid var(--line);
+  }
+
+  .panel-cell + .panel-cell { padding-left: 18px; }
+  .panel-cell:last-child { border-right: none; }
+
+  .section-label {
+    color: var(--red);
+    font-size: 8.5px;
+    font-weight: 900;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+  }
+
+  .section-title {
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .text {
+    color: var(--muted);
+    font-size: 11.5px;
+    line-height: 1.75;
+  }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .metric {
+    min-height: 118px;
+    padding: 17px 16px 15px 0;
+    border-right: 1.5px solid var(--line);
+  }
+
+  .metric + .metric { padding-left: 16px; }
+  .metric:last-child { border-right: 0; }
+
+  .metric-value {
+    font-family: "Bebas Neue", Impact, sans-serif;
+    font-size: 39px;
+    line-height: .95;
+    letter-spacing: 1px;
+    color: var(--red);
+    margin-bottom: 7px;
+  }
+
+  .metric-name {
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+
+  .metric-note {
+    font-size: 10.5px;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+
+  .map {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .map-left {
+    padding: 22px 24px 20px 0;
+    border-right: 1.5px solid var(--line);
+  }
+
+  .map-right {
+    padding: 22px 0 20px 24px;
+  }
+
+  .big-claim {
+    font-size: clamp(23px, 3.2vw, 38px);
+    font-weight: 900;
+    line-height: 1.16;
+    margin: 6px 0 12px;
+  }
+
+  .capability-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .capability {
+    display: grid;
+    grid-template-columns: 54px 1fr;
+    gap: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+  }
+
+  .capability:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .cap-num {
+    font-family: "Bebas Neue", Impact, sans-serif;
+    color: var(--red);
+    font-size: 35px;
+    line-height: 1;
+  }
+
+  .cap-title {
+    font-size: 13px;
+    font-weight: 900;
+    margin-bottom: 3px;
+  }
+
+  .cap-body {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .workflow {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .workflow-step {
+    padding: 18px 14px 17px 0;
+    border-right: 1.5px solid var(--line);
+  }
+
+  .workflow-step + .workflow-step { padding-left: 14px; }
+  .workflow-step:last-child { border-right: 0; }
+
+  .step-kicker {
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 1.4px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 7px;
+  }
+
+  .step-title {
+    font-size: 12.5px;
+    font-weight: 900;
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+
+  .step-body {
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.62;
+  }
+
+  .decision-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .decision {
+    padding: 20px 18px 18px 0;
+    border-right: 1.5px solid var(--line);
+  }
+
+  .decision + .decision { padding-left: 18px; }
+  .decision:last-child { border-right: none; }
+
+  .decision h2 {
+    font-family: "Bebas Neue", Impact, sans-serif;
+    font-size: 37px;
+    line-height: 1;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .decision ul {
+    list-style: none;
+    display: grid;
+    gap: 8px;
+  }
+
+  .decision li {
+    position: relative;
+    padding-left: 16px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .decision li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+
+  .source-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-bottom: 1.5px solid var(--line);
+  }
+
+  .source-box {
+    padding: 18px 18px 16px 0;
+    border-right: 1.5px solid var(--line);
+  }
+
+  .source-box + .source-box {
+    padding-left: 18px;
+    border-right: 0;
+  }
+
+  .source-link {
+    display: block;
+    margin-top: 7px;
+    color: var(--red);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .7px;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    padding-top: 18px;
+    font-size: 10px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .footer strong { color: var(--ink); }
+
+  @media (max-width: 920px) {
+    body { padding: 12px; }
+    .poster { padding: 28px 22px 30px; }
+    .hero,
+    .thesis,
+    .map,
+    .source-grid,
+    .decision-grid {
+      grid-template-columns: 1fr;
+    }
+    .hero-aside,
+    .map-left,
+    .panel-cell,
+    .decision,
+    .source-box {
+      border-right: none;
+      border-left: none;
+      padding-left: 0;
+    }
+    .panel-cell,
+    .decision,
+    .source-box,
+    .map-left {
+      border-bottom: 1.5px solid var(--line);
+    }
+    .map-right { padding-left: 0; }
+    .metric-grid,
+    .workflow {
+      grid-template-columns: 1fr 1fr;
+    }
+    .metric,
+    .workflow-step {
+      border-bottom: 1.5px solid var(--line);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .metric-grid,
+    .workflow {
+      grid-template-columns: 1fr;
+    }
+    .metric,
+    .workflow-step {
+      border-right: none;
+      padding-left: 0;
+    }
+    .footer {
+      flex-direction: column;
+    }
+  }
+</style>
+</head>
+<body>
+<main class="poster">
+  <a class="top-link" href="../">← Back to Home</a>
+
+  <section class="hero">
+    <div>
+      <span class="eyebrow">Model Research · May 2026</span>
+      <h1>Claude<br>Opus 4.8</h1>
+      <div class="cn-title">不是简单提分，而是“长程代理协作质量”的升级</div>
+      <p class="subtitle">
+        Opus 4.8 的核心价值不在于单轮回答更聪明一点，而在于它更适合承担复杂、多步骤、需要工具调用与自我校验的工作。它更愿意暴露不确定性、检查自己的结果、在计划不成立时提出反对意见，这会直接影响编码、研究、法律、金融文档和企业知识工作的委托边界。
+      </p>
+    </div>
+    <aside class="hero-aside">
+      <div>
+        <span class="aside-label">POSITIONING</span>
+        <div class="aside-block">Anthropic 称其为当前最强的通用可用 Opus 型号，重点面向生产级编码、复杂 Agent 和高要求文档工作。</div>
+        <span class="aside-label">MODEL ID</span>
+        <div class="aside-block">Claude API: <strong>claude-opus-4-8</strong><br>AWS Bedrock: <strong>anthropic.claude-opus-4-8</strong></div>
+      </div>
+      <div class="signal-row">
+        <span class="badge red">Agentic Coding</span>
+        <span class="badge blue">Dynamic Workflow</span>
+        <span class="badge green">Honesty</span>
+        <span class="badge outline">High Effort</span>
+      </div>
+    </aside>
+  </section>
+
+  <section class="thesis">
+    <div class="panel-cell">
+      <div class="section-label">Core Thesis</div>
+      <div class="section-title">从“回答模型”转向“可靠协作者”</div>
+      <p class="text">4.8 的体验重点是判断力和执行稳定性：会问关键问题、发现自己写出的代码缺陷、在证据不足时提示风险，而不是把未验证进展包装成确定结论。</p>
+    </div>
+    <div class="panel-cell">
+      <div class="section-label">Workflow Shift</div>
+      <div class="section-title">复杂任务应该被拆成计划、并行探索、验证和汇总</div>
+      <p class="text">与 Claude Code 的 dynamic workflows 结合后，模型可以为大任务生成编排脚本，调用数十到数百个并行子 Agent，再把结果经过复核后合并。这更接近“临时项目组”，不是单 Agent 一口气做完。</p>
+    </div>
+    <div class="panel-cell">
+      <div class="section-label">Adoption Rule</div>
+      <div class="section-title">贵模型只该用在高复杂度和高错误成本场景</div>
+      <p class="text">普通总结、轻量问答、低风险文案不应默认使用 Opus 4.8。它更适合高价值代码迁移、复杂架构评审、严肃知识工作和需要长时间自治的 Agent 流程。</p>
+    </div>
+  </section>
+
+  <section class="metric-grid">
+    <div class="metric">
+      <div class="metric-value">4x</div>
+      <div class="metric-name">更少放过自身代码缺陷</div>
+      <p class="metric-note">Anthropic 表示，Opus 4.8 相比前代更少在自己写出的代码存在缺陷时不提示用户。</p>
+    </div>
+    <div class="metric">
+      <div class="metric-value">$5/$25</div>
+      <div class="metric-name">常规 API 价格保持不变</div>
+      <p class="metric-note">常规使用为每百万输入 token 5 美元、每百万输出 token 25 美元，与 Opus 4.7 一致。</p>
+    </div>
+    <div class="metric">
+      <div class="metric-value">2.5x</div>
+      <div class="metric-name">Fast mode 速度定位</div>
+      <p class="metric-note">发布信息称 fast mode 可在约 2.5 倍速度下工作，且比此前 Opus fast mode 定价低三倍。</p>
+    </div>
+    <div class="metric">
+      <div class="metric-value">1M</div>
+      <div class="metric-name">Bedrock 上下文窗口</div>
+      <p class="metric-note">AWS Bedrock 模型卡列出 1M token 上下文和 128K 最大输出。跨平台限制应以各供应商当前文档为准。</p>
+    </div>
+  </section>
+
+  <section class="map">
+    <div class="map-left">
+      <div class="section-label">Capability Map</div>
+      <div class="big-claim">Opus 4.8 最值得关注的不是“更会说”，而是“更能被托付”。</div>
+      <p class="text">它对高复杂度任务的价值来自三件事叠加：更强的长程推理、更干净的工具调用、更保守的自我报告。对团队来说，这意味着可以把需求澄清、代码探索、批量迁移、专业文档分析等工作向模型前移，但验收标准必须更明确。</p>
+    </div>
+    <div class="map-right">
+      <div class="capability-list">
+        <div class="capability">
+          <div class="cap-num">01</div>
+          <div>
+            <div class="cap-title">编码和大型代码库任务</div>
+            <div class="cap-body">更适合多服务探索、跨文件改动、迁移、测试驱动修复和长期异步工作。Cursor、Devin 等早期反馈都指向工具调用效率和端到端完成度提升。</div>
+          </div>
+        </div>
+        <div class="capability">
+          <div class="cap-num">02</div>
+          <div>
+            <div class="cap-title">Agentic workflows</div>
+            <div class="cap-body">适合需要规划、调用工具、并行搜索、结果复核的任务。dynamic workflows 进一步把单次对话扩展成可恢复、可复核的并行工作流。</div>
+          </div>
+        </div>
+        <div class="capability">
+          <div class="cap-num">03</div>
+          <div>
+            <div class="cap-title">专业知识工作</div>
+            <div class="cap-body">发布材料重点提到法律、金融文档、数据和知识工作。关键不是替代专业判断，而是提高检索、引用、分析和草稿生成的稳定性。</div>
+          </div>
+        </div>
+        <div class="capability">
+          <div class="cap-num">04</div>
+          <div>
+            <div class="cap-title">诚实性和反迎合</div>
+            <div class="cap-body">更倾向于指出输入和输出中的问题，减少无证据的自信表述。高风险工作中，这比单纯流畅更重要。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="workflow">
+    <div class="workflow-step">
+      <div class="step-kicker">Step 01</div>
+      <div class="step-title">先定义验收标准</div>
+      <p class="step-body">给出测试、指标、引用要求、输出格式和不能越过的边界。Opus 4.8 更强，但仍需要明确的“何为完成”。</p>
+    </div>
+    <div class="workflow-step">
+      <div class="step-kicker">Step 02</div>
+      <div class="step-title">让模型先质疑方案</div>
+      <p class="step-body">要求它列出假设、风险、缺失信息和反对意见，再进入实现或写作。这样能利用它更强的判断力。</p>
+    </div>
+    <div class="workflow-step">
+      <div class="step-kicker">Step 03</div>
+      <div class="step-title">复杂任务启用更高 effort</div>
+      <p class="step-body">默认 high effort 已是 Anthropic 推荐平衡点。困难任务、长程异步流程和高错误成本工作可考虑 extra 或 max。</p>
+    </div>
+    <div class="workflow-step">
+      <div class="step-kicker">Step 04</div>
+      <div class="step-title">大代码库用动态工作流</div>
+      <p class="step-body">迁移、审计、全仓 bug hunt、性能排查适合 dynamic workflows。首次使用要从有边界的小任务开始观察 token 消耗。</p>
+    </div>
+    <div class="workflow-step">
+      <div class="step-kicker">Step 05</div>
+      <div class="step-title">保留人工最终验收</div>
+      <p class="step-body">把模型输出当作高质量候选方案，而不是免审结论。尤其是法律、金融、安全、生产代码发布场景。</p>
+    </div>
+  </section>
+
+  <section class="decision-grid">
+    <div class="decision">
+      <h2>Use It</h2>
+      <ul>
+        <li>需要生产级代码、架构重构、跨文件迁移和测试闭环。</li>
+        <li>任务需要工具调用、多轮推理、长时间自治和结果复核。</li>
+        <li>专业文档、金融资料、法律资料、企业知识库分析对准确性和引用很敏感。</li>
+      </ul>
+    </div>
+    <div class="decision">
+      <h2>Avoid It</h2>
+      <ul>
+        <li>只是轻量文案、简单总结、短问答或低风险脑暴。</li>
+        <li>成本和响应速度比质量更重要。</li>
+        <li>团队没有清晰验收标准，容易把长程 Agent 输出直接当最终结论。</li>
+      </ul>
+    </div>
+    <div class="decision">
+      <h2>Watch</h2>
+      <ul>
+        <li>Dynamic workflows 会明显增加 token 用量，应单独监控成本。</li>
+        <li>不同平台的上下文、输出、区域和功能支持不完全一致。</li>
+        <li>Opus 4.8 仍不是 Anthropic 提到的 Mythos 级别模型，不能把它理解成下一代上限。</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="source-grid">
+    <div class="source-box">
+      <div class="section-label">Primary Sources</div>
+      <div class="section-title">官方发布与模型页</div>
+      <p class="text">用于确认发布日期、模型定位、价格、模型 ID、可用计划、能力侧重点、诚实性改进、effort control 和 Messages API 新能力。</p>
+      <a class="source-link" href="https://www.anthropic.com/news/claude-opus-4-8" target="_blank" rel="noreferrer">Anthropic: Introducing Claude Opus 4.8</a>
+      <a class="source-link" href="https://www.anthropic.com/claude/opus" target="_blank" rel="noreferrer">Anthropic: Claude Opus model page</a>
+    </div>
+    <div class="source-box">
+      <div class="section-label">Workflow & Platform</div>
+      <div class="section-title">动态工作流与云平台规格</div>
+      <p class="text">用于确认 dynamic workflows 的工作方式、适用计划、token 消耗提醒，以及 AWS Bedrock 上的上下文、输出、模型 ID、区域和功能支持。</p>
+      <a class="source-link" href="https://claude.com/blog/introducing-dynamic-workflows-in-claude-code" target="_blank" rel="noreferrer">Claude: Introducing dynamic workflows in Claude Code</a>
+      <a class="source-link" href="https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-opus-4-8.html" target="_blank" rel="noreferrer">AWS Bedrock: Claude Opus 4.8 model card</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div><strong>一句话结论：</strong>Claude Opus 4.8 的最佳使用方式，是把它当成能自我质疑、能长时间执行、能组织并行子任务的高级协作者，而不是更贵的聊天模型。</div>
+    <div>Research date: 2026-06-02 · Source scope: Anthropic official pages, Claude product blog, AWS Bedrock model card.</div>
+  </footer>
+</main>
+</body>
+</html>
