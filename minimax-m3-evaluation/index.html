@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MiniMax M3 评测综合报告 · Evaluation Brief（中英对照）</title>
+<style>
+  :root{
+    --ink:#14233a;          /* deep navy ink */
+    --ink-soft:#3a4a63;
+    --muted:#6b7891;
+    --line:#d9dee8;
+    --paper:#ffffff;
+    --bg:#eceef2;
+    --accent:#2f6db0;       /* M3 / data blue */
+    --accent-dk:#1f4e86;
+    --teal:#0f766e;
+    --amber:#b45309;        /* caveat */
+    --red:#b3261e;          /* controversy */
+    --green:#15803d;
+    --chip:#eef3f9;
+    --serif:"Georgia","Songti SC","STSong","SimSun",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:14.5px;
+    line-height:1.72;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{
+    width:830px;
+    max-width:94vw;
+    margin:26px auto;
+    background:var(--paper);
+    padding:62px 64px 70px;
+    box-shadow:0 6px 26px rgba(20,35,58,.14);
+    position:relative;
+  }
+  /* ---------- Cover ---------- */
+  .cover{
+    background:linear-gradient(160deg,#101c2e 0%,#1b3354 55%,#244a7a 100%);
+    color:#eaf1fa;
+    padding:0;
+    overflow:hidden;
+  }
+  .cover-inner{padding:70px 64px 60px;position:relative;}
+  .cover .kicker{
+    font-size:12.5px;letter-spacing:.32em;text-transform:uppercase;
+    color:#9cc2ef;font-weight:600;margin-bottom:26px;
+  }
+  .cover h1{
+    font-family:var(--serif);font-weight:700;line-height:1.18;
+    font-size:40px;margin:0 0 6px;color:#fff;letter-spacing:.5px;
+  }
+  .cover h1 .en{display:block;font-size:23px;color:#bcd4f1;font-weight:400;margin-top:10px;letter-spacing:.3px;}
+  .cover .lede{
+    font-size:15px;color:#cfe0f4;max-width:600px;margin:22px 0 0;line-height:1.7;
+  }
+  .cover .rule{height:3px;width:74px;background:#4f9be6;margin:30px 0;border-radius:2px;}
+  .cover-meta{display:flex;flex-wrap:wrap;gap:30px 54px;margin-top:34px;font-size:13px;}
+  .cover-meta .lbl{color:#8fb3df;letter-spacing:.04em;text-transform:uppercase;font-size:10.5px;margin-bottom:3px;}
+  .cover-meta .val{color:#eaf1fa;font-weight:600;font-size:14px;}
+  .cover-badge{
+    position:absolute;top:64px;right:64px;border:1px solid #5e8bc4;
+    color:#bcd4f1;font-size:11px;letter-spacing:.18em;padding:7px 13px;border-radius:30px;
+  }
+  .cover-foot{
+    margin-top:46px;padding-top:20px;border-top:1px solid rgba(156,194,239,.28);
+    font-size:11.5px;color:#9cb6d8;line-height:1.6;
+  }
+  /* ---------- Typography ---------- */
+  h2.sec{
+    font-family:var(--serif);font-size:23px;color:var(--ink);
+    margin:6px 0 4px;padding-top:4px;line-height:1.25;
+  }
+  h2.sec .en{display:block;font-size:14px;color:var(--accent-dk);font-weight:600;font-family:var(--sans);letter-spacing:.02em;margin-top:3px;}
+  .sec-no{color:var(--accent);font-family:var(--sans);font-weight:700;font-size:14px;}
+  h3{font-size:16px;color:var(--ink);margin:26px 0 6px;font-weight:700;}
+  h3 .en{color:var(--muted);font-weight:500;font-size:13px;}
+  h4{font-size:13.5px;color:var(--accent-dk);margin:18px 0 4px;font-weight:700;letter-spacing:.02em;}
+  p{margin:9px 0;}
+  .lead{font-size:15px;color:var(--ink-soft);}
+  a{color:var(--accent-dk);}
+  strong{color:var(--ink);}
+  .small{font-size:12px;color:var(--muted);}
+  .en-note{color:var(--ink-soft);font-size:13px;line-height:1.66;}
+  hr.s{border:none;border-top:1px solid var(--line);margin:30px 0;}
+  .divider{height:1px;background:var(--line);margin:14px 0;}
+  /* ---------- Header band on content pages ---------- */
+  .runhead{
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+    border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:30px;
+  }
+  .runhead .dot{color:var(--accent);}
+  /* ---------- Executive summary ---------- */
+  .exec{background:#f7f9fc;border:1px solid var(--line);border-left:4px solid var(--accent);
+    padding:22px 26px;border-radius:4px;margin:20px 0;}
+  .exec h3{margin-top:0;}
+  .verdict-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0 4px;}
+  .vcard{border:1px solid var(--line);border-radius:6px;padding:14px 16px;background:#fff;}
+  .vcard .t{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+  .vcard .b{font-size:13.5px;color:var(--ink);line-height:1.55;}
+  .vcard .b b{color:var(--accent-dk);}
+  /* ---------- Tables ---------- */
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:12.8px;}
+  caption{caption-side:top;text-align:left;font-size:12px;color:var(--muted);margin-bottom:7px;font-style:italic;}
+  th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;}
+  thead th{background:var(--ink);color:#fff;font-weight:600;font-size:12px;letter-spacing:.01em;border-bottom:none;}
+  thead th .en{display:block;color:#b9cbe4;font-weight:400;font-size:10.5px;}
+  tbody tr:nth-child(even){background:#f6f8fb;}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-feature-settings:"tnum";}
+  .hl{background:#eaf2fb !important;}
+  .hl td{font-weight:600;}
+  .best{color:var(--green);font-weight:700;}
+  .lead-val{color:var(--accent-dk);font-weight:700;}
+  .lag{color:var(--red);}
+  td .sub{color:var(--muted);font-size:11px;}
+  /* ---------- Bar charts ---------- */
+  .chart{margin:18px 0 8px;border:1px solid var(--line);border-radius:8px;padding:18px 20px 14px;background:#fcfdff;}
+  .chart .ct{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px;}
+  .chart .cs{font-size:11.5px;color:var(--muted);margin-bottom:14px;}
+  .grp{margin:13px 0;}
+  .grp .gl{font-size:11.5px;color:var(--ink-soft);font-weight:600;margin-bottom:5px;}
+  .bar-row{display:flex;align-items:center;gap:9px;margin:3px 0;}
+  .bar-label{width:140px;font-size:11px;color:var(--ink-soft);text-align:right;flex-shrink:0;line-height:1.25;}
+  .bar-track{flex:1;background:#eef1f6;border-radius:3px;height:17px;position:relative;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:3px;display:flex;align-items:center;justify-content:flex-end;
+    padding-right:7px;color:#fff;font-size:10.5px;font-weight:700;min-width:30px;}
+  .f-m3{background:linear-gradient(90deg,#2f6db0,#3f86d0);}
+  .f-opus{background:#324a66;}
+  .f-opus8{background:#1f3147;}
+  .f-gpt{background:#5b7a9c;}
+  .f-gem{background:#8aa0b8;}
+  .f-ds{background:#0f766e;}
+  .f-amber{background:#b45309;}
+  .f-red{background:#b3261e;}
+  .f-grey{background:#9aa6b8;}
+  .leg{display:flex;flex-wrap:wrap;gap:7px 16px;margin-top:12px;font-size:10.5px;color:var(--ink-soft);}
+  .leg span{display:inline-flex;align-items:center;gap:5px;}
+  .sw{width:11px;height:11px;border-radius:2px;display:inline-block;}
+  /* ---------- Callouts ---------- */
+  .call{border-radius:7px;padding:14px 17px;margin:16px 0;font-size:13px;line-height:1.62;}
+  .call .ch{font-weight:700;font-size:12px;letter-spacing:.03em;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:7px;}
+  .call.fact{background:#eef6ff;border:1px solid #cfe2f7;}
+  .call.fact .ch{color:var(--accent-dk);}
+  .call.warn{background:#fdf6ec;border:1px solid #f0dcbf;}
+  .call.warn .ch{color:var(--amber);}
+  .call.contro{background:#fdeeed;border:1px solid #f3cfcc;}
+  .call.contro .ch{color:var(--red);}
+  .call.quote{background:#f5f7fa;border:1px solid var(--line);border-left:3px solid var(--muted);font-style:italic;color:var(--ink-soft);}
+  .call .en-note{margin-top:7px;padding-top:7px;border-top:1px dashed rgba(0,0,0,.12);}
+  /* ---------- Misc ---------- */
+  ul.tight{margin:8px 0;padding-left:20px;}
+  ul.tight li{margin:5px 0;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;}
+  .chip{background:var(--chip);border:1px solid #dbe6f2;color:var(--accent-dk);
+    font-size:11.5px;padding:5px 11px;border-radius:20px;font-weight:600;}
+  .stat-row{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0;}
+  .stat{flex:1;min-width:120px;border:1px solid var(--line);border-radius:8px;padding:13px 15px;background:#fff;}
+  .stat .n{font-family:var(--serif);font-size:26px;color:var(--accent-dk);font-weight:700;line-height:1;}
+  .stat .n small{font-size:14px;}
+  .stat .d{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4;}
+  .toc{font-size:13.5px;}
+  .toc a{display:flex;justify-content:space-between;text-decoration:none;color:var(--ink);
+    padding:9px 2px;border-bottom:1px dotted var(--line);}
+  .toc a:hover{color:var(--accent);}
+  .toc .tn{color:var(--accent);font-weight:700;width:26px;flex-shrink:0;}
+  .toc .tt{flex:1;}
+  .toc .te{color:var(--muted);font-size:11.5px;}
+  .scoreboard{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0;}
+  .sb{border:1px solid var(--line);border-radius:7px;padding:12px 13px;background:#fff;}
+  .sb .sbt{font-size:11.5px;color:var(--ink-soft);font-weight:600;}
+  .sb .stars{color:#e0a521;font-size:13px;letter-spacing:1px;margin:4px 0 2px;}
+  .sb .sbd{font-size:10.5px;color:var(--muted);line-height:1.4;}
+  .src-list{font-size:11.8px;line-height:1.5;counter-reset:src;}
+  .src-list li{margin:7px 0;color:var(--ink-soft);word-break:break-word;}
+  .src-list li b{color:var(--ink);}
+  .tag{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.05em;padding:2px 7px;border-radius:4px;vertical-align:middle;margin-left:4px;}
+  .tag.off{background:#e6effa;color:#1f4e86;}
+  .tag.ind{background:#e7f4ee;color:#15803d;}
+  .tag.media{background:#f0eefb;color:#5b3ea8;}
+  .tag.cn{background:#fbeeee;color:#b3261e;}
+  .pagefoot{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);}
+  .home-link{
+    position:fixed;
+    z-index:20;
+    top:18px;
+    left:18px;
+    display:inline-flex;
+    align-items:center;
+    min-height:34px;
+    padding:6px 12px;
+    border:1px solid rgba(47,109,176,.22);
+    border-radius:18px;
+    background:rgba(255,255,255,.88);
+    color:var(--accent-dk);
+    font-size:12px;
+    font-weight:700;
+    text-decoration:none;
+    box-shadow:0 6px 18px rgba(20,35,58,.12);
+    backdrop-filter:blur(10px);
+  }
+  .home-link:hover{color:var(--accent);}
+  @media print{
+    body{background:#fff;}
+    .page{box-shadow:none;margin:0 auto;width:100%;max-width:100%;padding:30px 34px;page-break-after:always;}
+    .cover{page-break-after:always;}
+    .chart,.call,table,.exec,.vcard,.stat{break-inside:avoid;}
+    a{color:var(--ink);}
+    .home-link{display:none;}
+  }
+</style>
+</head>
+<body>
+<a class="home-link" href="../">← Back to Home</a>
+
+<!-- ============ COVER ============ -->
+<section class="page cover">
+  <div class="cover-inner">
+    <div class="cover-badge">RESEARCH BRIEF · 研究简报</div>
+    <div class="kicker">国产旗舰大模型 · 多方评测综合分析</div>
+    <h1>MiniMax M3 评测综合报告
+      <span class="en">A Cross-Source Evaluation of MiniMax M3 — Coding, Agents, Cost &amp; Controversy</span>
+    </h1>
+    <div class="rule"></div>
+    <p class="lede">围绕「编码与 Agent 能力、性价比与成本、第三方质疑与争议」三条主线，汇集 MiniMax 官方披露、西方独立实测与中文社区深度评测，提炼可核验的事实依据并给出综合判断。</p>
+    <p class="lede" style="color:#a9c4e6;font-size:13px;">Synthesizing the official launch, hands-on independent reviews, and Chinese-language deep-dives into one fact-checked brief — focused on coding/agentic capability, cost-effectiveness, and the skepticism around launch-day claims.</p>
+
+    <div class="cover-meta">
+      <div><div class="lbl">模型 / Model</div><div class="val">MiniMax M3（稀宇科技）</div></div>
+      <div><div class="lbl">发布 / Released</div><div class="val">2026-05-31 / 06-01</div></div>
+      <div><div class="lbl">报告日期 / As of</div><div class="val">2026-06-03</div></div>
+      <div><div class="lbl">信息源 / Sources</div><div class="val">10+（官方·独立·媒体·中文）</div></div>
+    </div>
+
+    <div class="cover-foot">
+      重要声明：本报告所引基准分数绝大多数为 MiniMax 自测（vendor-run），独立第三方评测（Artificial Analysis、LMArena）截至报告日尚未发布；模型权重与技术报告亦尚未开源。结论应视为<strong style="color:#cfe0f4">阶段性信号</strong>而非定论。<br>
+      <span style="color:#88a6cb">Note: Nearly all benchmark figures are vendor-reported and not yet independently verified; weights/tech report were unreleased at the time of writing. Treat rankings as a preliminary signal, not a settled result.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXECUTIVE SUMMARY ============ -->
+<section class="page">
+  <div class="runhead"><span>MiniMax M3 · 评测综合报告</span><span class="dot">执行摘要 / Executive Summary</span></div>
+
+  <h2 class="sec"><span class="sec-no">00 ·</span> 执行摘要<span class="en">Executive Summary</span></h2>
+
+  <p class="lead">MiniMax M3 于 2026 年 5 月 31 日（美东）／6 月 1 日发布，被官方定位为「国内首个同时具备前沿编码/Agent 能力、百万 token 上下文与原生多模态」的开源权重模型。其技术核心是自研稀疏注意力架构 <strong>MSA</strong>，把百万级上下文的单 token 计算量压到上一代的约 1/20。</p>
+
+  <div class="exec">
+    <h3>一句话结论 <span class="en">/ The bottom line</span></h3>
+    <p style="margin-bottom:6px;"><strong>技术真有突破，定价确有诚意，但「前沿」二字需打折看。</strong> M3 在 SWE-Bench Pro 上以 59.0% 超过 GPT-5.5（58.6%）与 Gemini 3.1 Pro（54.2%），逼近 Claude Opus 4.7（64.3%）；价格仅为闭源旗舰的 5–20%。但其对标基线用的是 Opus 4.7，而发布前一周 Anthropic 已推出更强的 Opus 4.8——以当前天花板衡量，M3 在三项可直接对比的 Agent 基准上落后约 10–13 分。所有分数均为厂商自测，权重与技术报告尚未开源。</p>
+    <p class="en-note" style="margin-bottom:0;"><strong>In English:</strong> M3 is a genuine technical step up and aggressively cheap (5–20% of closed-frontier cost), beating GPT-5.5 and Gemini 3.1 Pro on SWE-Bench Pro and approaching Opus 4.7. But MiniMax benchmarked against Opus 4.7, while Anthropic had already shipped the stronger Opus 4.8 a week earlier — against that current ceiling, M3 trails by ~10–13 points on the three directly comparable agent benchmarks. Every figure is vendor-run; weights and the tech report had not shipped.</p>
+  </div>
+
+  <div class="verdict-grid">
+    <div class="vcard"><div class="t">① 编码与 Agent / Coding &amp; Agents</div><div class="b">真实力，非纯刷榜：12 小时自主复现 ICLR 论文、24 小时把 CUDA 算子利用率从 <b>7.6%→71.3%</b>。但终端执行（Terminal-Bench 66.0%）弱于 GPT-5.5、Gemini、DeepSeek 与两代 Opus。</div></div>
+    <div class="vcard"><div class="t">② 性价比 / Cost</div><div class="b">API <b>$0.60 / $2.40</b>（输入/输出，每百万 token），首周五折。但国内 Token Plan 由「不限量」改为「限总量」，重度用户实测成本据算账<b>上涨约 257%</b>，社区「炸锅」。</div></div>
+    <div class="vcard"><div class="t">③ 质疑与争议 / Skepticism</div><div class="b">基准全为自测、权重未开源、许可证疑似「类 MIT」限商用；叠加美国国会调查、Anthropic 蒸馏指控与版权诉讼等地缘/法律风险。</div></div>
+    <div class="vcard"><div class="t">④ 适用建议 / Verdict</div><div class="b">长上下文、成本敏感的编码/Agent 任务<b>值得用</b>；对最高纯代码质量或新颖抽象推理，仍建议保留闭源旗舰。<b>混合路由</b>是当前最优解。</div></div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat"><div class="n">1M</div><div class="d">上下文窗口（token）<br>Context window</div></div>
+    <div class="stat"><div class="n">59.0<small>%</small></div><div class="d">SWE-Bench Pro<br>（自测 vendor-run）</div></div>
+    <div class="stat"><div class="n">~1/20</div><div class="d">百万上下文单 token 算力<br>vs 上一代 M2</div></div>
+    <div class="stat"><div class="n">5–20<small>%</small></div><div class="d">闭源旗舰的成本占比<br>of closed-frontier cost</div></div>
+  </div>
+
+  <p class="small">数据口径：本页数字均来自 MiniMax 官方博客或可追溯的第三方报道，详见第 7 节「事实依据、数据口径与存疑」。本报告对所有未独立验证之数据均明确标注。</p>
+
+  <div class="pagefoot"><span>稀宇科技 MiniMax · M3</span><span>执行摘要 · Executive Summary</span></div>
+</section>
+
+<!-- ============ CONTENTS ============ -->
+<section class="page">
+  <div class="runhead"><span>MiniMax M3 · 评测综合报告</span><span class="dot">目录 / Contents</span></div>
+  <h2 class="sec"><span class="sec-no">·</span> 目录<span class="en">Table of Contents</span></h2>
+  <div class="toc">
+    <a href="#s1"><span class="tn">01</span><span class="tt">模型与架构概览：MSA 稀疏注意力 <span class="te">Model &amp; Architecture — MSA</span></span></a>
+    <a href="#s2"><span class="tn">02</span><span class="tt">编码与 Agent 能力评测 <span class="te">Coding &amp; Agentic Evaluation</span></span></a>
+    <a href="#s3"><span class="tn">03</span><span class="tt">多方竞品对比 <span class="te">Multi-Model Comparison</span></span></a>
+    <a href="#s4"><span class="tn">04</span><span class="tt">性价比与成本分析 <span class="te">Cost &amp; Value Analysis</span></span></a>
+    <a href="#s5"><span class="tn">05</span><span class="tt">第三方质疑与争议 <span class="te">Third-Party Skepticism &amp; Controversy</span></span></a>
+    <a href="#s6"><span class="tn">06</span><span class="tt">综合分析与结论 <span class="te">Synthesis &amp; Verdict</span></span></a>
+    <a href="#s7"><span class="tn">07</span><span class="tt">事实依据、数据口径与存疑 <span class="te">Evidence, Data Caveats &amp; Discrepancies</span></span></a>
+    <a href="#src"><span class="tn">·</span><span class="tt">参考来源 <span class="te">Sources</span></span></a>
+  </div>
+
+  <hr class="s">
+  <h3>本报告如何取证 <span class="en">/ How this brief was sourced</span></h3>
+  <p>我们采用「官方 → 媒体复述 → 独立实测 → 中文社区」四层交叉的方式取证，并对每一处关键数字标注来源类型：</p>
+  <div class="chips">
+    <span class="chip">官方披露 Official</span>
+    <span class="chip">独立实测 Independent hands-on</span>
+    <span class="chip">科技媒体 Tech media</span>
+    <span class="chip">中文深评 CN deep-dive</span>
+    <span class="chip">聚合榜单 Aggregators</span>
+  </div>
+  <p class="en-note"><strong>In English:</strong> Evidence is triangulated across four layers — MiniMax's own launch materials, Western tech-press coverage, an independent hands-on reviewer who ran real coding tasks, and Chinese-language deep-dives covering pricing and real-world behavior. Each key figure is tagged by source type, and conflicting numbers are surfaced rather than smoothed over (see §7).</p>
+
+  <div class="pagefoot"><span>稀宇科技 MiniMax · M3</span><span>目录 · Contents</span></div>
+</section>
+
+<!-- ============ SECTION 1 ============ -->
+<section class="page" id="s1">
+  <div class="runhead"><span>01 · 模型与架构</span><span class="dot">MSA Sparse Attention</span></div>
+  <h2 class="sec"><span class="sec-no">01 ·</span> 模型与架构概览<span class="en">Model &amp; Architecture Overview</span></h2>
+
+  <p class="lead">M3 是一款稀疏 MoE 基础模型，输入支持文本/图像/视频、输出文本，上下文窗口 1,048,576（1M）token、最大输出 512K。它代表 M 系列的一次「路线回调」：M2 一代曾<strong>移除</strong>稀疏注意力改用全注意力，而 M3 以全新形态把稀疏性带了回来——这正是 1M 上下文得以在可用价格下落地的关键。</p>
+
+  <h3>MSA：让百万上下文「真的能用」 <span class="en">/ MiniMax Sparse Attention</span></h3>
+  <p>传统全注意力的算力随上下文长度<strong>平方级</strong>增长（上下文每翻 10 倍，算力约涨 100 倍）。MSA 用「两段式」机制破解：先由一个轻量<strong>索引分支（index branch）</strong>扫描 token、把 KV 缓存切块并 Top-k 选出与当前查询相关的块；再仅对这些块跑昂贵的精确注意力。其关键差异在于：MSA 作用于<strong>未压缩的真实 KV</strong>，因而不像 DeepSeek 的多头潜在注意力（MLA）那样在长上下文付出精度代价。</p>
+
+  <div class="call fact">
+    <div class="ch">◆ 事实核验 / Verified claims（官方自测，待独立复现）</div>
+    <ul class="tight" style="margin-bottom:4px;">
+      <li>百万上下文下单 token 算力 ≈ 上一代 <strong>1/20</strong>；预填充提速 <strong>9.7×</strong>、解码提速 <strong>15.6×</strong>。</li>
+      <li>算子层「KV 外层聚合 Q」：每个 KV 块只读一次、内存连续访问，较开源 Flash-Sparse-Attention / flash-moba <strong>快 4×+</strong>。</li>
+      <li>原生多模态：从第 0 步混合模态训练，重建数据管线后训练规模达 <strong>~100 万亿 token（100T）</strong>。</li>
+      <li>官方诚实附注：消融实验中 MSA 在「绝大多数（vast majority）能力」上追平全注意力——是「绝大多数」，非「全部」。</li>
+    </ul>
+    <div class="en-note"><strong>In English:</strong> At 1M tokens, MiniMax reports per-token compute at ~1/20 of M2, with 9.7× faster prefill and 15.6× faster decode, via a two-stage index-then-sparse design on uncompressed KV. The implementation is claimed &gt;4× faster than open-source sparse-attention kernels. Honest hedge from MiniMax itself: MSA matched full attention on the "vast majority" of capabilities — not all. Independent verification pends the weights/report.</div>
+  </div>
+
+  <h3>三项能力「合一」是核心卖点 <span class="en">/ Three frontier capabilities in one model</span></h3>
+  <p>官方反复强调的不是某单项第一，而是<strong>编码/Agent + 百万上下文 + 原生多模态</strong>三者首次在一个开源权重模型上同时具备。独立评测人 Thomas Wiegold 也认同这一点的现实意义：「一个二次方注意力的模型理论上能装下百万 token，但<em>真正去用</em>会很痛苦——光预填充就要几分钟。若 MSA 的提速在真实负载下成立，这才是『规格表上有 1M』与『你真敢围绕 1M 去搭 Agent』之间的区别。」</p>
+  <div class="call quote">
+    “A quadratic-attention model can technically hold a million tokens, but actually using them is miserable… If MSA's speedups hold up under real load, that's the difference between ‘1M context exists on the spec sheet' and ‘1M context is something you'd actually build an agent around.'” — Thomas Wiegold（独立评测人 / independent reviewer）
+  </div>
+
+  <table>
+    <caption>表 1.1　M3 关键规格 / Key specifications（来源：MiniMax 官方、OpenRouter）</caption>
+    <thead><tr><th>项目 <span class="en">Item</span></th><th>参数 <span class="en">Value</span></th><th>备注 <span class="en">Note</span></th></tr></thead>
+    <tbody>
+      <tr><td>架构 Architecture</td><td>稀疏 MoE + MSA</td><td>参数量与训练算力<span class="lag">未公开</span></td></tr>
+      <tr><td>上下文 Context</td><td>1,048,576 token（1M）</td><td>最大输出 512K；≤512K 走标准价</td></tr>
+      <tr><td>模态 Modality</td><td>文本/图像/视频入，文本出</td><td>可操作桌面（computer use）</td></tr>
+      <tr><td>推理模式 Modes</td><td>Thinking 开/关可切</td><td>同价；另有 highspeed 版（+50% 价、结果一致、约快 1/3）</td></tr>
+      <tr><td>开源 Weights</td><td>承诺 10 天内（≈6/11）</td><td>发布日<span class="lag">未上线</span> HF/GitHub</td></tr>
+    </tbody>
+  </table>
+
+  <div class="pagefoot"><span>稀宇科技 MiniMax · M3</span><span>§1 架构 · Architecture</span></div>
+</section>
+
+<!-- ============ SECTION 2 ============ -->
+<section class="page" id="s2">
+  <div class="runhead"><span>02 · 编码与 Agent 能力</span><span class="dot">Coding &amp; Agents</span></div>
+  <h2 class="sec"><span class="sec-no">02 ·</span> 编码与 Agent 能力评测<span class="en">Coding &amp; Agentic Evaluation</span></h2>
+
+  <p class="lead">这是 M3「插旗」之处，也是本报告的重点之一。下文先看官方自测分数，再看三项长程自主演示，最后给出审慎解读。</p>
+
+  <h3>2.1　官方基准分数 <span class="en">/ Vendor-reported benchmarks</span></h3>
+  <table>
+    <caption>表 2.1　M3 自测核心分数（MiniMax 官方博客）/ Headline scores, self-reported</caption>
+    <thead><tr><th>基准 <span class="en">Benchmark</span></th><th class="num">M3</th><th>衡量内容 <span class="en">Measures</span></th></tr></thead>
+    <tbody>
+      <tr><td>SWE-Bench Pro</td><td class="num lead-val">59.0%</td><td>真实 PR 级软件工程（1,865 个 PR / 41 仓库）</td></tr>
+      <tr><td>SWE-Bench Verified</td><td class="num">80.5%</td><td>已趋饱和的经典编码基准</td></tr>
+      <tr><td>Terminal-Bench 2.1</td><td class="num">66.0%</td><td>终端/CLI 内的 Agent 执行</td></tr>
+      <tr><td>SWE-fficiency</td><td class="num">34.8%</td><td>工程任务的高效解决</td></tr>
+      <tr><td>KernelBench Hard</td><td class="num">28.8%</td><td>GPU 算子优化</td></tr>
+      <tr><td>MCP Atlas</td><td class="num">74.2%</td><td>MCP 多步工具调用</td></tr>
+      <tr><td>BrowseComp</td><td class="num lead-val">83.5</td><td>自主联网检索</td></tr>
+      <tr><td>SVG-Bench</td><td class="num">63.7%</td><td>程序化 SVG/视觉代码生成（超 Opus 4.7）</td></tr>
+      <tr><td>OSWorld-Verified</td><td class="num">70.0%</td><td>桌面 GUI 操作（200 步；100 步为 68.7%）</td></tr>
+      <tr><td>PostTrainBench</td><td class="num">0.37</td><td>自主训练模型（数据合成→训练→评估→迭代）</td></tr>
+    </tbody>
+  </table>
+
+  <div class="chart">
+    <div class="ct">图 2.1　SWE-Bench Pro：M3 vs 主要竞品 / M3 vs peers on SWE-Bench Pro</div>
+    <div class="cs">单位 %。数字均为各厂商自测口径，基线由 MiniMax 选定。Vendor-run; baselines selected by MiniMax.</div>
+    <div class="grp">
+      <div class="bar-row"><div class="bar-label">Claude Opus 4.8 <span style="color:#b3261e">（当前天花板）</span></div><div class="bar-track"><div class="bar-fill f-opus8" style="width:69.2%">69.2</div></div></div>
+      <div class="bar-row"><div class="bar-label">Claude Opus 4.7</div><div class="bar-track"><div class="bar-fill f-opus" style="width:64.3%">64.3</div></div></div>
+      <div class="bar-row"><div class="bar-label">MiniMax M3</div><div class="bar-track"><div class="bar-fill f-m3" style="width:59.0%">59.0</div></div></div>
+      <div class="bar-row"><div class="bar-label">GPT-5.5</div><div class="bar-track"><div class="bar-fill f-gpt" style="width:58.6%">58.6</div></div></div>
+      <div class="bar-row"><div class="bar-label">DeepSeek-V4 Pro Max</div><div class="bar-track"><div class="bar-fill f-ds" style="width:55.4%">55.4</div></div></div>
+      <div class="bar-row"><div class="bar-label">Gemini 3.1 Pro</div><div class="bar-track"><div class="bar-fill f-gem" style="width:54.2%">54.2</div></div></div>
+    </div>
+    <div class="leg">
+      <span><span class="sw f-m3"></span>MiniMax M3</span>
+      <span><span class="sw f-opus8"></span>Opus 4.8（发布前一周）</span>
+      <span><span class="sw f-ds"></span>DeepSeek</span>
+      <span><span class="sw f-gpt"></span>GPT-5.5</span>
+      <span><span class="sw f-gem"></span>Gemini 3.1 Pro</span>
+    </div>
+  </div>
+
+  <div class="call warn">
+    <div class="ch">⚠ 关键解读 / The catch：终端执行是相对短板</div>
+    <p style="margin:4px 0;">SWE-Bench Pro 之外，M3 的<strong>终端/Agent 执行</strong>反而较弱。在 Terminal-Bench 2.1 上，M3 的 66.0% 不仅落后 Opus 4.8（74.6%），也低于 GPT-5.5（72.1%）、Gemini 3.1 Pro（70.0%）甚至开源对手 DeepSeek-V4 Pro Max（67.9%），仅与上一代 Opus 4.7 的 66.1% 持平。换言之，M3 强在「写代码/检索」，弱在「在终端里把活干完」。</p>
+    <div class="en-note"><strong>In English:</strong> M3 wins on code synthesis and browsing but lags on terminal execution. Its Terminal-Bench 2.1 score (66.0%) trails Opus 4.8 (74.6%), GPT-5.5 (72.1%), Gemini 3.1 Pro (70.0%) and even open-source DeepSeek-V4 Pro Max (67.9%) — essentially tied with the previous-gen Opus 4.7 (66.1%).</div>
+  </div>
+
+  <h3>2.2　三项长程自主演示 <span class="en">/ Long-horizon autonomy demos</span></h3>
+  <p>官方最自豪的并非榜单，而是三段「跑数小时到一天」的自主演示。需注意：这些是<strong>能力展示，而非可复现的受控评测</strong>。</p>
+  <div class="scoreboard">
+    <div class="sb"><div class="sbt">① 12h 论文复现</div><div class="stars">★★★★★</div><div class="sbd">独立复现 ICLR 2025 杰出论文，自主 18 次 commit、23 张实验图，复现分 0.650。</div></div>
+    <div class="sb"><div class="sbt">② 24h CUDA 算子</div><div class="stars">★★★★☆</div><div class="sbd">FP8 GEMM 优化：147 次提交、1,959 次工具调用，峰值利用率 7.6%→71.3%（9.4×）；最佳解出现在第 145 次。</div></div>
+    <div class="sb"><div class="sbt">③ PostTrainBench</div><div class="stars">★★★★☆</div><div class="sbd">12h 内自主训练 4 个基座模型，得分 0.37，列第三（Opus 4.7 = 0.42、GPT-5.5 = 0.39）。</div></div>
+  </div>
+  <div class="call quote">
+    冷静的对照（The Decoder）：在 CUDA 演示中，<strong>Opus 4.7 用远少于 M3 的提交次数即达到了可比结果</strong>；M3 的亮点在于「不放弃」——多数模型在前 30 次提交内就自行退出，而 M3 穿越多个平台期坚持到第 145 次。<br><span class="small">In the CUDA demo, Opus 4.7 reached comparable results in far fewer runs; M3's edge was persistence, pushing through plateaus to submission 145 where others quit within ~30.</span>
+  </div>
+
+  <h3>2.3　独立实测：手感如何 <span class="en">/ Hands-on, in practice</span></h3>
+  <p>悉尼独立开发者 Thomas Wiegold 以固定流程实测（两个网站、扑克模拟、对自有站点做代码审计）：</p>
+  <ul class="tight">
+    <li><strong>网页构建 — 优秀。</strong>咖啡烘焙站「是迄今最好结果之一」，已属前沿水准；流行文化电商站为「第二好」，仅设计精致度略逊 Gemini。</li>
+    <li><strong>代码审计 — 接近 GPT-5.5（他的最爱）。</strong>「没有一行浪费在编造的问题上」——对比 DeepSeek V4「把有价值的发现埋在一堆伪问题里」。</li>
+    <li><strong>扑克模拟 — 慢且过度思考。</strong>耗时 30–40 分钟，推理里满是「其实……」「但等等……」，自我否定、烧掉大量 token；结果「凑合，但没满分」（注：此题无模型一次满分）。</li>
+    <li><strong>明确短板 — 抽象/流体推理。</strong>整个中国模型家族在此偏弱，MiniMax 线此前 ARC-AGI-2 仅个位数低分。</li>
+  </ul>
+  <div class="call fact">
+    <div class="ch">◆ 独立结论 / Independent verdict</div>
+    <p style="margin:4px 0;">「M3 是真正的赢家……第一次，一个 MiniMax 模型真正坐进了与 GPT、Opus 同桌的对话，而不是低一档。」但他同时<strong>保留 Claude 与 ChatGPT 订阅</strong>，主张<strong>混合路由</strong>：把大批量、成本敏感、长上下文的活交给 M3，把最后几个百分点的质量留给闭源旗舰。</p>
+    <div class="en-note"><strong>In English:</strong> "A real winner… for the first time a MiniMax model genuinely sits in the conversation with GPT and Opus." His recommended play is hybrid: route bulk, cost-sensitive, long-context work to M3; reserve a closed frontier model for the slice where the last few quality points matter.</div>
+  </div>
+
+  <div class="pagefoot"><span>稀宇科技 MiniMax · M3</span><span>§2 编码与 Agent · Coding &amp; Agents</span></div>
+</section>
+
+<!-- ============ SECTION 3 ============ -->
+<section class="page" id="s3">
+  <div class="runhead"><span>03 · 多方竞品对比</span><span class="dot">Comparison</span></div>
+  <h2 class="sec"><span class="sec-no">03 ·</span> 多方竞品对比<span class="en">Multi-Model Comparison</span></h2>
+
+  <p class="lead">下表汇总各源可得分数。<strong>请务必注意</strong>：不同列可能来自不同评测配置/来源（官方、聚合站、第三方表格），且基线由 MiniMax 选定，<strong>不应作精确小数点比较</strong>，仅供量级参照。</p>
+
+  <table>
+    <caption>表 3.1　编码/Agent 主基准横向对比（%，混合来源，详见 §7）/ Cross-model scoreboard (mixed sources)</caption>
+    <thead><tr>
+      <th>基准 <span class="en">Benchmark</span></th>
+      <th class="num">M3</th>
+      <th class="num">Opus 4.7</th>
+      <th class="num">Opus 4.8</th>
+      <th class="num">GPT-5.5</th>
+      <th class="num">Gemini 3.1</th>
+      <th class="num">DeepSeek V4 Pro Max</th>
+    </tr></thead>
+    <tbody>
+      <tr class="hl"><td>SWE-Bench Pro</td><td class="num lead-val">59.0</td><td class="num">64.3</td><td class="num best">69.2</td><td class="num">58.6</td><td class="num">54.2</td><td class="num">55.4</td></tr>
+      <tr><td>SWE-Bench Verified</td><td class="num">80.5</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num best">80.6</td></tr>
+      <tr class="hl"><td>Terminal-Bench 2.1</td><td class="num lag">66.0</td><td class="num">66.1</td><td class="num best">74.6</td><td class="num">72.1</td><td class="num">70.0</td><td class="num">67.9</td></tr>
+      <tr><td>OSWorld-Verified</td><td class="num">70.0</td><td class="num">—</td><td class="num best">83.4</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
+      <tr class="hl"><td>BrowseComp</td><td class="num lead-val">83.5</td><td class="num">79.3</td><td class="num">—</td><td class="num best">84.1</td><td class="num">76.5</td><td class="num">83.4</td></tr>
+      <tr><td>MCP Atlas</td><td class="num lead-val">74.2</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">73.6</td></tr>
+      <tr><td>PostTrainBench</td><td class="num">37.1</td><td class="num best">42.4</td><td class="num">—</td><td class="num">39.3</td><td class="num">—</td><td class="num">—</td></tr>
+      <tr><td>上下文 Context</td><td class="num lead-val">1M</td><td class="num">200K</td><td class="num">200K</td><td class="num">128K</td><td class="num">1M</td><td class="num">1M</td></tr>
+    </tbody>
+  </table>
+  <p class="small"><span class="lead-val">蓝色</span>=M3 领先项；<span class="best">绿色</span>=该行最高；<span class="lag">红色</span>=M3 明显落后项。空格表示该源未提供可比数字。</p>
+
+  <h3>3.1　与「当前天花板」Opus 4.8 的真实差距 <span class="en">/ The frontier moved</span></h3>
+  <p>MiniMax 全程对标 Opus 4.7，但 Anthropic 已于 <strong>2026-05-25</strong>（M3 发布前一周）推出 Opus 4.8。VentureBeat 将 M3 与<em>当前</em>天花板对齐后，差距一致：</p>
+  <div class="chart">
+    <div class="ct">图 3.1　M3 vs Claude Opus 4.8（三项可直接对比的 Agent 基准）</div>
+    <div class="cs">单位 %。M3 在三项上一致落后约 10–13 分。</div>
+    <div class="grp"><div class="gl">SWE-Bench Pro</div>
+      <div class="bar-row"><div class="bar-label">MiniMax M3</div><div class="bar-track"><div class="bar-fill f-m3" style="width:59.0%">59.0</div></div></div>
+      <div class="bar-row"><div class="bar-label">Opus 4.8</div><div class="bar-track"><div class="bar-fill f-opus8" style="width:69.2%">69.2</div></div></div>
+    </div>
+    <div class="grp"><div class="gl">Terminal-Bench 2.1</div>
+      <div class="bar-row"><div class="bar-label">MiniMax M3</div><div class="bar-track"><div class="bar-fill f-m3" style="width:66.0%">66.0</div></div></div>
+      <div class="bar-row"><div class="bar-label">Opus 4.8</div><div class="bar-track"><div class="bar-fill f-opus8" style="width:74.6%">74.6</div></div></div>
+    </div>
+    <div class="grp"><div class="gl">OSWorld-Verified</div>
+      <div class="bar-row"><div class="bar-label">MiniMax M3</div><div class="bar-track"><div class="bar-fill f-m3" style="width:70.0%">70.0</div></div></div>
+      <div class="bar-row"><div class="bar-label">Opus 4.8</div><div class="bar-track"><div class="bar-fill f-opus8" style="width:83.4%">83.4</div></div></div>
+    </div>
+  </div>
+  <div class="call contro">
+    <div class="ch">✦ 争议焦点 / The framing problem</div>
+    <p style="margin:4px 0;">「M3 逼近前沿」在<em>评测设计时</em>成立，但<strong>前沿移动了</strong>。TechTimes 直言：开发者衡量 M3 时应使用 Opus 4.8 的数字——那会把 M3 放在比发布通稿所暗示的<strong>更远离前沿</strong>的位置。</p>
+    <div class="en-note"><strong>In English:</strong> "Approaches the frontier" was true against the frontier as it stood when evaluations were designed — but Opus 4.8 had already shipped. Measured against the current ceiling, M3 sits further from the frontier than the launch implied.</div>
+  </div>
+
+  <h3>3.2　开源阵营内战：M3 vs DeepSeek-V4 Pro Max <span class="en">/ Inside the open-weight camp</span></h3>
+  <p>最直接的对手是号称 1.6 万亿总参数的 DeepSeek-V4 Pro Max。二者互有胜负、整体接近平手：</p>
+  <table>
+    <caption>表 3.2　M3 vs DeepSeek-V4 Pro Max（VentureBeat 口径）</caption>
+    <thead><tr><th>基准</th><th class="num">M3</th><th class="num">DeepSeek V4 Pro Max</th><th>结论</th></tr></thead>
+    <tbody>
+      <tr><td>SWE-Bench Pro</td><td class="num lead-val">59.0</td><td class="num">55.4</td><td>M3 领先</td></tr>
+      <tr><td>Terminal-Bench 2.1</td><td class="num">66.0</td><td class="num lead-val">67.9</td><td>DeepSeek 领先</td></tr>
+      <tr><td>BrowseComp</td><td class="num">83.5</td><td class="num">83.4</td><td>基本持平</td></tr>
+      <tr><td>MCP Atlas</td><td class="num lead-val">74.2</td><td class="num">73.6</td><td>M3 略胜</td></tr>
+      <tr><td>SWE-Bench Verified</td><td class="num">80.5</td><td class="num lead-val">80.6</td><td>DeepSeek 略胜</td></tr>
+    </tbody>
+  </table>
+  <p class="en-note"><strong>In English:</strong> Against DeepSeek-V4 Pro Max the two trade narrow wins — M3 ahead on code synthesis and tool use, DeepSeek ahead on terminal execution, parity on browsing. VentureBeat's subtext: M3 achieves this <em>without</em> DeepSeek's much larger high-effort reasoning configuration. M3's real differentiator vs the open field (Kimi-K2.6, GLM-5.1, Qwen3.7-Max, MiMo-V2.5) is not raw score but the <em>combination</em> of native multimodality + computer use + MSA long-context speed.</p>
+
+  <div class="call warn">
+    <div class="ch">⚠ 生态「自我循环」/ A self-referential ecosystem</div>
+    <p style="margin:4px 0;">值得警惕：M3 的 NL2Repo 等方法学说明，<strong>直接引用了 Qwen 官方博客中 DeepSeek-V4-pro、Kimi-k2.6、GLM-5.1 的分数</strong>。中国大模型彼此抄表、相互引用，使得「跨厂商对比」的独立性进一步存疑。</p>
+  </div>
+
+  <div class="pagefoot"><span>稀宇科技 MiniMax · M3</span><span>§3 竞品对比 · Comparison</span></div>
+</section>
+
+<!-- ============ SECTION 4 ============ -->
+<section class="page" id="s4">
+  <div class="runhead"><span>04 · 性价比与成本</span><span class="dot">Cost &amp; Value</span></div>
+  <h2 class="sec"><span class="sec-no">04 ·</span> 性价比与成本分析<span class="en">Cost &amp; Value Analysis</span></h2>
+
+  <p class="lead">若说基准有争议，价格则无悬念——这是 M3 最锋利的一拳，<strong>但订阅套餐的「暗改」也是发布当天最大的争议</strong>。本节为本报告第二个重点。</p>
+
+  <h3>4.1　API 定价：闭源旗舰的 5–20% <span class="en">/ API pricing</span></h3>
+  <table>
+    <caption>表 4.1　API 按量定价（每百万 token）/ Pay-as-you-go, per 1M tokens</caption>
+    <thead><tr><th>模型 <span class="en">Model</span></th><th class="num">输入 In</th><th class="num">输出 Out</th><th>备注 Note</th></tr></thead>
+    <tbody>
+      <tr class="hl"><td>MiniMax M3（标准）</td><td class="num lead-val">$0.60</td><td class="num lead-val">$2.40</td><td>缓存读 $0.12；≤512K 走此价</td></tr>
+      <tr><td>MiniMax M3（首周五折）</td><td class="num best">$0.30</td><td class="num best">$1.20</td><td>限发布首周</td></tr>
+      <tr><td>MiniMax M3（512K–1M 长上下文）</td><td class="num">$1.20</td><td class="num">$4.80</td><td>2× 长上下文档</td></tr>
+      <tr><td>Claude Opus 4.8</td><td class="num lag">$5.00</td><td class="num lag">$25.00</td><td>约为 M3 标准价 8×／10×</td></tr>
+      <tr><td>Claude Opus 4.7</td><td class="num lag">~$5.00</td><td class="num lag">~$25.00</td><td>TechTimes 口径</td></tr>
+      <tr><td>GPT-5.5</td><td class="num lag">$5.00</td><td class="num lag">$30.00</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <div class="chart">
+    <div class="ct">图 4.1　输出 token 单价对比（$/百万）/ Output price per 1M tokens</div>
+    <div class="cs">M3 在 agentic 工作流中「成千次调用」的场景下，成本差距会快速累积放大。</div>
+    <div class="grp">
+      <div class="bar-row"><div class="bar-label">GPT-5.5</div><div class="bar-track"><div class="bar-fill f-grey" style="width:100%">$30.0</div></div></div>
+      <div class="bar-row"><div class="bar-label">Opus 4.8</div><div class="bar-track"><div class="bar-fill f-grey" style="width:83.3%">$25.0</div></div></div>
+      <div class="bar-row"><div class="bar-label">M3 标准 Standard</div><div class="bar-track"><div class="bar-fill f-m3" style="width:8%">$2.4</div></div></div>
+      <div class="bar-row"><div class="bar-label">M3 首周 Promo</div><div class="bar-track"><div class="bar-fill f-m3" style="width:4%">$1.2</div></div></div>
+    </div>
+  </div>
+
+  <div class="call fact">
+    <div class="ch">◆ 算账实例 / Worked example（Lushbinary）</div>
+    <p style="margin:4px 0;">一个消耗 <strong>50 万输入 + 10 万输出</strong> token 的编码任务：<strong>M3 首周约 $0.27、标准约 $0.54、Opus 约 $5.00</strong>——同一个活，价格约为闭源旗舰的<strong>十分之一到二十分之一</strong>。</p>
+    <div class="en-note"><strong>In English:</strong> A coding task of 500K input + 100K output costs ~$0.27 on M3 promo, ~$0.54 standard, vs ~$5.00 on Opus — roughly a tenth to a twentieth of the price.</div>
+  </div>
+
+  <h3>4.2　订阅套餐：全球 vs 国内的「两套数字」 <span class="en">/ Two different Token Plans</span></h3>
+  <p>这里有一处<strong>必须澄清的数据口径差异</strong>：MiniMax 全球站（minimax.io，美元）与国内站（minimaxi.com，人民币）的 Token Plan <strong>额度并不一致</strong>。报告并列呈现，不强行合并：</p>
+  <table>
+    <caption>表 4.2　Token Plan：全球（USD）与国内（RMB）口径对照</caption>
+    <thead><tr><th>档位 Tier</th><th>全球 minimax.io</th><th>国内 minimaxi.com</th><th>并发 Agent</th></tr></thead>
+    <tbody>
+      <tr><td>Plus</td><td>$20/月 · ~17 亿 token</td><td>¥49/月 · 6 亿 token</td><td>3–4</td></tr>
+      <tr><td>Max</td><td>$50/月 · ~51 亿 token</td><td>¥119/月 · 18 亿 token（含视频）</td><td>4–5</td></tr>
+      <tr><td>Ultra</td><td>$120/月 · ~98 亿 token</td><td>¥469/月 · 55 亿 token</td><td>6–7</td></tr>
+    </tbody>
+  </table>
+  <p class="small">说明：两套数字均来自各自官方页面/中文实测复述，差异可能源于市场分区与套餐结构不同；引用时请注明口径。详见 §7。</p>
+
+  <div class="call contro">
+    <div class="ch">✦ 发布当天「炸锅」/ The pricing backlash</div>
+    <p style="margin:4px 0;">国内社区最先引爆的不是跑分，而是 Token Plan <strong>从「按次不限量」改为「积分制限总量」</strong>。旧版 ¥49 Coding Plan 限并发但<strong>不限总调用</strong>，重度开发者月跑 30–50 亿 token；新版 ¥49 Plus 把总量<strong>锁死在 6 亿</strong>。据一位 CSDN 博主实测算账：月耗 30 亿 token 的老用户，实际成本由 ¥49 涨至约 <strong>¥175，涨幅约 257%</strong>。</p>
+    <p style="margin:8px 0 4px;font-style:italic;color:var(--red);">Linux.do 热评第一：「技术多牛都没用，钱包扛不住你就不是工具。」典型情绪：「可以理解提价，但不能接受偷偷改规则。」</p>
+    <div class="en-note"><strong>In English:</strong> The domestic Token Plan switched from "limited concurrency, unlimited calls" to "capped total tokens." A heavy user burning ~3B tokens/month saw effective cost jump from ¥49 to ~¥175 (+257%). Community sentiment: "Understandable to raise prices — not acceptable to quietly change the rules."</div>
+  </div>
+
+  <p>平衡地看：对<strong>轻度用户</strong>，¥49 / 6 亿 token 覆盖日常编码问答绰绰有余，甚至是同价位功能最全的选择；对<strong>重度 Agent 开发者</strong>，「百万上下文配 6 亿月额度」如同「给跑车配五升油箱」，社区共识是<strong>重度用户走按量计费、有预算者等开源后自部署</strong>。也有理性声音指出：百万上下文单次调用消耗本就高，若真不限量平台难以承受。</p>
+
+  <div class="scoreboard">
+    <div class="sb"><div class="sbt">性价比 Cost-effectiveness</div><div class="stars">★★★☆☆</div><div class="sbd">轻度划算、重度暴涨（AI星球评分）</div></div>
+    <div class="sb"><div class="sbt">稳定性 Trust</div><div class="stars">★★★★☆</div><div class="sbd">推理质量稳，但订阅规则突变伤信任</div></div>
+    <div class="sb"><div class="sbt">创新性 Innovation</div><div class="stars">★★★★★</div><div class="sbd">MSA 是底层突破，非应用层换皮</div></div>
+  </div>
+
+  <div class="pagefoot"><span>稀宇科技 MiniMax · M3</span><span>§4 成本 · Cost</span></div>
+</section>
+
+<!-- ============ SECTION 5 ============ -->
+<section class="page" id="s5">
+  <div class="runhead"><span>05 · 质疑与争议</span><span class="dot">Skepticism</span></div>
+  <h2 class="sec"><span class="sec-no">05 ·</span> 第三方质疑与争议<span class="en">Third-Party Skepticism &amp; Controversy</span></h2>
+
+  <p class="lead">本节为第三个重点，系统梳理「跑分之外」的四类质疑：评测可信度、开源承诺、真实体验短板、地缘与法律风险。</p>
+
+  <h3>5.1　基准全为自测，独立验证缺位 <span class="en">/ Vendor-run, not yet verified</span></h3>
+  <div class="call contro">
+    <div class="ch">✦ 「自己批改自己的作业」</div>
+    <p style="margin:4px 0;">TechTimes 直言：发布材料里<strong>每一个数字都由 MiniMax 在自有设施上、用自选基线、常以 Claude Code 作脚手架跑出</strong>。独立评测人 Thomas Wiegold：「这不是指控作弊，发布日的跑分本就如此——但你应像对待任何『自批作业』那样保持健康怀疑。」截至报告日，最常被引用的两家独立评测 <strong>Artificial Analysis 与 LMArena 仍未给出 M3 分数</strong>。</p>
+    <div class="en-note"><strong>In English:</strong> Every launch figure is vendor-run on MiniMax's own infrastructure with self-selected baselines, often scaffolded by Claude Code. Independent scores from Artificial Analysis and LMArena were still pending. Not an accusation of cheating — just how launch-day benchmarks work; treat them as a preliminary signal.</div>
+  </div>
+  <p class="small">行业背景：Kili Technology 2026 研究称企业级 agentic AI 的「实验室分数 vs 真实部署」平均存在 <strong>37%</strong> 落差；Stanford HAI《2026 AI Index》指出主流基准的「无效题率」介于 <strong>2%–42%</strong>，使跨模型直接比较更复杂。</p>
+
+  <h3>5.2　「开源权重」尚是承诺，许可证存疑 <span class="en">/ Open-weight is still a promise</span></h3>
+  <ul class="tight">
+    <li><strong>发布日权重与技术报告均未上线</strong>，承诺 10 天内（≈6/11）发布于 HF/GitHub。在此之前，外部无法核验架构、复现 MSA 提速、评估安全行为或确认许可证。</li>
+    <li><strong>许可证风险：</strong>前代 M2.7 采用「Modified-MIT」，<strong>未经书面许可禁止商用</strong>，被讥为「伪开源」；业界普遍预期 M3 沿用同一套路。Wiegold 提醒：「希望不是部署策略（Hope is not a deployment strategy）。」</li>
+    <li><strong>关键信息缺失：</strong>SCMP 指出 MiniMax <strong>拒绝披露参数量与训练算力</strong>——对一款主打「开源」的模型，这一沉默格外刺眼。</li>
+  </ul>
+
+  <h3>5.3　真实体验的短板 <span class="en">/ Real-world weak spots</span></h3>
+  <p>多个中文实测与英文亲测共同指向几处一致短板：</p>
+  <table>
+    <caption>表 5.1　社区/独立实测反馈汇总 / Reported real-world issues</caption>
+    <thead><tr><th>维度 Dimension</th><th>反馈 Finding</th><th>来源 Source</th></tr></thead>
+    <tbody>
+      <tr><td>过度思考</td><td>规划中反复分析、强化早期指令，「左右脑互搏」；扑克题烧 30–40 分钟仍自我否定</td><td>Linux.do / Wiegold</td></tr>
+      <tr><td>上下文截断</td><td>思维链吃满 output token 即断；「思考效率比 DeepSeek 还差」「被截断了一万次」</td><td>中文社区</td></tr>
+      <tr><td>多模态定位</td><td>视觉定位无法锁定城市，仅判断「中国北方城市郊区」；他模型可精确到约 10 km</td><td>中文实测</td></tr>
+      <tr><td>多模态生成</td><td>赛车游戏可玩性差；SVG 自行车/鹈鹕外观不够准确</td><td>中文实测</td></tr>
+      <tr><td>抽象推理</td><td>整个中国模型家族偏弱；MiniMax 线 ARC-AGI-2 仅个位数低分</td><td>Wiegold / ARC Prize</td></tr>
+      <tr><td>多模态生态</td><td>视频/语音仍需调用 MiniMax 家族其他模型，链路未完全打通</td><td>AI星球</td></tr>
+    </tbody>
+  </table>
+  <div class="call quote">
+    一句概括（Linux.do 体验贴）：「规划能力不错，但智商不够。」<span class="small">"Good at planning, but not smart enough."</span>
+  </div>
+
+  <h3>5.4　地缘与法律风险 <span class="en">/ Jurisdictional &amp; legal overhang</span></h3>
+  <div class="call warn">
+    <div class="ch">⚠ 与技术优劣无关，但影响部署决策</div>
+    <ul class="tight" style="margin-bottom:4px;">
+      <li><strong>中国《国家情报法》(2017)：</strong>要求中国企业「支持、协助、配合」国家情报工作；TechTimes 指出，经 M3 API 处理的<strong>任何提示词</strong>均落入该司法管辖，与服务器所在地无关。</li>
+      <li><strong>美国国会调查：</strong>2026-04-29，美众议院两委员会联合启动调查，点名 MiniMax 及 Moonshot、阿里、DeepSeek。</li>
+      <li><strong>Anthropic 蒸馏指控：</strong>2026-02 指控 MiniMax 等「工业级蒸馏」其 Claude，涉 2.4 万个欺诈账户、超 1,600 万次交互；MiniMax 当时未公开否认。</li>
+      <li><strong>版权诉讼：</strong>迪士尼/环球/华纳兄弟就 Hailuo（另一产品）起诉，2026-05-26 法院驳回 MiniMax 撤案动议、案件继续。</li>
+      <li><strong>资本动作：</strong>2026-01 港股上市，并筹备上海科创板（STAR Market）。</li>
+    </ul>
+    <div class="en-note"><strong>In English:</strong> Beyond technical merit, deployment risk includes China's 2017 National Intelligence Law (applies to every prompt via the API regardless of server location), a U.S. congressional probe (Apr 29, 2026), Anthropic's Feb 2026 distillation allegations (24k fraudulent accounts, 16M exchanges), and an ongoing Disney/Universal/WB copyright suit over the separate Hailuo product (motion to dismiss denied May 26, 2026).</div>
+  </div>
+  <p class="small">说明：截至报告日，<strong>未发现</strong> M3 存在确证后门，<strong>亦无</strong> M3 用户数据被移交的公开记录；上述属结构性/制度性风险，对受监管或涉敏感数据的工作负载尤需评估。</p>
+
+  <div class="pagefoot"><span>稀宇科技 MiniMax · M3</span><span>§5 质疑与争议 · Skepticism</span></div>
+</section>
+
+<!-- ============ SECTION 6 ============ -->
+<section class="page" id="s6">
+  <div class="runhead"><span>06 · 综合结论</span><span class="dot">Verdict</span></div>
+  <h2 class="sec"><span class="sec-no">06 ·</span> 综合分析与结论<span class="en">Synthesis &amp; Verdict</span></h2>
+
+  <div class="exec">
+    <h3>总体判断 <span class="en">/ Overall</span></h3>
+    <p>M3 是 MiniMax 历史上技术最雄心的一次发布，<strong>MSA 是对「长上下文成本」这一老问题的底层突破</strong>，并非应用层换皮；其编码与长程自主能力在实测中确有真功夫。但「登顶技术、暗改定价」的割裂，与「自测跑分 + 未开源」的取证缺口，要求我们对「前沿」二字保持克制。综合多源评分（AI星球 7.8/10）与本报告判断：<strong>M3 是「前沿邻近（frontier-adjacent）」而非「前沿」。</strong></p>
+    <p class="en-note" style="margin-bottom:0;"><strong>In English:</strong> M3 is MiniMax's most ambitious release — MSA is a genuine architectural advance on long-context cost, and its coding/long-horizon skills hold up in hands-on testing. But the split between topping the tech and quietly changing pricing, plus the evidence gap from vendor-run scores and unreleased weights, means "frontier" deserves restraint. The fair label is frontier-<em>adjacent</em>, not frontier.</p>
+  </div>
+
+  <h3>该不该用？分人群建议 <span class="en">/ Who should use it</span></h3>
+  <table>
+    <thead><tr><th>人群 Profile</th><th>建议 Recommendation</th></tr></thead>
+    <tbody>
+      <tr><td>AI 应用 / Agent / RAG 开发者</td><td><strong>值得试。</strong>百万上下文在代码库级分析/重构上对 128K 模型是「降维打击」。</td></tr>
+      <tr><td>重度编程用户</td><td>能力加分明显，但<strong>务必走按量计费</strong>；订阅档对重度用户不划算。</td></tr>
+      <tr><td>企业 AI 团队</td><td>关注开源承诺；<strong>等 6/11 权重与许可证落地</strong>再定私有化/微调方案。</td></tr>
+      <tr><td>轻度用户</td><td>¥49 Plus / $20 套餐<strong>很划算</strong>，全模态一站式。</td></tr>
+      <tr><td>极致性价比 / 简单编码</td><td>DeepSeek 仍更务实；追求最高纯代码质量或新颖抽象推理则保留 Opus/GPT。</td></tr>
+      <tr><td>受监管 / 敏感数据</td><td><strong>审慎。</strong>先评估 §5.4 的司法与合规风险，必要时仅用于非敏感任务。</td></tr>
+    </tbody>
+  </table>
+
+  <div class="call fact">
+    <div class="ch">◆ 行动建议 / What to do next</div>
+    <p style="margin:4px 0;">所有可信来源给出的一致建议：① 趁首周五折，用<strong>你自己的代表性任务</strong>跑一遍；② 关注 <strong>≈6/11</strong> 的权重、技术报告与许可证；③ 等 <strong>Artificial Analysis / LMArena</strong> 的独立分数落地；④ 采用<strong>混合路由</strong>——批量长上下文交给 M3，关键质量留给闭源旗舰。</p>
+    <div class="en-note"><strong>In English:</strong> Run your own representative tasks during the promo week; watch for weights/report/license around June 11; wait for independent Artificial Analysis / LMArena scores; and adopt a hybrid routing strategy.</div>
+  </div>
+
+  <h3>SWOT 速览 <span class="en">/ At a glance</span></h3>
+  <div class="verdict-grid">
+    <div class="vcard"><div class="t" style="color:var(--green)">优势 Strengths</div><div class="b">MSA 长上下文突破；编码/检索强；价格 5–20%；三能力合一；即将开源。</div></div>
+    <div class="vcard"><div class="t" style="color:var(--red)">劣势 Weaknesses</div><div class="b">终端执行偏弱；过度思考烧 token；抽象推理弱；多模态定位/生态欠打磨。</div></div>
+    <div class="vcard"><div class="t" style="color:var(--accent-dk)">机会 Opportunities</div><div class="b">开源自部署、垂直微调；混合路由降本；长文档/代码库级 Agent。</div></div>
+    <div class="vcard"><div class="t" style="color:var(--amber)">威胁 Threats</div><div class="b">Opus 4.8 已抬高天花板；定价信任危机；地缘/法律/许可证不确定。</div></div>
+  </div>
+
+  <div class="pagefoot"><span>稀宇科技 MiniMax · M3</span><span>§6 结论 · Verdict</span></div>
+</section>
+
+<!-- ============ SECTION 7 + SOURCES ============ -->
+<section class="page" id="s7">
+  <div class="runhead"><span>07 · 事实依据与来源</span><span class="dot">Evidence &amp; Sources</span></div>
+  <h2 class="sec"><span class="sec-no">07 ·</span> 事实依据、数据口径与存疑<span class="en">Evidence, Data Caveats &amp; Discrepancies</span></h2>
+
+  <p class="lead">为对「提炼事实依据」负责，本节明列本报告刻意保留的不确定性与跨源不一致，供读者自行判断。</p>
+
+  <div class="call warn">
+    <div class="ch">⚠ 已识别的数据口径差异 / Known discrepancies</div>
+    <ul class="tight" style="margin-bottom:4px;">
+      <li><strong>全测皆自测：</strong>表 2.1/3.1 全部分数为厂商口径，基线由 MiniMax 选定、常以 Claude Code 为脚手架，<strong>尚无独立复现</strong>。</li>
+      <li><strong>BrowseComp 不一致：</strong>官方称 M3 的 83.5「为所测模型最高」，但中文表格列 GPT-5.5 为 84.1（高于 M3）。差异可能源于纳入模型/配置不同。本报告据此判定 M3「领先 Opus 4.7、与 GPT-5.5/DeepSeek 基本持平」。</li>
+      <li><strong>Token Plan 两套数字：</strong>全球站（$，~17/51/98 亿）与国内站（¥，6/18/55 亿）额度不一致（见表 4.2），本报告并列而不合并。</li>
+      <li><strong>Opus 4.7 的 SWE-Bench Pro：</strong>多处仅称「逼近」，独立评测人给出 64.3%，本报告采此值并标注来源。</li>
+      <li><strong>演示≠评测：</strong>12h/24h/PostTrain 三段为「能力展示」，非受控可复现基准，引用时已注明。</li>
+    </ul>
+    <div class="en-note"><strong>In English:</strong> All scores are vendor-run; BrowseComp leadership is config-dependent (GPT-5.5 may exceed M3 in one table); the global ($) and domestic (¥) Token Plans quote different quotas and are shown side by side, not merged; Opus 4.7's SWE-Bench Pro (64.3%) comes from an independent reviewer; and the multi-hour demos are showcases, not reproducible benchmarks.</div>
+  </div>
+
+  <h3>取证可信度分级 <span class="en">/ Confidence levels</span></h3>
+  <table>
+    <thead><tr><th>主张 Claim</th><th>可信度 Confidence</th><th>依据 Basis</th></tr></thead>
+    <tbody>
+      <tr><td>价格约为闭源旗舰 5–20%</td><td class="best">高 High</td><td>多源一致 + 公开价目可算</td></tr>
+      <tr><td>MSA 架构与提速方向</td><td class="lead-val">中–高 Med–High</td><td>官方 + 独立研究者描述一致，待权重复现</td></tr>
+      <tr><td>具体基准小数点排名</td><td class="lag">中–低 Med–Low</td><td>全为自测，独立评测未出</td></tr>
+      <tr><td>国内套餐 +257% 涨幅</td><td class="lead-val">中 Medium</td><td>单一 CSDN 实测算账，口径合理但样本单一</td></tr>
+      <tr><td>地缘/法律事实</td><td class="best">高 High</td><td>制度与诉讼为公开记录</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="s" id="src">
+  <h2 class="sec" style="font-size:19px;"><span class="sec-no">·</span> 参考来源<span class="en">Sources</span></h2>
+  <ol class="src-list">
+    <li><b>MiniMax 官方博客</b> — “MiniMax M3: Frontier Coding, 1M Context, Native Multimodality”<span class="tag off">官方</span><br>https://www.minimax.io/blog/minimax-m3 ；中文版 https://www.minimaxi.com/blog/minimax-m3</li>
+    <li><b>OpenRouter</b> — MiniMax M3 规格与基准 <span class="tag media">聚合</span><br>https://openrouter.ai/minimax/minimax-m3 · /benchmarks</li>
+    <li><b>The Decoder</b>（J. Kemper）— “Open-weight model with a million-token context challenges proprietary leaders” <span class="tag media">媒体</span><br>https://the-decoder.com/minimax-m3-open-weight-model-with-a-million-token-context-challenges-proprietary-leaders/</li>
+    <li><b>Tech Times</b>（R. L. Wells）— “Frontier Claims, Unverified Benchmarks” <span class="tag media">媒体·质疑</span><br>https://www.techtimes.com/articles/317532/20260601/minimax-m3-open-weight-coding-model-frontier-claims-unverified-benchmarks.htm</li>
+    <li><b>VentureBeat</b> — “MiniMax-M3 debuts… for just 5–10% of the cost”（经 Kingy 转引对比表）<span class="tag media">媒体</span><br>https://venturebeat.com/technology/minimax-m3-debuts-eclipsing-gpt-5-5-and-gemini-3-1-pro-on-key-benchmark-performance-for-just-5-10-of-the-cost</li>
+    <li><b>Kingy AI</b>（C. Pyke）— “AI Launch Tracker: M3 Specs &amp; Benchmarks” <span class="tag media">聚合·深度</span><br>https://kingy.ai/ai-launch-radar/ai-launch-tracker-minimax-m3-specs-benchmarks-a-chinese-open-weight-model-takes-aim-at-the-frontier/</li>
+    <li><b>Thomas Wiegold</b> — “MiniMax M3 Review: Finally Matching GPT-5.5 &amp; Opus?”（独立亲测）<span class="tag ind">独立实测</span><br>https://thomas-wiegold.com/blog/minimax-m3-review/</li>
+    <li><b>AI星球 / AIXQ</b> — “MiniMax M3 评测：技术硬刚全球顶尖，商业化却让开发者炸了” <span class="tag cn">中文深评</span><br>https://www.aixq.cc/36544.html</li>
+    <li><b>CSDN 博客</b> — “MiniMax M3 发布深度测评……老用户请捂紧钱包（附 Token Plan 真实成本算账）” <span class="tag cn">中文·成本</span><br>https://blog.csdn.net/qq_21982453/article/details/161584233</li>
+    <li><b>Linux.do</b> — “minimax m3 体验：规划能力不错但智商不够” 等实测帖 <span class="tag cn">中文社区</span><br>https://linux.do/t/topic/2292799 · /2282329</li>
+    <li><b>IT之家 / 东方财富 / 智东西 / 新浪财经</b> — 发布与解读报道 <span class="tag cn">中文媒体</span><br>https://www.ithome.com/0/957/956.htm · https://zhidx.com/p/561935.html</li>
+    <li>行业背景 — <b>Stanford HAI</b>《2026 AI Index》（基准无效题率 2–42%）；<b>Kili Technology</b> 2026（实验室-真实落差 ~37%）<span class="tag media">背景</span></li>
+  </ol>
+
+  <div class="call quote" style="margin-top:22px;">
+    方法与免责：本报告由 AI 依据上述公开来源于 2026-06-03 综合整理，重在「提炼可核验事实 + 多方对照」。基准多为厂商自测、权重与技术报告未开源，结论可能随独立评测发布而调整。涉投资/采购决策请结合自有测试与最新信息独立判断。<br>
+    <span class="small">Compiled by AI on 2026-06-03 from the public sources above. Benchmarks are largely vendor-run and weights were unreleased; conclusions may shift once independent evaluations land. Not investment or procurement advice.</span>
+  </div>
+
+  <div class="pagefoot"><span>稀宇科技 MiniMax · M3 · 评测综合报告（中英对照）</span><span>§7 事实依据 · 完 / End</span></div>
+</section>
+
+</body>
+</html>
