@@ -13,6 +13,7 @@ url-to-markdown/
 *.docx
 *.pdf
 !docs/The founder's playbook - Building an AI-native startup.pdf
+!assets/marketing-practice-team-summary.pdf
 *.jpg
 *.png
 *.jpeg
