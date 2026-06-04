@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenCode · 技术架构深度剖析</title>
+<style>
+  :root{
+    --bg:#0a0f12; --bg2:#0f161a; --card:#121c20; --card2:#16232a;
+    --line:#1f2e35; --line2:#2a3d46;
+    --txt:#e7f0f2; --muted:#9bb0b6; --dim:#6a8088;
+    --teal:#3ad6c5; --teal2:#1fb9aa;
+    --coral:#ff8866; --amber:#ffcf5c;
+    --violet:#9a8cff; --blue:#5cc8ff; --green:#6fe39a; --pink:#ff7eb6;
+    --radius:14px; --maxw:980px;
+    --mono:'SFMono-Regular',ui-monospace,'JetBrains Mono','Cascadia Code',Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:radial-gradient(1100px 560px at 82% -8%,#13242a 0%,var(--bg) 55%);color:var(--txt);font-family:var(--sans);line-height:1.7;font-size:15px;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal)}
+  a:hover{text-decoration:underline}
+  code{font-family:var(--mono);font-size:.88em;background:#070b0d;border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:#9ff0e6}
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--teal),var(--blue));z-index:100;transition:width .1s}
+  .wrap{display:flex;min-height:100vh}
+  aside{position:fixed;top:0;left:0;width:268px;height:100vh;background:linear-gradient(180deg,#0c1316,#0a0f12);border-right:1px solid var(--line);overflow-y:auto;padding:22px 14px;z-index:50}
+  aside::-webkit-scrollbar{width:7px} aside::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
+  .brand{display:flex;align-items:center;gap:11px;padding:6px 10px 16px}
+  .brand .logo{font-family:var(--mono);font-size:20px;font-weight:800;color:#06110f;background:linear-gradient(135deg,var(--teal),var(--teal2));width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 0 16px rgba(58,214,197,.4)}
+  .brand .nm{font-weight:800;font-size:17px;letter-spacing:.2px}
+  .brand .nm small{display:block;font-weight:500;font-size:10.5px;color:var(--dim);letter-spacing:1.4px;text-transform:uppercase}
+  .site-home{display:block;margin:0 10px 14px;padding:8px 11px;border:1px solid rgba(58,214,197,.24);border-radius:9px;background:rgba(58,214,197,.08);color:var(--teal);font-size:12.5px;font-weight:700;text-decoration:none}
+  .site-home:hover{background:rgba(58,214,197,.13);text-decoration:none}
+  nav a{display:flex;gap:10px;align-items:center;color:var(--muted);padding:7px 11px;border-radius:9px;font-size:13px;margin:1px 0;border:1px solid transparent;text-decoration:none}
+  nav a .n{display:inline-flex;width:22px;height:22px;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;background:var(--card2);border:1px solid var(--line);border-radius:6px;color:var(--dim);flex:none;font-family:var(--mono)}
+  nav a:hover{background:var(--card);color:var(--txt)}
+  nav a.active{background:linear-gradient(90deg,rgba(58,214,197,.13),transparent);color:var(--teal);border-color:rgba(58,214,197,.28)}
+  nav a.active .n{background:var(--teal);color:#06110f;border-color:var(--teal)}
+  main{margin-left:268px;flex:1;padding:0 38px 90px;max-width:calc(var(--maxw) + 76px)}
+  .menu-btn{display:none}
+  header.hero{padding:60px 0 30px;border-bottom:1px solid var(--line);margin-bottom:8px}
+  .tag{display:inline-block;font-size:12px;letter-spacing:.6px;color:var(--teal);background:rgba(58,214,197,.1);border:1px solid rgba(58,214,197,.3);padding:4px 12px;border-radius:30px;margin-bottom:18px;font-weight:600}
+  h1.title{font-size:40px;line-height:1.14;margin:0 0 14px;font-weight:850;letter-spacing:-.5px}
+  h1.title .g{background:linear-gradient(120deg,var(--teal),var(--blue) 70%,var(--violet));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .sub{color:var(--muted);font-size:16.5px;max-width:780px}
+  .meta{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--dim)}
+  .meta b{color:var(--muted);font-weight:600}
+  .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:28px 0 8px}
+  .stat{background:linear-gradient(160deg,var(--card),var(--bg2));border:1px solid var(--line);border-radius:12px;padding:14px 10px;text-align:center}
+  .stat .v{font-size:22px;font-weight:800;color:var(--teal);font-family:var(--mono)}
+  .stat .l{font-size:10.5px;color:var(--muted);margin-top:3px;letter-spacing:.2px}
+  section{padding:46px 0 8px;border-bottom:1px solid var(--line)}
+  section:last-of-type{border-bottom:none}
+  .sec-h{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+  .sec-h .idx{font-family:var(--mono);font-size:14px;color:var(--coral);font-weight:700;flex:none}
+  h2{font-size:26px;margin:0;font-weight:800;letter-spacing:-.3px}
+  .lead{color:var(--muted);font-size:15px;margin:10px 0 22px;max-width:830px}
+  h3{font-size:16.5px;margin:24px 0 10px;font-weight:700;color:#eef5f6;display:flex;align-items:center;gap:9px}
+  h3 .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);flex:none;box-shadow:0 0 8px var(--teal)}
+  p{margin:10px 0}
+  .muted{color:var(--muted)}
+  .grid{display:grid;gap:14px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .card{background:linear-gradient(160deg,var(--card),var(--bg2));border:1px solid var(--line);border-radius:var(--radius);padding:17px 17px 15px}
+  .card h4{margin:0 0 8px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .card h4 .ic{font-size:17px}
+  .card p{font-size:13.4px;color:var(--muted);margin:6px 0}
+  .pill{display:inline-block;font-size:11px;font-family:var(--mono);background:#070b0d;border:1px solid var(--line2);border-radius:20px;padding:2px 9px;margin:3px 4px 0 0;color:var(--teal)}
+  .pill.v{color:var(--violet)} .pill.c{color:var(--coral)} .pill.b{color:var(--blue)} .pill.a{color:var(--amber)} .pill.g{color:var(--green)} .pill.d{color:var(--dim)}
+  details.acc{background:var(--card);border:1px solid var(--line);border-radius:12px;margin:10px 0;overflow:hidden}
+  details.acc>summary{cursor:pointer;padding:13px 17px;font-weight:650;font-size:14.2px;display:flex;align-items:center;gap:10px;list-style:none;user-select:none}
+  details.acc>summary::-webkit-details-marker{display:none}
+  details.acc>summary .chev{margin-left:auto;color:var(--dim);transition:transform .25s;font-size:13px}
+  details.acc[open]>summary{border-bottom:1px solid var(--line);background:var(--card2)}
+  details.acc[open]>summary .chev{transform:rotate(90deg);color:var(--teal)}
+  details.acc>summary .tk{font-family:var(--mono);font-size:10.5px;color:var(--teal);background:rgba(58,214,197,.1);border:1px solid rgba(58,214,197,.25);padding:1px 8px;border-radius:6px}
+  .acc-body{padding:14px 17px}
+  .acc-body p{font-size:13.4px}
+  .tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:12.8px;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .tbl th{background:var(--card2);text-align:left;padding:9px 12px;font-weight:700;color:var(--txt);border-bottom:1px solid var(--line2);font-size:12.3px}
+  .tbl td{padding:8px 12px;border-bottom:1px solid var(--line);color:var(--muted);vertical-align:top}
+  .tbl tr:last-child td{border-bottom:none}
+  pre{background:#070b0d;border:1px solid var(--line);border-radius:11px;padding:15px 16px;overflow-x:auto;font-family:var(--mono);font-size:12.3px;line-height:1.65;color:#cfe0e2;margin:14px 0}
+  pre::-webkit-scrollbar{height:8px} pre::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
+  pre .c{color:var(--dim)} pre .k{color:var(--violet)} pre .s{color:var(--green)} pre .f{color:var(--teal)} pre .a{color:var(--blue)}
+  .note{border-left:3px solid var(--teal);background:rgba(58,214,197,.06);padding:12px 16px;border-radius:0 10px 10px 0;margin:14px 0;font-size:13.3px;color:var(--muted)}
+  .note.warn{border-color:var(--coral);background:rgba(255,136,102,.07)}
+  .note b{color:var(--txt)}
+  .diagram{background:linear-gradient(160deg,#0c1418,#070b0d);border:1px solid var(--line);border-radius:14px;padding:20px;margin:18px 0;overflow-x:auto}
+  .diagram svg{display:block;margin:0 auto;max-width:100%;height:auto}
+  .cap{text-align:center;color:var(--dim);font-size:12px;margin-top:8px}
+  .flow{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:pre;line-height:1.5}
+  footer{padding:40px 0 10px;color:var(--dim);font-size:13px}
+  footer a{color:var(--muted)}
+  .src{columns:2;column-gap:30px;font-size:12.5px;margin-top:10px}
+  @media(max-width:900px){
+    aside{transform:translateX(-100%);transition:transform .28s;box-shadow:0 0 40px rgba(0,0,0,.6)}
+    aside.open{transform:translateX(0)}
+    main{margin-left:0;padding:0 18px 80px}
+    .menu-btn{display:flex;position:fixed;top:14px;right:14px;z-index:60;width:46px;height:46px;border-radius:12px;background:var(--card);border:1px solid var(--line2);color:var(--teal);align-items:center;justify-content:center;font-size:20px;cursor:pointer}
+    .stats{grid-template-columns:repeat(3,1fr)}
+    .g2,.g3{grid-template-columns:1fr}
+    .src{columns:1}
+    h1.title{font-size:31px}
+  }
+  .backdrop{display:none}
+  @media(max-width:900px){.backdrop.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<button class="menu-btn" id="menuBtn" aria-label="菜单">☰</button>
+<div class="backdrop" id="backdrop"></div>
+
+<div class="wrap">
+<aside id="sidebar">
+  <div class="brand"><span class="logo">&gt;_</span><span class="nm">OpenCode<small>架构深度剖析</small></span></div>
+  <a class="site-home" href="../">← Back to Home</a>
+  <nav id="nav">
+    <a href="#overview"><span class="n">00</span>定位与核心理念</a>
+    <a href="#arch"><span class="n">01</span>客户端/服务端架构</a>
+    <a href="#packages"><span class="n">02</span>Monorepo 与技术栈</a>
+    <a href="#server"><span class="n">03</span>服务端与事件总线</a>
+    <a href="#session"><span class="n">04</span>会话与消息模型</a>
+    <a href="#loop"><span class="n">05</span>主循环与模型层</a>
+    <a href="#tools"><span class="n">06</span>工具系统</a>
+    <a href="#perm"><span class="n">07</span>权限与安全</a>
+    <a href="#agents"><span class="n">08</span>Agents 体系</a>
+    <a href="#lspmcp"><span class="n">09</span>LSP 与 MCP</a>
+    <a href="#context"><span class="n">10</span>压缩与快照</a>
+    <a href="#ext"><span class="n">11</span>扩展性</a>
+    <a href="#clients"><span class="n">12</span>客户端矩阵与云</a>
+    <a href="#config"><span class="n">13</span>配置与设计原则</a>
+  </nav>
+</aside>
+
+<main>
+<header class="hero" id="overview">
+  <span class="tag">Anomaly · MIT · 开源 AI 编码 Agent</span>
+  <h1 class="title">OpenCode<br><span class="g">技术架构深度剖析</span></h1>
+  <p class="sub">"The open source AI coding agent." —— 一套<b style="color:var(--txt)">客户端/服务端 + OpenAPI 驱动</b>的编码 agent：本地无头服务发布 OpenAPI 3.1 规格并自动生成 SDK,TUI、Web、桌面、IDE、脚本共享同一内核与会话语义。构建在 AI SDK、MCP、LSP、tree-sitter、影子 git 之上。</p>
+  <div class="meta">
+    <span><b>仓库</b> github.com/anomalyco/opencode</span>
+    <span><b>语言</b> TypeScript · Bun</span>
+    <span><b>分支</b> dev</span>
+    <span><b>协议</b> MIT</span>
+    <span><b>整理</b> 2026-06-02</span>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="v">~168k</div><div class="l">GitHub Stars</div></div>
+    <div class="stat"><div class="v">75+</div><div class="l">模型 Provider</div></div>
+    <div class="stat"><div class="v">~35</div><div class="l">内置 LSP</div></div>
+    <div class="stat"><div class="v">13</div><div class="l">内置工具</div></div>
+    <div class="stat"><div class="v">8</div><div class="l">配置优先级层</div></div>
+    <div class="stat"><div class="v">4096</div><div class="l">默认服务端口</div></div>
+  </div>
+</header>
+
+<!-- 00 -->
+<section>
+  <div class="lead">OpenCode 把 agent 能力下沉为一个<b style="color:var(--txt)">带类型契约的本地服务</b>,用 OpenAPI 把客户端与内核彻底解耦——这是它区别于「TUI+模型调用捆死在一个进程」的单体编码工具的根本。下面是六大核心理念。</div>
+  <div class="grid g3">
+    <div class="card"><h4><span class="ic">🔌</span>客户端/服务端解耦</h4><p><code>opencode</code> 同时拉起无头 HTTP 服务端 + TUI 客户端;任何客户端都经同一套 HTTP API 交互。</p></div>
+    <div class="card"><h4><span class="ic">📐</span>API 优先 · SDK 自动生成</h4><p>OpenAPI 3.1 规格即真相来源,<code>@opencode-ai/sdk</code> 由规格生成,类型端到端一致。</p></div>
+    <div class="card"><h4><span class="ic">🧩</span>模型无关 · 无锁定</h4><p>AI SDK + Models.dev,75+ provider,<code>provider/model</code> 统一 ID,<code>/connect</code> 随时切换。</p></div>
+    <div class="card"><h4><span class="ic">🔒</span>可审计权限</h4><p><code>allow/ask/deny</code> 细粒度;bash 命令经 tree-sitter 解析后按模式审批。</p></div>
+    <div class="card"><h4><span class="ic">↩️</span>Git 原生可回退</h4><p>影子 git 仓库做快照,<code>/undo</code> · <code>/redo</code> 逐条回退 agent 的文件改动。</p></div>
+    <div class="card"><h4><span class="ic">⌨️</span>本地优先 · 可编程</h4><p>默认只听 <code>127.0.0.1:4096</code>;既驱动 TUI,也可被脚本/CI/IDE 当后端编排。</p></div>
+  </div>
+  <div class="note" style="margin-top:16px"><b>内置主 agent</b>(Tab 切换):<b>build</b>(默认,全权限)、<b>plan</b>(只读分析,edit/bash 默认 ask/deny);另有 <b>general / explore / scout</b> 等子代理用于并行多步任务。</div>
+</section>
+
+<!-- 01 arch -->
+<section id="arch">
+  <div class="sec-h"><span class="idx">01</span><h2>客户端/服务端架构 + OpenAPI</h2></div>
+  <p class="lead">理解 OpenCode 的钥匙:运行 <code>opencode</code> 即在单个 Bun 进程内拉起一个无头服务端和一个 TUI 客户端,服务端发布 OpenAPI 规格,众多客户端经同一套 HTTP API 接入。</p>
+
+  <div class="diagram">
+  <svg viewBox="0 0 900 430" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gp" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#16232a"/><stop offset="1" stop-color="#0f161a"/></linearGradient>
+      <marker id="a1" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6a8088"/></marker>
+    </defs>
+    <!-- process box -->
+    <rect x="30" y="20" width="500" height="150" rx="13" fill="none" stroke="#2a3d46" stroke-dasharray="5 4"/>
+    <text x="44" y="40" fill="#6a8088" font-size="11" font-family="monospace">单个 opencode (Bun) 进程</text>
+    <rect x="50" y="54" width="200" height="98" rx="10" fill="url(#gp)" stroke="#3ad6c5" stroke-opacity=".5"/>
+    <text x="150" y="80" fill="#3ad6c5" font-size="13" text-anchor="middle" font-weight="bold">TUI 客户端</text>
+    <text x="150" y="102" fill="#9bb0b6" font-size="11" text-anchor="middle">OpenTUI + SolidJS</text>
+    <text x="150" y="120" fill="#6a8088" font-size="10.5" text-anchor="middle">终端渲染</text>
+    <rect x="310" y="54" width="200" height="98" rx="10" fill="url(#gp)" stroke="#5cc8ff" stroke-opacity=".5"/>
+    <text x="410" y="80" fill="#5cc8ff" font-size="13" text-anchor="middle" font-weight="bold">无头服务端 (Hono)</text>
+    <text x="410" y="102" fill="#9bb0b6" font-size="11" text-anchor="middle">127.0.0.1:4096</text>
+    <text x="410" y="120" fill="#6a8088" font-size="10.5" text-anchor="middle">OpenAPI 3.1 @ /doc</text>
+    <line x1="250" y1="92" x2="305" y2="92" stroke="#6a8088" stroke-width="1.4" marker-end="url(#a1)"/>
+    <line x1="305" y1="116" x2="250" y2="116" stroke="#6a8088" stroke-width="1.4" marker-end="url(#a1)" stroke-dasharray="3 3"/>
+    <text x="278" y="86" fill="#9bb0b6" font-size="9" text-anchor="middle">HTTP</text>
+    <text x="278" y="132" fill="#9bb0b6" font-size="9" text-anchor="middle">SSE</text>
+    <!-- shared API bus -->
+    <rect x="560" y="20" width="310" height="150" rx="13" fill="url(#gp)" stroke="#9a8cff" stroke-opacity=".5"/>
+    <text x="715" y="42" fill="#9a8cff" font-size="12" text-anchor="middle" font-weight="bold">服务端内核子系统</text>
+    <g font-size="11" fill="#cfe0e2" text-anchor="middle">
+      <rect x="576" y="54" width="132" height="30" rx="7" fill="#070b0d" stroke="#2a3d46"/><text x="642" y="73">Sessions / Messages</text>
+      <rect x="722" y="54" width="132" height="30" rx="7" fill="#070b0d" stroke="#2a3d46"/><text x="788" y="73">Provider (AI SDK)</text>
+      <rect x="576" y="90" width="132" height="30" rx="7" fill="#070b0d" stroke="#2a3d46"/><text x="642" y="109">Tools / Permission</text>
+      <rect x="722" y="90" width="132" height="30" rx="7" fill="#070b0d" stroke="#2a3d46"/><text x="788" y="109">LSP / MCP</text>
+      <rect x="576" y="126" width="132" height="30" rx="7" fill="#070b0d" stroke="#2a3d46"/><text x="642" y="145">Event Bus (SSE)</text>
+      <rect x="722" y="126" width="132" height="30" rx="7" fill="#070b0d" stroke="#2a3d46"/><text x="788" y="145">Storage / Snapshot</text>
+    </g>
+    <line x1="510" y1="103" x2="556" y2="95" stroke="#6a8088" stroke-width="1.4" marker-end="url(#a1)"/>
+    <!-- clients -->
+    <text x="44" y="210" fill="#6a8088" font-size="11" font-family="monospace">同一套 HTTP / OpenAPI 契约 ▾</text>
+    <g font-size="11.5" text-anchor="middle">
+      <rect x="40" y="226" width="150" height="56" rx="9" fill="#121c20" stroke="#2a3d46"/><text x="115" y="250" fill="#e7f0f2">Web 客户端</text><text x="115" y="268" fill="#6a8088" font-size="10">SolidStart</text>
+      <rect x="206" y="226" width="150" height="56" rx="9" fill="#121c20" stroke="#2a3d46"/><text x="281" y="250" fill="#e7f0f2">桌面 App</text><text x="281" y="268" fill="#6a8088" font-size="10">Tauri</text>
+      <rect x="372" y="226" width="160" height="56" rx="9" fill="#121c20" stroke="#2a3d46"/><text x="452" y="250" fill="#e7f0f2">IDE 扩展 / ACP</text><text x="452" y="268" fill="#6a8088" font-size="10">驱动 /tui 端点</text>
+      <rect x="548" y="226" width="150" height="56" rx="9" fill="#121c20" stroke="#2a3d46"/><text x="623" y="250" fill="#e7f0f2">SDK / 脚本 / CI</text><text x="623" y="268" fill="#6a8088" font-size="10">@opencode-ai/sdk</text>
+      <rect x="714" y="226" width="156" height="56" rx="9" fill="#121c20" stroke="#2a3d46"/><text x="792" y="250" fill="#e7f0f2">GitHub / GitLab</text><text x="792" y="268" fill="#6a8088" font-size="10">CI / PR 集成</text>
+    </g>
+    <!-- down arrows to a bus line -->
+    <line x1="30" y1="300" x2="870" y2="300" stroke="#2a3d46" stroke-width="1"/>
+    <g stroke="#6a8088" stroke-width="1.3">
+      <line x1="115" y1="282" x2="115" y2="299" marker-end="url(#a1)"/>
+      <line x1="281" y1="282" x2="281" y2="299" marker-end="url(#a1)"/>
+      <line x1="452" y1="282" x2="452" y2="299" marker-end="url(#a1)"/>
+      <line x1="623" y1="282" x2="623" y2="299" marker-end="url(#a1)"/>
+      <line x1="792" y1="282" x2="792" y2="299" marker-end="url(#a1)"/>
+    </g>
+    <text x="450" y="326" fill="#3ad6c5" font-size="12" text-anchor="middle" font-family="monospace">↑ 多端复用同一服务端：会话、工具、权限、事件全部一致 ↑</text>
+    <text x="450" y="356" fill="#6a8088" font-size="11" text-anchor="middle">服务端可独立运行 (opencode serve) · OPENCODE_SERVER_PASSWORD 加 Basic Auth · --cors 放行浏览器 · --mdns 局域网发现</text>
+    <text x="450" y="392" fill="#6a8088" font-size="11" text-anchor="middle">/tui 控制端点 + /tui/control/next ↔ response：服务端可反向驱动 TUI（IDE 插件即借此把编辑器动作映射到 TUI）</text>
+  </svg>
+  </div>
+  <div class="cap">图 1 · 客户端/服务端 + OpenAPI 总览</div>
+</section>
+
+<!-- 02 packages -->
+<section id="packages">
+  <div class="sec-h"><span class="idx">02</span><h2>Monorepo 包结构与技术栈</h2></div>
+  <p class="lead">Bun workspaces + Turbo 的 monorepo,版本集中在 <code>catalog</code>。核心能力都在 <code>packages/opencode</code>(npm 发布名 <code>opencode-ai</code>)。</p>
+
+  <table class="tbl">
+    <tr><th>包</th><th>职责</th></tr>
+    <tr><td><code>packages/opencode</code></td><td><b>核心</b>:CLI、无头服务端、主循环、工具、provider、LSP/MCP 客户端、会话存储</td></tr>
+    <tr><td><code>packages/sdk/js</code></td><td>由 OpenAPI 生成的 TypeScript SDK(<code>@opencode-ai/sdk</code>,含 <code>types.gen.ts</code>)</td></tr>
+    <tr><td><code>packages/plugin</code></td><td>插件 API(<code>@opencode-ai/plugin</code>),导出 <code>Plugin</code> 类型与 <code>tool()</code> 帮助函数</td></tr>
+    <tr><td><code>packages/app</code> / <code>web</code></td><td>Web 客户端(SolidStart) / 营销+文档站(Astro Starlight)</td></tr>
+    <tr><td><code>packages/desktop</code></td><td>桌面应用(Tauri)</td></tr>
+    <tr><td><code>packages/console/*</code></td><td>云端(Share/Auth/计费):Cloudflare Workers + S3 + Drizzle + OpenAuth</td></tr>
+    <tr><td><code>packages/slack</code> · <code>storybook</code></td><td>Slack 集成 · UI 组件库</td></tr>
+  </table>
+
+  <h3><span class="dot"></span>核心包技术栈(packages/opencode 依赖)</h3>
+  <div class="grid g2">
+    <div class="card"><h4><span class="ic">🧠</span>模型层</h4><p>Vercel <b>AI SDK v5</b>(<code>ai</code>)+ 近 20 个 provider 包:anthropic、openai、google、google-vertex、amazon-bedrock、azure、groq、mistral、cohere、xai、cerebras、deepinfra、togetherai、perplexity、alibaba、gateway、openai-compatible + openrouter…</p></div>
+    <div class="card"><h4><span class="ic">🔗</span>协议集成</h4><p><code>@modelcontextprotocol/sdk</code>(MCP)、<code>@agentclientprotocol/sdk</code>(ACP)。</p></div>
+    <div class="card"><h4><span class="ic">🛠️</span>代码智能</h4><p><code>vscode-jsonrpc</code>+<code>vscode-languageserver-types</code>(LSP);<code>web-tree-sitter</code>+<code>tree-sitter-bash/powershell</code>(解析 shell 做权限判定)。</p></div>
+    <div class="card"><h4><span class="ic">⚙️</span>运行时基建</h4><p><code>effect</code>(Effect-TS)+ OpenTelemetry;<code>drizzle-orm</code>(存储);<code>node-pty</code>/<code>bun-pty</code>(PTY);<code>chokidar</code>(监听);<code>hono</code>+<code>zod</code>(服务端);<code>ulid</code>、<code>gray-matter</code>、<code>immer</code>。</p></div>
+  </div>
+  <div class="note"><b>平台条件导入:</b><code>#db</code> → <code>storage/db.bun.ts | db.node.ts</code>,<code>#pty</code> → <code>pty/pty.bun.ts | pty.node.ts</code>,对 Bun 与 Node 运行时分别适配。</div>
+</section>
+
+<!-- 03 server -->
+<section id="server">
+  <div class="sec-h"><span class="idx">03</span><h2>服务端:Hono + OpenAPI + 事件总线</h2></div>
+  <p class="lead">服务端用 Hono + Zod 构建,响应类型由 Zod 推导 → OpenAPI 规格 → 生成 SDK。事件总线是「服务端跑、多端实时同步」的神经。</p>
+
+  <div class="grid g2">
+    <div class="card"><h4><span class="ic">🌐</span>API 表面(节选)</h4>
+      <span class="pill b">/session · fork/abort/share/summarize/revert</span><span class="pill b">/session/:id/message · prompt_async · command · shell</span><span class="pill">/find · /find/file · /find/symbol</span><span class="pill">/file/content · /file/status</span><span class="pill v">/lsp · /formatter · /mcp</span><span class="pill v">/agent · /command · /config</span><span class="pill c">/tui/* · /tui/control</span><span class="pill a">/event (SSE)</span>
+    </div>
+    <div class="card"><h4><span class="ic">📡</span>事件总线</h4>
+      <p><code>GET /event</code> 是 SSE 流,首事件 <code>server.connected</code>,之后推送内部 bus 事件(会话/消息/工具/权限/LSP/文件/TUI)。所有客户端据此实时同步同一份会话状态。</p>
+      <p>OpenAPI 规格在 <code>/doc</code>(如 <code>localhost:4096/doc</code>),可生成客户端或在 Swagger 里查看。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 04 session -->
+<section id="session">
+  <div class="sec-h"><span class="idx">04</span><h2>会话与消息数据模型</h2></div>
+  <p class="lead">远比「消息数组」丰富——这是 OpenCode 编辑器级体验(分叉、回退、diff、子会话)的基础。</p>
+
+  <div class="grid g2">
+    <div class="card"><h4><span class="ic">🗂️</span>Session</h4>
+      <p>可建/列/删/改标题;<code>parentID</code> 形成<b>子会话</b>(子代理工作发生在此);含 <code>status</code>、<code>todo</code>、<code>diff</code>。</p>
+      <span class="pill">fork 分叉</span><span class="pill">revert / unrevert</span><span class="pill">summarize / init</span><span class="pill">share / unshare</span><span class="pill">abort</span><span class="pill">children</span>
+    </div>
+    <div class="card"><h4><span class="ic">🧩</span>Message + Part</h4>
+      <p>一条消息由多个 <b>Part</b> 组成(文本/工具调用/工具结果/推理/文件附件),返回 <code>{ info, parts[] }</code>。</p>
+      <p>发送三姿势:<code>message</code>(等待)、<code>prompt_async</code>(异步 204)、<code>noReply:true</code>(只注入上下文不回复);另有 <code>command</code> 与 <code>shell</code>。</p>
+    </div>
+  </div>
+  <div class="note"><b>结构化输出:</b>prompt 传 <code>format:{type:"json_schema", schema, retryCount}</code>,模型经内部 <code>StructuredOutput</code> 工具产出并校验 JSON,失败超限返回 <code>StructuredOutputError</code>。持久化经 <code>#db</code>(Drizzle ORM,Bun/Node 双实现),存于 <code>~/.local/share/opencode/</code>。</div>
+</section>
+
+<!-- 05 loop -->
+<section id="loop">
+  <div class="sec-h"><span class="idx">05</span><h2>Agent 主循环与模型层(AI SDK)</h2></div>
+  <p class="lead">OpenCode 不自造模型调用与工具循环,而是构建在 <b>Vercel AI SDK v5</b> 之上,在其上叠加会话/权限/事件/快照编排。</p>
+
+  <div class="diagram">
+  <svg viewBox="0 0 860 180" xmlns="http://www.w3.org/2000/svg">
+    <defs><marker id="a2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#3ad6c5"/></marker></defs>
+    <g font-size="11.5" text-anchor="middle">
+      <rect x="20" y="64" width="120" height="52" rx="9" fill="#121c20" stroke="#2a3d46"/><text x="80" y="86" fill="#e7f0f2">用户 prompt</text><text x="80" y="103" fill="#6a8088" font-size="10">+ parts</text>
+      <rect x="178" y="64" width="140" height="52" rx="9" fill="#121c20" stroke="#5cc8ff" stroke-opacity=".5"/><text x="248" y="86" fill="#5cc8ff">AI SDK 调用</text><text x="248" y="103" fill="#6a8088" font-size="10">messages+tools→provider</text>
+      <rect x="356" y="64" width="130" height="52" rx="9" fill="#121c20" stroke="#ffcf5c" stroke-opacity=".5"/><text x="421" y="86" fill="#ffcf5c">tool_calls?</text><text x="421" y="103" fill="#6a8088" font-size="10">权限判定→执行</text>
+      <rect x="524" y="64" width="130" height="52" rx="9" fill="#121c20" stroke="#9a8cff" stroke-opacity=".5"/><text x="589" y="86" fill="#9a8cff">回灌结果</text><text x="589" y="103" fill="#6a8088" font-size="10">事件推送 + 快照</text>
+      <rect x="692" y="64" width="140" height="52" rx="9" fill="#121c20" stroke="#6fe39a" stroke-opacity=".5"/><text x="762" y="86" fill="#6fe39a">文本输出</text><text x="762" y="103" fill="#6a8088" font-size="10">持久化 / 完成</text>
+    </g>
+    <line x1="140" y1="90" x2="176" y2="90" stroke="#3ad6c5" stroke-width="1.4" marker-end="url(#a2)"/>
+    <line x1="318" y1="90" x2="354" y2="90" stroke="#3ad6c5" stroke-width="1.4" marker-end="url(#a2)"/>
+    <line x1="486" y1="90" x2="522" y2="90" stroke="#3ad6c5" stroke-width="1.4" marker-end="url(#a2)"/>
+    <line x1="654" y1="90" x2="690" y2="90" stroke="#3ad6c5" stroke-width="1.4" marker-end="url(#a2)"/>
+    <path d="M589,64 Q589,28 421,28 Q300,28 248,60" fill="none" stroke="#6a8088" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#a2)"/>
+    <text x="420" y="22" fill="#6a8088" font-size="10" text-anchor="middle">有 tool_calls 则续跑(直到模型停止或达到 steps 上限)</text>
+  </svg>
+  </div>
+  <div class="cap">图 2 · 单轮主循环(AI SDK 工具循环 + OpenCode 编排)</div>
+
+  <div class="grid g3">
+    <div class="card"><h4>🎯 模型解析</h4><p>启动优先级:<code>--model</code> → 配置 <code>model</code> → 上次使用 → 内部优先级首个。ID 为 <code>provider/model</code>。</p></div>
+    <div class="card"><h4>📚 Provider 注册表</h4><p>Models.dev(75+ provider 元数据)+ AI SDK 实现;<code>enabled/disabled_providers</code> 白黑名单(disabled 优先);<code>small_model</code> 跑轻量任务。</p></div>
+    <div class="card"><h4>🎛️ Variants 变体</h4><p>同模型不同推理档位(Anthropic high/max、OpenAI minimal→xhigh、Google low/high),<code>variant_cycle</code> 快速切换。</p></div>
+  </div>
+  <div class="note"><b>隐藏系统 agent</b>参与主循环之外的自动化:<code>compaction</code>(压缩)、<code>title</code>(标题)、<code>summary</code>(摘要)。Provider 选项:<code>timeout</code>(默认 300s)、<code>chunkTimeout</code>、<code>setCacheKey</code>;模型级 <code>thinking.budgetTokens</code>、<code>reasoningEffort</code> 等可透传。</div>
+</section>
+
+<!-- 06 tools -->
+<section id="tools">
+  <div class="sec-h"><span class="idx">06</span><h2>工具系统</h2></div>
+  <p class="lead">模型在代码库里「动手」的手段。默认全部启用且无需批准,行为由权限控制。</p>
+
+  <table class="tbl">
+    <tr><th>工具</th><th>作用</th><th>权限键</th></tr>
+    <tr><td><code>bash</code></td><td>执行 shell 命令</td><td>bash</td></tr>
+    <tr><td><code>edit</code> / <code>write</code> / <code>apply_patch</code></td><td>字符串替换改文件 / 新建覆盖 / 应用补丁</td><td>edit</td></tr>
+    <tr><td><code>read</code></td><td>读文件(支持行范围)</td><td>read</td></tr>
+    <tr><td><code>grep</code> / <code>glob</code></td><td>正则内容搜索 / glob 找文件(均 ripgrep)</td><td>grep / glob</td></tr>
+    <tr><td><code>lsp</code>(实验)</td><td>定义/引用/hover/符号/调用层级</td><td>lsp</td></tr>
+    <tr><td><code>skill</code></td><td>加载 <code>SKILL.md</code> 并并入对话</td><td>skill</td></tr>
+    <tr><td><code>todowrite</code></td><td>任务清单(子代理默认禁用)</td><td>todowrite</td></tr>
+    <tr><td><code>webfetch</code> / <code>websearch</code></td><td>抓网页 / Web 搜索(Exa,无需 key)</td><td>webfetch / websearch</td></tr>
+    <tr><td><code>question</code></td><td>运行中向用户提问(带选项)</td><td>question</td></tr>
+  </table>
+  <div class="note"><b>内部:</b><code>grep</code>/<code>glob</code> 底层用 <b>ripgrep</b>,默认遵守 <code>.gitignore</code>;项目根 <code>.ignore</code> 可显式放行。<b>扩展:</b>自定义工具(<code>.opencode/tools/</code> 或插件 <code>tool()</code> + Zod schema,同名覆盖内置)与 MCP 工具自动并列暴露给模型。</div>
+</section>
+
+<!-- 07 perm -->
+<section id="perm">
+  <div class="sec-h"><span class="idx">07</span><h2>权限与安全模型</h2></div>
+  <p class="lead">作为「能改你代码、能跑你 shell」的 agent,权限是安全底座。每条规则解析为 <code>allow</code> / <code>ask</code> / <code>deny</code>,按模式匹配、<b>最后命中者胜</b>。</p>
+
+  <div class="grid g2">
+  <div>
+    <pre><span class="c">// opencode.json</span>
+{
+  <span class="f">"permission"</span>: {
+    <span class="f">"*"</span>: <span class="s">"ask"</span>,            <span class="c">// 兜底在前</span>
+    <span class="f">"bash"</span>: {              <span class="c">// 对象语法 = 按输入匹配</span>
+      <span class="f">"*"</span>: <span class="s">"ask"</span>,
+      <span class="f">"git *"</span>: <span class="s">"allow"</span>,
+      <span class="f">"rm *"</span>: <span class="s">"deny"</span>
+    },
+    <span class="f">"edit"</span>: { <span class="f">"*"</span>: <span class="s">"deny"</span> }
+  }
+}</pre>
+  </div>
+  <div>
+    <div class="card"><h4>🌳 tree-sitter bash 解析</h4><p>bash 权限匹配的是<b>解析后的命令</b>(如 <code>git status --porcelain</code>)——用 <code>tree-sitter-bash</code> 把一行 shell 拆成结构化命令再比对,避免字符串匹配被绕过。</p></div>
+    <div class="card" style="margin-top:12px"><h4>🛡️ 两个安全守卫</h4><p><code>external_directory</code>:触碰工作目录外路径时触发(默认 ask)。<code>doom_loop</code>:同一工具调用以相同输入连续重复 3 次时触发(默认 ask),防死循环。</p></div>
+  </div>
+  </div>
+  <div class="note"><b>默认值:</b>多数权限默认 <code>allow</code>;<code>doom_loop</code>/<code>external_directory</code> 默认 <code>ask</code>;<code>read</code> 默认 allow 但 <code>.env</code>/<code>*.env.*</code> 默认 <b>deny</b>(<code>.env.example</code> 放行)。<b>「ask」三结果:</b><code>once</code> / <code>always</code>(本会话放行工具建议的安全模式,如 <code>git status*</code>)/ <code>reject</code>。agent 可覆盖,企业可经 MDM 强制不可覆盖。</div>
+</section>
+
+<!-- 08 agents -->
+<section id="agents">
+  <div class="sec-h"><span class="idx">08</span><h2>Agents 体系(primary / subagent)</h2></div>
+  <p class="lead">把「不同任务用不同配置的 AI」做成一等概念。可 JSON(<code>opencode.json</code>)或 Markdown(<code>.opencode/agents/*.md</code>,frontmatter+正文)配置。</p>
+
+  <div class="grid g2">
+    <div class="card"><h4><span class="ic">🎚️</span>主 agent(Tab 切换)</h4>
+      <p><b>build</b> — 默认,全工具,标准开发。</p>
+      <p><b>plan</b> — 受限分析,edit/bash 默认 ask,适合探索陌生代码库而不误改。</p>
+    </div>
+    <div class="card"><h4><span class="ic">🧭</span>子代理(@ 调用,跑在子会话)</h4>
+      <p><b>general</b> — 通用多步(除 todo 全工具),可并行。</p>
+      <p><b>explore</b> — 快速只读探索,不可改文件。</p>
+      <p><b>scout</b> — 只读外部文档/依赖研究(克隆依赖进托管缓存)。</p>
+    </div>
+  </div>
+  <div class="note"><b>隐藏系统 agent:</b>compaction / title / summary,自动运行不可选。<b>关键选项:</b><code>mode</code>(primary/subagent/all)、<code>model</code>、<code>prompt</code>、<code>temperature</code>、<code>steps</code>(最大迭代)、<code>permission</code>(含 <code>permission.task</code> 控制可调用哪些子代理)、<code>hidden</code>、<code>color</code> + 透传 provider 字段。子代理产生子会话,TUI 提供父子会话穿梭键;<code>opencode agent create</code> 交互式创建。</div>
+</section>
+
+<!-- 09 lsp/mcp -->
+<section id="lspmcp">
+  <div class="sec-h"><span class="idx">09</span><h2>LSP 与 MCP 集成</h2></div>
+  <div class="grid g2">
+    <div class="card"><h4><span class="ic">🔬</span>LSP(代码诊断作反馈)</h4>
+      <p>基于 <code>vscode-jsonrpc</code>。<b>约 35 个内置语言服务器</b>(typescript、pyright、gopls、rust-analyzer、clangd、jdtls、ruby-lsp、eslint、oxlint、svelte、vue、astro、zls…),按需自动安装。</p>
+      <p>默认关闭;启用后打开匹配文件即起服务器,把诊断回灌 agent loop。可 <code>lsp:true</code> 全开或对象语法逐个配置。</p>
+      <p class="muted" style="font-size:12.5px">务实建议:LSP 较重,很多项目让 agent 直接跑 lint/typecheck CLI(写进 AGENTS.md)更划算。</p>
+    </div>
+    <div class="card"><h4><span class="ic">🔌</span>MCP(外部工具)</h4>
+      <p>基于 <code>@modelcontextprotocol/sdk</code>。<b>local</b>(command+env)与 <b>remote</b>(url+headers),工具自动与内置并列。</p>
+      <p>remote <b>OAuth</b> 自动处理:检测 401→发起流程,支持<b>动态客户端注册(RFC 7591)</b>,token 存 <code>~/.local/share/opencode/mcp-auth.json</code>。</p>
+      <p>工具以「服务器名_」前缀注册;可「全局关、按 agent 开」控制上下文膨胀;组织可经 <code>.well-known/opencode</code> 远程下发。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 10 context -->
+<section id="context">
+  <div class="sec-h"><span class="idx">10</span><h2>上下文压缩与快照(undo/redo)</h2></div>
+  <div class="grid g2">
+    <div class="card"><h4><span class="ic">🗜️</span>压缩 compaction</h4>
+      <p>配置 <code>compaction</code>:<code>auto</code>(将满时自动压缩)、<code>prune</code>(移除旧工具输出省 token)、<code>reserved</code>(预留 token 缓冲)。由隐藏 <code>compaction</code> agent 生成续写摘要,<code>/compact</code> 手动触发。</p>
+      <p>插件钩子 <code>experimental.session.compacting</code> 可注入额外上下文(<code>output.context</code>)或<b>完全替换</b>压缩提示词(<code>output.prompt</code>)。</p>
+    </div>
+    <div class="card"><h4><span class="ic">📸</span>快照与回退</h4>
+      <p>用<b>内部影子 git 仓库</b>跟踪 agent 改动(默认启用,可 <code>snapshot:false</code> 关)。</p>
+      <p><code>/undo</code> 撤销最近用户消息、其后响应<b>及文件改动</b>;<code>/redo</code> 恢复;服务端 <code>revert</code>/<code>unrevert</code> 与按 messageID 的 <code>diff</code> 同样依赖快照。</p>
+      <p class="muted" style="font-size:12.5px">因此 undo/redo 要求项目是 git 仓库。<code>watcher.ignore</code> 控制监听忽略模式。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 11 ext -->
+<section id="ext">
+  <div class="sec-h"><span class="idx">11</span><h2>扩展性:插件 / 钩子 / 命令 / Rules</h2></div>
+  <p class="lead">扩展性建立在「插件 + 事件钩子 + SDK 客户端」之上。插件是导出插件函数的 JS/TS 模块,接收 <code>{ project, directory, worktree, client, $ }</code>,返回钩子对象。</p>
+
+  <details class="acc" open><summary><span class="chev">▸</span>核心钩子<span class="tk">@opencode-ai/plugin</span></summary>
+  <div class="acc-body">
+    <p><code>tool.execute.before</code> / <code>tool.execute.after</code> — 执行前后改写参数/拦截(净化 bash、禁读 .env)。</p>
+    <p><code>event</code> — catch-all,订阅事件总线。<code>shell.env</code> — 向所有 shell 注入环境变量。</p>
+    <p><code>experimental.session.compacting</code> — 定制压缩。<code>tool:{ mytool: tool({...}) }</code> — 注册自定义工具(Zod schema,同名覆盖内置)。</p>
+    <pre><span class="k">export const</span> <span class="f">EnvProtection</span> = <span class="k">async</span> () => ({
+  <span class="f">"tool.execute.before"</span>: <span class="k">async</span> (input, output) => {
+    <span class="k">if</span> (input.tool === <span class="s">"read"</span> &amp;&amp; output.args.filePath.includes(<span class="s">".env"</span>))
+      <span class="k">throw new</span> <span class="f">Error</span>(<span class="s">"Do not read .env files"</span>)
+  }
+})</pre>
+  </div></details>
+
+  <details class="acc"><summary><span class="chev">▸</span>事件总线(钩子可订阅)<span class="tk">events</span></summary>
+  <div class="acc-body">
+    <span class="pill">session.created/compacted/deleted/idle/error/updated</span><span class="pill">message.updated/removed</span><span class="pill c">tool.execute.before/after</span><span class="pill a">permission.asked/replied</span><span class="pill">file.edited</span><span class="pill">file.watcher.updated</span><span class="pill v">lsp.updated / lsp.client.diagnostics</span><span class="pill">todo.updated</span><span class="pill">command.executed</span><span class="pill b">server.connected</span><span class="pill">tui.prompt.append / command.execute / toast.show</span>
+    <p style="margin-top:8px">加载顺序:全局配置 → 项目配置 → <code>~/.config/opencode/plugins/</code> → <code>.opencode/plugins/</code>;npm 插件启动时用 Bun 装到 <code>~/.cache/opencode/node_modules/</code>。日志走 <code>client.app.log()</code>。</p>
+  </div></details>
+
+  <details class="acc"><summary><span class="chev">▸</span>自定义命令 + Rules<span class="tk">commands · AGENTS.md</span></summary>
+  <div class="acc-body">
+    <p><b>命令:</b><code>command.&lt;name&gt;</code> 或 <code>.opencode/commands/*.md</code>,字段 <code>template</code>(支持 <code>$ARGUMENTS</code>)、<code>description</code>、<code>agent</code>、<code>model</code>。</p>
+    <p><b>Rules:</b><code>/init</code> 分析项目生成 <code>AGENTS.md</code>(建议提交 git);<code>instructions</code> 配置可追加任意规则文件/glob,每次对话作为上下文塑造行为。</p>
+  </div></details>
+</section>
+
+<!-- 12 clients -->
+<section id="clients">
+  <div class="sec-h"><span class="idx">12</span><h2>客户端矩阵与云协作</h2></div>
+  <p class="lead">客户端/服务端解耦带来一整排客户端,全部经同一套 HTTP API。</p>
+  <div class="grid g3">
+    <div class="card"><h4>⌨️ TUI</h4><p>OpenTUI(SolidJS 终端渲染)。<code>@</code> 引用文件、<code>!</code> 跑 shell、<code>/</code> 命令、Tab 切 agent、leader 键 <code>ctrl+x</code>;独立 <code>tui.json</code> 配主题/keybinds/通知。</p></div>
+    <div class="card"><h4>🖥️ Web / Desktop</h4><p>Web(SolidStart,<code>opencode web</code>);桌面(Tauri,可发系统通知)。</p></div>
+    <div class="card"><h4>🧩 IDE / ACP</h4><p>编辑器扩展经 <code>/tui</code> 控制端点驱动;ACP(<code>@agentclientprotocol/sdk</code>)暴露为 Zed 等编辑器原生 agent。</p></div>
+    <div class="card"><h4>🤖 SDK / CI</h4><p><code>createOpencode()</code>(自带起服务端)或 <code>createOpencodeClient({baseUrl})</code>;GitHub/GitLab CI 集成。</p></div>
+    <div class="card"><h4>🔗 Share(协作)</h4><p><code>/share</code> 生成公开链接 <code>opncd.ai/s/&lt;id&gt;</code>,同步会话到云;manual/auto/disabled;企业可禁用/限 SSO/自托管。云端:Cloudflare+S3+Drizzle+OpenAuth。</p></div>
+    <div class="card"><h4>💲 Zen / Go</h4><p>Zen:官方精选模型目录。Go:低价订阅($5 首月/$10 月)接入优质开源模型(GLM/Kimi/MiniMax/Qwen/DeepSeek),作普通 provider,完全可选无锁定。</p></div>
+  </div>
+</section>
+
+<!-- 13 config -->
+<section id="config">
+  <div class="sec-h"><span class="idx">13</span><h2>配置体系与设计原则</h2></div>
+  <p class="lead">配置 <code>opencode.json/jsonc</code>(TUI 用 <code>tui.json</code>),<b>合并而非替换</b>,8 级优先级(后者覆盖前者)。</p>
+
+  <div class="diagram">
+  <div class="flow" style="text-align:left">1  远程配置 .well-known/opencode        <span style="color:#6a8088">组织默认（最低）</span>
+2  全局 ~/.config/opencode/opencode.json
+3  OPENCODE_CONFIG（自定义路径）
+4  项目 opencode.json
+5  .opencode/ 目录（agents/commands/plugins/skills/tools…）
+6  OPENCODE_CONFIG_CONTENT（运行时内联）
+7  文件式 managed（/etc/opencode、%ProgramData%…）
+8  macOS MDM 托管偏好 .mobileconfig     <span style="color:#3ad6c5">最高 · 用户不可覆盖</span></div>
+  </div>
+  <div class="cap">图 3 · 8 级配置优先级</div>
+
+  <p class="muted"><b>变量替换:</b><code>{env:VAR}</code> / <code>{file:path}</code>。其它开关:<code>autoupdate</code>(true/notify/false)、<code>formatter</code>、<code>shell</code>、<code>attachment.image</code>(图片缩放)、<code>experimental.policies</code>(如 provider.use 的 allow/deny)。企业可经 Jamf/FleetDM 强制 permission/share/server。</p>
+
+  <h3><span class="dot"></span>横切设计原则</h3>
+  <div class="grid g3">
+    <div class="card"><h4>📐 API 优先</h4><p>一切经 OpenAPI 暴露,SDK 自动生成,客户端与内核以类型契约解耦。</p></div>
+    <div class="card"><h4>⌨️ 本地服务化</h4><p>agent 是本地无头服务,可被任意 UI/脚本/CI 编排。</p></div>
+    <div class="card"><h4>📡 事件驱动</h4><p>内部 bus → SSE,多端实时同步同一会话。</p></div>
+    <div class="card"><h4>🔒 可审计安全</h4><p>细粒度权限 + tree-sitter bash 解析 + external_directory/doom_loop 守卫 + .env 默认拒读。</p></div>
+    <div class="card"><h4>↩️ Git 原生可回退</h4><p>影子 git 快照让每步改动可 undo/redo/revert。</p></div>
+    <div class="card"><h4>🧩 模型无关</h4><p>AI SDK + Models.dev,75+ provider、统一 ID、变体、无锁定。</p></div>
+  </div>
+
+  <h3><span class="dot"></span>总评</h3>
+  <p class="muted">OpenCode 的架构可概括为「<b style="color:var(--teal)">一个本地无头服务内核 + 一圈经 OpenAPI 解耦的客户端 + 一套 git 原生、权限受控的编码工作流</b>」。客户端/服务端 + OpenAPI 是地基,让 TUI/Web/桌面/IDE/ACP/SDK/CI 共享同一内核;它构建在成熟生态之上(AI SDK 处理模型、MCP/ACP 处理协议、LSP/tree-sitter 处理代码智能、Drizzle/影子 git 处理状态与回退),自身专注「会话/工具/权限/事件」的编排。最值得借鉴:用 OpenAPI 把 agent 内核变成可被任意客户端消费的本地服务、用事件总线驱动多端同步、用 tree-sitter 把 shell 权限升级为结构化匹配、用影子 git 实现可靠的改动回退。</p>
+
+  <footer>
+    <b style="color:var(--muted)">参考来源</b>
+    <div class="src">
+      <div><a href="https://github.com/anomalyco/opencode">仓库与 README</a></div>
+      <div><a href="https://opencode.ai/docs/">文档首页</a></div>
+      <div><a href="https://opencode.ai/docs/server/">Server(架构与 API)</a></div>
+      <div><a href="https://opencode.ai/docs/sdk/">SDK</a></div>
+      <div><a href="https://opencode.ai/docs/agents/">Agents</a></div>
+      <div><a href="https://opencode.ai/docs/tools/">Tools</a></div>
+      <div><a href="https://opencode.ai/docs/permissions/">Permissions</a></div>
+      <div><a href="https://opencode.ai/docs/models/">Models</a></div>
+      <div><a href="https://opencode.ai/docs/lsp/">LSP Servers</a></div>
+      <div><a href="https://opencode.ai/docs/mcp-servers/">MCP servers</a></div>
+      <div><a href="https://opencode.ai/docs/plugins/">Plugins</a></div>
+      <div><a href="https://opencode.ai/docs/config/">Config</a></div>
+      <div><a href="https://opencode.ai/docs/tui/">TUI</a></div>
+      <div><a href="https://opencode.ai/docs/share/">Share</a></div>
+    </div>
+    <p style="margin-top:18px;color:var(--dim)">源码依据:根 <code>package.json</code> · <code>packages/opencode/package.json</code> ｜ 整理于 2026-06-02 ｜ 基于 OpenCode 官方文档与仓库</p>
+  </footer>
+</section>
+
+</main>
+</div>
+
+<script>
+(function(){
+  var sb=document.getElementById('sidebar'),bd=document.getElementById('backdrop'),mb=document.getElementById('menuBtn');
+  function toggle(o){sb.classList.toggle('open',o);bd.classList.toggle('show',o);}
+  mb.addEventListener('click',function(){toggle(!sb.classList.contains('open'));});
+  bd.addEventListener('click',function(){toggle(false);});
+  var pb=document.getElementById('progress');
+  var links=[].slice.call(document.querySelectorAll('#nav a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+  function onScroll(){
+    var st=window.scrollY||document.documentElement.scrollTop;
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    pb.style.width=(h>0?(st/h*100):0)+'%';
+    var idx=0;
+    for(var i=0;i<secs.length;i++){ if(secs[i] && secs[i].offsetTop-130<=st) idx=i; }
+    links.forEach(function(l,i){l.classList.toggle('active',i===idx);});
+  }
+  document.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onScroll);
+  onScroll();
+  links.forEach(function(l){l.addEventListener('click',function(){ if(window.innerWidth<=900) toggle(false); });});
+})();
+</script>
+</body>
+</html>
