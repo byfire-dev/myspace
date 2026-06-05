@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>思想的摩托车：纳瓦尔四条 | 经验文档</title>
+<meta name="description" content="思想的摩托车：纳瓦尔四条团队总结 PDF 经验文档，沉淀纳瓦尔四条原则的团队复盘与行动启发。">
+<style>
+  * { box-sizing: border-box; }
+
+  :root {
+    --bg: #f4f1e8;
+    --paper: #fffdf7;
+    --ink: #161a1d;
+    --muted: #64605a;
+    --line: #d8d1c1;
+    --accent: #b6422d;
+    --accent-dark: #7d2b1f;
+    --blue: #245875;
+    --white: #ffffff;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Microsoft YaHei", "PingFang SC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  a { color: inherit; }
+
+  .shell {
+    width: min(1080px, calc(100% - 32px));
+    margin: 24px auto 42px;
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  .home-link,
+  .open-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--accent-dark);
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .open-link {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--white);
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 250px;
+    gap: 28px;
+    align-items: end;
+    padding: 34px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+  }
+
+  .eyebrow {
+    margin: 0 0 12px;
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(32px, 5vw, 58px);
+    line-height: 1.05;
+    letter-spacing: 0;
+  }
+
+  .summary {
+    max-width: 740px;
+    margin: 18px 0 0;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.85;
+  }
+
+  .meta {
+    display: grid;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .meta strong {
+    display: block;
+    color: var(--ink);
+    font-size: 12px;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+  }
+
+  .content {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    border: 1px solid var(--line);
+    border-top: 0;
+    background: var(--white);
+  }
+
+  .panel {
+    padding: 30px 34px;
+    border-right: 1px solid var(--line);
+  }
+
+  .panel:last-child {
+    border-right: 0;
+  }
+
+  h2 {
+    margin: 0 0 16px;
+    font-size: 20px;
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
+
+  .point-list {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .point-list li {
+    padding-left: 15px;
+    border-left: 3px solid var(--accent);
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  .file-box {
+    display: grid;
+    gap: 12px;
+    padding: 20px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+  }
+
+  .file-name {
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.5;
+    word-break: break-word;
+  }
+
+  .file-note {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .viewer-wrap {
+    border: 1px solid var(--line);
+    border-top: 0;
+    background: var(--white);
+    min-height: 72vh;
+  }
+
+  .pdf-viewer {
+    display: block;
+    width: 100%;
+    min-height: 78vh;
+    border: 0;
+    background: var(--white);
+  }
+
+  .fallback {
+    padding: 34px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  @media (max-width: 760px) {
+    .shell { width: min(100% - 20px, 1080px); margin-top: 14px; }
+    .topbar,
+    .hero,
+    .content { grid-template-columns: 1fr; }
+    .topbar { align-items: stretch; }
+    .home-link,
+    .open-link { width: 100%; }
+    .hero,
+    .panel { padding: 24px 20px; }
+    .panel { border-right: 0; border-bottom: 1px solid var(--line); }
+    .panel:last-child { border-bottom: 0; }
+  }
+</style>
+</head>
+<body>
+<main class="shell">
+  <div class="topbar">
+    <a class="home-link" href="../">← Back to Home</a>
+    <a class="open-link" href="../assets/naval-four-lessons-team-summary.pdf" target="_blank" rel="noreferrer">打开 PDF</a>
+  </div>
+
+  <section class="hero">
+    <div>
+      <p class="eyebrow">Experience Document · Team Summary</p>
+      <h1>思想的摩托车<br>纳瓦尔四条</h1>
+      <p class="summary">将团队总结型 PDF 纳入站点资产与经验文档，用于沉淀纳瓦尔四条原则的理解、复盘和后续行动方向。</p>
+    </div>
+    <div class="meta">
+      <div><strong>Format</strong>PDF</div>
+      <div><strong>Source</strong>Team Summary</div>
+      <div><strong>Asset</strong>naval-four-lessons-team-summary.pdf</div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="panel">
+      <h2>文档定位</h2>
+      <ul class="point-list">
+        <li>把一次团队分享材料从临时文件沉淀为可回访的经验文档。</li>
+        <li>保留原始 PDF，方便后续继续回看、复盘或用于内部分享。</li>
+        <li>围绕纳瓦尔四条原则，作为团队认知、行动选择和复利思维的讨论入口。</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h2>原始文件</h2>
+      <div class="file-box">
+        <div class="file-name">naval-four-lessons-team-summary.pdf</div>
+        <p class="file-note">如果当前浏览器不能内嵌显示 PDF，请使用上方按钮打开或下载原始文件。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="viewer-wrap">
+    <object class="pdf-viewer" data="../assets/naval-four-lessons-team-summary.pdf" type="application/pdf">
+      <div class="fallback">
+        当前浏览器无法内嵌显示 PDF。<a href="../assets/naval-four-lessons-team-summary.pdf">打开原始文件</a>
+      </div>
+    </object>
+  </section>
+</main>
+</body>
+</html>
