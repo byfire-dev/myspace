@@ -14,6 +14,7 @@ url-to-markdown/
 *.pdf
 !docs/The founder's playbook - Building an AI-native startup.pdf
 !assets/marketing-practice-team-summary.pdf
+!assets/naval-four-lessons-team-summary.pdf
 *.jpg
 *.png
 *.jpeg
