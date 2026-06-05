@@ -1,6 +1,79 @@
 window.AI_WEEK_ARCHIVE = {
-  updatedAt: "2026-05-31",
+  updatedAt: "2026-06-05",
   weeks: [
+    {
+      id: "2026-06-01_2026-06-05",
+      range: "June 1-5, 2026",
+      title: "Mythos 安全争议升温，企业 Agent 与前沿治理同步加速",
+      summary: "本周最强信号来自高能力模型的安全边界：Anthropic 正式扩展 Project Glasswing，围绕 Mythos/Oceanus 的泄露传闻也把红队访问、API 渠道和责任发布推到台前；同时，OpenAI 与 Microsoft 分别在前沿治理、生物安全和企业 Agent 系统上继续加码。",
+      events: [
+        {
+          date: "2026-06-02",
+          displayDate: "Jun 2",
+          weekday: "Tue",
+          org: "Anthropic",
+          category: "Cybersecurity",
+          headline: "Anthropic 扩大 Project Glasswing，Mythos 级网络安全能力进入受控扩散阶段",
+          body: "Anthropic 宣布把 Project Glasswing 从约 50 个初始伙伴扩展到约 150 个组织，覆盖 15 个以上国家和电力、水务、医疗、通信、硬件等关键基础设施领域。官方强调，Claude Mythos Preview 已帮助伙伴发现大量高危或严重漏洞，但 Mythos 级模型也需要更强的访问控制、披露流程和防滥用护栏。",
+          sourceUrl: "https://www.anthropic.com/news/expanding-project-glasswing",
+          sourceName: "Anthropic",
+          tags: ["Claude Mythos", "Cybersecurity", "Responsible Release"],
+          priority: 1
+        },
+        {
+          date: "2026-06-05",
+          displayDate: "Jun 5",
+          weekday: "Fri",
+          org: "Anthropic",
+          category: "Model Security",
+          headline: "Mythos/Oceanus API 转售传闻发酵，前沿模型红队访问暴露渠道治理风险",
+          body: "新智元文章称，Anthropic 内部代号 Oceanus 的 Mythos 预览通道疑似被红队访问者转卖，并流出 80 美元/百万输出 token、52 token/s 等参数。相关说法尚未获得 Anthropic 官方确认，更适合当作风险信号：当模型具备长程自主编码和网络安全能力时，红队、代理商、密钥审计和限量发布机制本身会成为安全边界的一部分。",
+          sourceUrl: "https://mp.weixin.qq.com/s/s1-LSP2QjtGsWxFx9XTK6w",
+          sourceName: "新智元",
+          tags: ["Mythos", "Oceanus", "Red Team", "Leak Risk"],
+          priority: 1
+        },
+        {
+          date: "2026-06-03",
+          displayDate: "Jun 3",
+          weekday: "Wed",
+          org: "OpenAI",
+          category: "Governance",
+          headline: "OpenAI 发布前沿 AI 民主治理蓝图，呼吁建立更持久的联邦安全框架",
+          body: "OpenAI 发布 frontier safety blueprint，提出美国应建立可持续的国家级前沿 AI 治理框架、强化 CAISI 作为联邦 AI 安全机构的角色，并动员更广泛的政府韧性计划。前沿模型治理正在从公司自律扩展到国家制度设计。",
+          sourceUrl: "https://openai.com/index/frontier-safety-blueprint/",
+          sourceName: "OpenAI",
+          tags: ["Frontier AI", "Governance", "Policy"],
+          priority: 1
+        },
+        {
+          date: "2026-06-04",
+          displayDate: "Jun 4",
+          weekday: "Thu",
+          org: "OpenAI",
+          category: "Biosecurity",
+          headline: "OpenAI 发布生物防御行动计划，AI 科研能力与生物安全绑定更紧",
+          body: "OpenAI 在 Biodefense in the Intelligence Age 中提出 AI 驱动的生物韧性行动计划，强调先进模型既能支持药物发现、疾病研究和公共卫生响应，也会带来生物安全风险。围绕 GPT-Rosalind 和 Rosalind Biodefense，OpenAI 的重点是把能力开放给可信防御者，同时建立证据、护栏和治理流程。",
+          sourceUrl: "https://openai.com/index/biodefense-in-the-intelligence-age/",
+          sourceName: "OpenAI",
+          tags: ["Biodefense", "Rosalind", "Safety"],
+          priority: 2
+        },
+        {
+          date: "2026-06-02",
+          displayDate: "Jun 2",
+          weekday: "Tue",
+          org: "Microsoft",
+          category: "Enterprise Agents",
+          headline: "Microsoft Build 2026 强化企业 Agent 全栈，模型、上下文、运行时和治理一起推进",
+          body: "Microsoft 在 Build 2026 期间把企业 Agent 叙事从单点 Copilot 扩展成完整系统：GitHub 构建、Microsoft IQ 上下文化、Foundry 运行、Agent 365 治理，以及 Frontier Tuning 持续改进。与此同时，MAI-Thinking-1、MAI-Code-1、MAI-Image-2.5 等自研模型进入产品和 Foundry，企业 AI 竞争正在转向可治理、可观测、可持续优化的 Agent 平台。",
+          sourceUrl: "https://blogs.microsoft.com/blog/2026/06/02/microsoft-build-2026-be-yourself-at-work/",
+          sourceName: "Microsoft",
+          tags: ["Agent Platform", "Microsoft Build", "MAI Models"],
+          priority: 2
+        }
+      ]
+    },
     {
       id: "2026-05-25_2026-05-31",
       range: "May 25-31, 2026",
