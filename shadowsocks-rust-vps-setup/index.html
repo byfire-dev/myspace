@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>搬瓦工 VPS 部署 Shadowsocks-rust 代理服务</title>
+<style>
+  :root {
+    --ink: #121722;
+    --ink-soft: #30394a;
+    --muted: #667085;
+    --line: #dce2ea;
+    --paper: #ffffff;
+    --page: #eef2f7;
+    --blue: #244f8f;
+    --blue-deep: #172a4a;
+    --green: #1f7a66;
+    --orange: #e85d3f;
+    --amber: #b87912;
+    --code: #0f1724;
+    --code-line: #25344d;
+    --radius: 8px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+    line-height: 1.7;
+  }
+
+  a { color: inherit; }
+
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  .back-link,
+  .print-button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 38px;
+    border: 1px solid rgba(23, 42, 74, 0.18);
+    background: rgba(255, 255, 255, 0.78);
+    color: var(--blue-deep);
+    padding: 8px 14px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .print-button {
+    font-family: inherit;
+  }
+
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background:
+      linear-gradient(120deg, rgba(23, 42, 74, 0.98), rgba(18, 23, 34, 0.96)),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 72px);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 54px;
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    left: 54px;
+    right: 54px;
+    bottom: 32px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--orange), rgba(255,255,255,0.1), var(--green));
+  }
+
+  .hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+    gap: 42px;
+    align-items: end;
+    min-width: 0;
+  }
+
+  .hero-grid > * { min-width: 0; }
+
+  .eyebrow {
+    color: #ffb199;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    margin: 0;
+    max-width: 740px;
+    font-size: clamp(36px, 5vw, 66px);
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .latin-title {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .mobile-break { display: none; }
+
+  .after-title::before { content: " "; }
+
+  .hero-lead {
+    max-width: 680px;
+    margin: 24px 0 0;
+    color: rgba(255,255,255,0.76);
+    font-size: 17px;
+    line-height: 1.9;
+  }
+
+  .hero-meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 32px;
+    max-width: 740px;
+  }
+
+  .meta-item {
+    border: 1px solid rgba(255,255,255,0.16);
+    background: rgba(255,255,255,0.06);
+    padding: 12px;
+    border-radius: var(--radius);
+  }
+
+  .meta-label {
+    color: rgba(255,255,255,0.46);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .meta-value {
+    margin-top: 6px;
+    color: #fff;
+    font-family: Consolas, "SFMono-Regular", Menlo, monospace;
+    font-size: 14px;
+  }
+
+  .topology {
+    border: 1px solid rgba(255,255,255,0.16);
+    background: rgba(255,255,255,0.06);
+    border-radius: var(--radius);
+    padding: 22px;
+    min-width: 0;
+  }
+
+  .topology-title {
+    color: rgba(255,255,255,0.54);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .topology-row {
+    display: grid;
+    grid-template-columns: 1fr 54px 1fr;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .node {
+    min-height: 112px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    padding: 14px;
+    min-width: 0;
+  }
+
+  .node span {
+    display: block;
+    color: rgba(255,255,255,0.46);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .node strong {
+    display: block;
+    margin-top: 8px;
+    font-size: 18px;
+    line-height: 1.25;
+  }
+
+  .node code {
+    display: block;
+    margin-top: 8px;
+    color: #9de2cc;
+    background: transparent;
+    padding: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .route {
+    color: rgba(255,255,255,0.62);
+    text-align: center;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .route-line {
+    display: block;
+    height: 2px;
+    margin: 8px 0;
+    background: linear-gradient(90deg, var(--orange), #fff, var(--green));
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 28px;
+    margin-top: 28px;
+  }
+
+  .toc {
+    position: sticky;
+    top: 18px;
+    align-self: start;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.82);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+
+  .toc-title {
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .toc a {
+    display: block;
+    border-top: 1px solid var(--line);
+    padding: 10px 0;
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .content {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  section {
+    padding: 34px 42px;
+    border-bottom: 1px solid var(--line);
+    scroll-margin-top: 24px;
+  }
+
+  section:last-child { border-bottom: none; }
+
+  .section-kicker {
+    color: var(--orange);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    margin: 0 0 18px;
+    font-size: 28px;
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+
+  h3 {
+    margin: 24px 0 10px;
+    font-size: 18px;
+    line-height: 1.35;
+  }
+
+  p {
+    margin: 0 0 14px;
+    color: var(--ink-soft);
+    font-size: 15px;
+  }
+
+  ul, ol {
+    margin: 0 0 18px 0;
+    padding-left: 20px;
+  }
+
+  li {
+    margin: 7px 0;
+    color: var(--ink-soft);
+  }
+
+  code {
+    font-family: Consolas, "SFMono-Regular", Menlo, monospace;
+    color: var(--blue-deep);
+    background: #eef4ff;
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 0.92em;
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .summary-item {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+    background: #f8fafc;
+  }
+
+  .summary-item strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--ink);
+    font-size: 14px;
+  }
+
+  .summary-item span {
+    display: block;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .notice {
+    border-left: 4px solid var(--orange);
+    background: #fff7ed;
+    color: #6f3217;
+    padding: 16px 18px;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    margin: 18px 0;
+  }
+
+  .notice strong { color: #5a2410; }
+
+  .checklist {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 18px 0;
+  }
+
+  .check-item {
+    display: flex;
+    gap: 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px;
+    background: #fbfcfe;
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+
+  .check-mark {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--green);
+    color: #fff;
+    flex: 0 0 auto;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 900;
+    margin-top: 3px;
+  }
+
+  .command-block {
+    position: relative;
+    margin: 16px 0 20px;
+    border: 1px solid var(--code-line);
+    border-radius: var(--radius);
+    background: var(--code);
+    overflow: hidden;
+  }
+
+  .command-title {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 14px;
+    color: rgba(255,255,255,0.56);
+    border-bottom: 1px solid var(--code-line);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  pre {
+    margin: 0;
+    padding: 16px;
+    overflow-x: auto;
+    color: #d9e7ff;
+    font-family: Consolas, "SFMono-Regular", Menlo, monospace;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  pre code {
+    color: inherit;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 22px;
+    font-size: 14px;
+  }
+
+  th {
+    background: var(--blue-deep);
+    color: #fff;
+    text-align: left;
+    padding: 11px 12px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  td {
+    border-bottom: 1px solid var(--line);
+    padding: 12px;
+    color: var(--ink-soft);
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) td { background: #f8fafc; }
+
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+    margin-top: 12px;
+  }
+
+  .panel {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px;
+    background: #fbfcfe;
+  }
+
+  .panel h3 { margin-top: 0; }
+
+  .final-order {
+    counter-reset: step;
+    list-style: none;
+    padding: 0;
+  }
+
+  .final-order li {
+    counter-increment: step;
+    position: relative;
+    padding: 13px 14px 13px 50px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: #fbfcfe;
+  }
+
+  .final-order li::before {
+    content: counter(step);
+    position: absolute;
+    left: 14px;
+    top: 13px;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--blue);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  @media (max-width: 920px) {
+    .page { padding: 14px; }
+    .hero { padding: 34px 24px; }
+    .hero::after { left: 24px; right: 24px; }
+    .hero-grid,
+    .layout,
+    .split {
+      grid-template-columns: 1fr;
+    }
+    .toc { position: static; }
+    .hero-meta,
+    .summary-grid,
+    .checklist {
+      grid-template-columns: 1fr;
+    }
+    section { padding: 28px 20px; }
+  }
+
+  @media (max-width: 560px) {
+    .page { overflow-x: hidden; }
+    .hero {
+      width: calc(100vw - 28px);
+      max-width: calc(100vw - 28px);
+    }
+    .topbar { align-items: stretch; flex-direction: column; }
+    .back-link,
+    .print-button {
+      justify-content: center;
+      width: 100%;
+    }
+    h1 {
+      font-size: 30px;
+      line-height: 1.18;
+      word-break: break-word;
+    }
+    .mobile-break { display: block; }
+    .after-title::before { content: ""; }
+    .hero-lead {
+      font-size: 15px;
+      overflow-wrap: anywhere;
+      word-break: break-all;
+      max-width: 100%;
+    }
+    .meta-value,
+    .node strong,
+    .node code {
+      overflow-wrap: anywhere;
+    }
+    .topology-row {
+      grid-template-columns: 1fr;
+    }
+    .route-line { height: 32px; width: 2px; margin: 8px auto; }
+  }
+
+  @media print {
+    body { background: #fff; }
+    .page { max-width: none; padding: 0; }
+    .topbar, .toc { display: none; }
+    .hero, .content { border-radius: 0; border: none; }
+    .layout { display: block; margin-top: 0; }
+    section { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <a class="back-link" href="../">返回经验文档</a>
+      <button class="print-button" type="button" onclick="window.print()">导出 PDF</button>
+    </div>
+
+    <header class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">Network Runbook / 2026-06-09</div>
+          <h1>搬瓦工 VPS 部署 <span class="latin-title">Shadowsocks-<wbr>rust</span><br class="mobile-break"><span class="after-title">代理服务</span></h1>
+          <p class="hero-lead">
+            一份从二进制安装、JSON 配置、systemd 托管、<br class="mobile-break">端口放行到客户端参数的完整 runbook。<br class="mobile-break">适合人工部署，<br class="mobile-break">也适合作为 AI 自动化配置时的操作基线。
+          </p>
+          <div class="hero-meta">
+            <div class="meta-item">
+              <div class="meta-label">Daemon</div>
+              <div class="meta-value">ssserver</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Port</div>
+              <div class="meta-value">8443/tcp</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Method</div>
+              <div class="meta-value">aes-256-gcm</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="topology" aria-label="Shadowsocks-rust 部署拓扑">
+          <div class="topology-title">Deployment Topology</div>
+          <div class="topology-row">
+            <div class="node">
+              <span>Linux VPS</span>
+              <strong>Shadowsocks-rust</strong>
+              <code>/usr/local/bin/ssserver</code>
+            </div>
+            <div class="route">
+              <span>listen</span>
+              <span class="route-line"></span>
+              <span>8443/tcp</span>
+            </div>
+            <div class="node">
+              <span>Client</span>
+              <strong>Shadowsocks</strong>
+              <code>IP + Port + Password</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <nav class="toc" aria-label="页面目录">
+        <div class="toc-title">Runbook Index</div>
+        <a href="#target">目标与前置条件</a>
+        <a href="#install">安装服务端程序</a>
+        <a href="#config">配置文件与 systemd</a>
+        <a href="#start">启动与状态验证</a>
+        <a href="#network">防火墙与端口检查</a>
+        <a href="#automation">AI 自动化参考</a>
+        <a href="#client">客户端连接信息</a>
+        <a href="#trouble">常见问题排查</a>
+        <a href="#order">推荐执行顺序</a>
+      </nav>
+
+      <main class="content">
+        <section id="target">
+          <div class="section-kicker">01 / Objective</div>
+          <h2>目标与前置条件</h2>
+          <p>目标是在 Linux VPS 上安装并运行 Shadowsocks-rust 服务端，让服务以 systemd 托管并开机自启。</p>
+
+          <div class="summary-grid">
+            <div class="summary-item">
+              <strong>服务端程序</strong>
+              <span><code>ssserver</code>，部署到 <code>/usr/local/bin/ssserver</code></span>
+            </div>
+            <div class="summary-item">
+              <strong>配置目录</strong>
+              <span><code>/etc/shadowsocks-rust</code>，主配置为 <code>config.json</code></span>
+            </div>
+            <div class="summary-item">
+              <strong>系统服务</strong>
+              <span><code>shadowsocks-rust.service</code>，由 systemd 管理</span>
+            </div>
+          </div>
+
+          <div class="checklist">
+            <div class="check-item"><span class="check-mark">✓</span><span>已经登录搬瓦工 VPS。</span></div>
+            <div class="check-item"><span class="check-mark">✓</span><span>当前用户为 <code>root</code>，或具备 <code>sudo</code> 权限。</span></div>
+            <div class="check-item"><span class="check-mark">✓</span><span>系统支持 <code>systemd</code>。</span></div>
+            <div class="check-item"><span class="check-mark">✓</span><span>已下载 Shadowsocks-rust 安装包。</span></div>
+          </div>
+
+          <div class="command-block">
+            <div class="command-title"><span>Package</span><span>Linux x86_64</span></div>
+            <pre><code>shadowsocks-v1.24.0.x86_64-unknown-linux-gnu.tar.xz</code></pre>
+          </div>
+
+          <div class="notice">
+            <strong>安全提醒：</strong>文档中的密码 <code>123456</code> 仅作为示例。生产环境必须替换为高强度随机密码。
+          </div>
+        </section>
+
+        <section id="install">
+          <div class="section-kicker">02 / Install</div>
+          <h2>安装 Shadowsocks-rust</h2>
+          <p>进入安装包所在目录，先解压二进制包，再把 <code>ssserver</code> 放到系统可执行路径。</p>
+
+          <div class="command-block">
+            <div class="command-title"><span>Extract</span><span>tar</span></div>
+            <pre><code>tar -xf shadowsocks-v1.24.0.x86_64-unknown-linux-gnu.tar.xz</code></pre>
+          </div>
+
+          <div class="command-block">
+            <div class="command-title"><span>Install Binary</span><span>/usr/local/bin</span></div>
+            <pre><code>cp ssserver /usr/local/bin/ssserver
+chmod +x /usr/local/bin/ssserver</code></pre>
+          </div>
+
+          <div class="command-block">
+            <div class="command-title"><span>Verify</span><span>version</span></div>
+            <pre><code>/usr/local/bin/ssserver --version</code></pre>
+          </div>
+        </section>
+
+        <section id="config">
+          <div class="section-kicker">03 / Configuration</div>
+          <h2>创建配置文件与 systemd 服务</h2>
+          <p>Shadowsocks-rust 的部署核心是两份文件：服务配置 <code>config.json</code> 与 systemd unit 文件。</p>
+
+          <h3>创建配置目录</h3>
+          <div class="command-block">
+            <div class="command-title"><span>Directory</span><span>config home</span></div>
+            <pre><code>mkdir -p /etc/shadowsocks-rust</code></pre>
+          </div>
+
+          <h3>创建 Shadowsocks 配置文件</h3>
+          <div class="command-block">
+            <div class="command-title"><span>Edit</span><span>config.json</span></div>
+            <pre><code>vi /etc/shadowsocks-rust/config.json</code></pre>
+          </div>
+
+          <div class="command-block">
+            <div class="command-title"><span>JSON</span><span>/etc/shadowsocks-rust/config.json</span></div>
+            <pre><code>{
+  "server": "0.0.0.0",
+  "server_port": 8443,
+  "password": "123456",
+  "timeout": 300,
+  "method": "aes-256-gcm",
+  "fast_open": true
+}</code></pre>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>字段</th>
+                <th>说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>server</code></td>
+                <td>服务监听地址，<code>0.0.0.0</code> 表示监听所有网卡。</td>
+              </tr>
+              <tr>
+                <td><code>server_port</code></td>
+                <td>服务端口，此处为 <code>8443</code>。</td>
+              </tr>
+              <tr>
+                <td><code>password</code></td>
+                <td>客户端连接密码，实际部署时应替换为强密码。</td>
+              </tr>
+              <tr>
+                <td><code>timeout</code></td>
+                <td>连接超时时间，单位为秒。</td>
+              </tr>
+              <tr>
+                <td><code>method</code></td>
+                <td>加密方式，此处为 <code>aes-256-gcm</code>。</td>
+              </tr>
+              <tr>
+                <td><code>fast_open</code></td>
+                <td>是否启用 TCP Fast Open。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>创建 systemd 服务</h3>
+          <div class="command-block">
+            <div class="command-title"><span>Edit</span><span>service unit</span></div>
+            <pre><code>vi /etc/systemd/system/shadowsocks-rust.service</code></pre>
+          </div>
+
+          <div class="command-block">
+            <div class="command-title"><span>Unit File</span><span>/etc/systemd/system/shadowsocks-rust.service</span></div>
+            <pre><code>[Unit]
+Description=Shadowsocks-rust Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/bin/ssserver -c /etc/shadowsocks-rust/config.json
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+          </div>
+        </section>
+
+        <section id="start">
+          <div class="section-kicker">04 / Service</div>
+          <h2>启动并验证服务状态</h2>
+          <p>创建或修改 service 文件后，必须先让 systemd 重新加载配置，再启动服务。</p>
+
+          <div class="command-block">
+            <div class="command-title"><span>Reload</span><span>systemd</span></div>
+            <pre><code>systemctl daemon-reload</code></pre>
+          </div>
+
+          <div class="split">
+            <div>
+              <h3>启用并立即启动</h3>
+              <div class="command-block">
+                <div class="command-title"><span>Enable</span><span>auto start</span></div>
+                <pre><code>systemctl enable shadowsocks-rust --now</code></pre>
+              </div>
+            </div>
+            <div>
+              <h3>只手动启动一次</h3>
+              <div class="command-block">
+                <div class="command-title"><span>Start</span><span>manual</span></div>
+                <pre><code>systemctl start shadowsocks-rust</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <h3>查看服务状态与日志</h3>
+          <div class="command-block">
+            <div class="command-title"><span>Status</span><span>active running</span></div>
+            <pre><code>systemctl status shadowsocks-rust</code></pre>
+          </div>
+
+          <p>正常情况下，应能看到服务处于 <code>active (running)</code> 状态。需要进一步排查时查看日志。</p>
+
+          <div class="command-block">
+            <div class="command-title"><span>Logs</span><span>recent 100 lines</span></div>
+            <pre><code>journalctl -u shadowsocks-rust -n 100 --no-pager</code></pre>
+          </div>
+
+          <div class="command-block">
+            <div class="command-title"><span>Logs</span><span>follow</span></div>
+            <pre><code>journalctl -u shadowsocks-rust -f</code></pre>
+          </div>
+        </section>
+
+        <section id="network">
+          <div class="section-kicker">05 / Network</div>
+          <h2>端口监听、防火墙与终端语言环境</h2>
+          <p>服务启动后，还需要确认端口真的监听，并且系统防火墙、搬瓦工控制面板或上游服务商的防火墙规则都放行了该端口。</p>
+
+          <h3>检查端口监听</h3>
+          <div class="command-block">
+            <div class="command-title"><span>Socket</span><span>ss</span></div>
+            <pre><code>ss -lntp | grep 8443</code></pre>
+          </div>
+
+          <p>如果系统没有 <code>ss</code> 命令，可以使用 <code>netstat</code>。</p>
+          <div class="command-block">
+            <div class="command-title"><span>Socket</span><span>netstat fallback</span></div>
+            <pre><code>netstat -lntp | grep 8443</code></pre>
+          </div>
+
+          <h3>放行防火墙端口</h3>
+          <div class="split">
+            <div class="panel">
+              <h3>ufw</h3>
+              <div class="command-block">
+                <div class="command-title"><span>Firewall</span><span>ufw</span></div>
+                <pre><code>ufw allow 8443/tcp
+ufw reload</code></pre>
+              </div>
+            </div>
+            <div class="panel">
+              <h3>firewalld</h3>
+              <div class="command-block">
+                <div class="command-title"><span>Firewall</span><span>firewalld</span></div>
+                <pre><code>firewall-cmd --permanent --add-port=8443/tcp
+firewall-cmd --reload</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <h3>终端语言环境配置</h3>
+          <p>如果执行 <code>top</code> 等命令时出现语言、字符集或显示异常，可以临时设置语言环境。</p>
+
+          <div class="command-block">
+            <div class="command-title"><span>Locale</span><span>basic</span></div>
+            <pre><code>export LANG="en_US"
+export LANGUAGE="en_US"
+export LC_ALL="en_US"
+top</code></pre>
+          </div>
+
+          <div class="command-block">
+            <div class="command-title"><span>Locale</span><span>utf-8 preferred</span></div>
+            <pre><code>export LANG="en_US.UTF-8"
+export LANGUAGE="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+top</code></pre>
+          </div>
+        </section>
+
+        <section id="automation">
+          <div class="section-kicker">06 / Automation</div>
+          <h2>AI 自动化配置参考命令</h2>
+          <p>以下命令适合 AI 或自动化脚本参考。执行前必须替换 <code>SS_PASSWORD</code>。</p>
+
+          <div class="command-block">
+            <div class="command-title"><span>Script</span><span>replace password before run</span></div>
+            <pre><code>SS_PORT="8443"
+SS_PASSWORD="CHANGE_ME_TO_A_STRONG_PASSWORD"
+SS_METHOD="aes-256-gcm"
+SS_CONFIG_DIR="/etc/shadowsocks-rust"
+SS_CONFIG_FILE="${SS_CONFIG_DIR}/config.json"
+SS_SERVICE_FILE="/etc/systemd/system/shadowsocks-rust.service"
+
+mkdir -p "${SS_CONFIG_DIR}"
+
+cat &gt; "${SS_CONFIG_FILE}" &lt;&lt;EOF
+{
+  "server": "0.0.0.0",
+  "server_port": ${SS_PORT},
+  "password": "${SS_PASSWORD}",
+  "timeout": 300,
+  "method": "${SS_METHOD}",
+  "fast_open": true
+}
+EOF
+
+cat &gt; "${SS_SERVICE_FILE}" &lt;&lt;EOF
+[Unit]
+Description=Shadowsocks-rust Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/bin/ssserver -c ${SS_CONFIG_FILE}
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable shadowsocks-rust --now
+systemctl status shadowsocks-rust --no-pager</code></pre>
+          </div>
+        </section>
+
+        <section id="client">
+          <div class="section-kicker">07 / Client</div>
+          <h2>客户端连接信息</h2>
+          <p>客户端只需要保持服务器地址、端口、密码和加密方式与服务端配置一致。</p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>配置项</th>
+                <th>值</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>服务器地址</td>
+                <td>VPS 公网 IP</td>
+              </tr>
+              <tr>
+                <td>端口</td>
+                <td><code>8443</code></td>
+              </tr>
+              <tr>
+                <td>密码</td>
+                <td><code>/etc/shadowsocks-rust/config.json</code> 中的 <code>password</code></td>
+              </tr>
+              <tr>
+                <td>加密方式</td>
+                <td><code>aes-256-gcm</code></td>
+              </tr>
+              <tr>
+                <td>协议</td>
+                <td>Shadowsocks</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="trouble">
+          <div class="section-kicker">08 / Troubleshooting</div>
+          <h2>常见问题排查</h2>
+
+          <div class="split">
+            <div class="panel">
+              <h3>服务启动失败</h3>
+              <p>先看 systemd 日志，再检查二进制、权限、JSON 与端口占用。</p>
+              <div class="command-block">
+                <div class="command-title"><span>Logs</span><span>systemd</span></div>
+                <pre><code>journalctl -u shadowsocks-rust -n 100 --no-pager</code></pre>
+              </div>
+              <ul>
+                <li><code>/usr/local/bin/ssserver</code> 是否存在。</li>
+                <li><code>ssserver</code> 是否有执行权限。</li>
+                <li><code>/etc/shadowsocks-rust/config.json</code> 是否是合法 JSON。</li>
+                <li><code>8443</code> 端口是否已被其他服务占用。</li>
+              </ul>
+            </div>
+
+            <div class="panel">
+              <h3>客户端无法连接</h3>
+              <p>把问题拆成服务器、客户端参数、防火墙和运行状态四层。</p>
+              <ul>
+                <li>VPS 公网 IP 是否正确。</li>
+                <li>客户端端口、密码、加密方式是否与服务端一致。</li>
+                <li>VPS 系统防火墙是否放行 <code>8443/tcp</code>。</li>
+                <li>搬瓦工控制面板或上游防火墙是否放行该端口。</li>
+                <li>服务是否正在运行。</li>
+              </ul>
+              <div class="command-block">
+                <div class="command-title"><span>Status</span><span>no pager</span></div>
+                <pre><code>systemctl status shadowsocks-rust --no-pager</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <h3>修改配置后不生效</h3>
+          <p>修改 <code>config.json</code> 后重启服务；如果修改的是 service 文件，需要先重新加载 systemd。</p>
+
+          <div class="command-block">
+            <div class="command-title"><span>Config Changed</span><span>restart</span></div>
+            <pre><code>systemctl restart shadowsocks-rust</code></pre>
+          </div>
+
+          <div class="command-block">
+            <div class="command-title"><span>Service Changed</span><span>reload then restart</span></div>
+            <pre><code>systemctl daemon-reload
+systemctl restart shadowsocks-rust</code></pre>
+          </div>
+        </section>
+
+        <section id="order">
+          <div class="section-kicker">09 / Execution Order</div>
+          <h2>推荐执行顺序汇总</h2>
+          <p>完整操作可以压缩为以下顺序。实际执行时，不要跳过状态检查和防火墙确认。</p>
+
+          <ol class="final-order">
+            <li>解压 Shadowsocks-rust 安装包。</li>
+            <li>复制 <code>ssserver</code> 到 <code>/usr/local/bin</code> 并授予执行权限。</li>
+            <li>创建 <code>/etc/shadowsocks-rust</code> 配置目录。</li>
+            <li>写入 <code>config.json</code> 与 <code>shadowsocks-rust.service</code>。</li>
+            <li>执行 <code>systemctl daemon-reload</code>。</li>
+            <li>执行 <code>systemctl enable shadowsocks-rust --now</code>。</li>
+            <li>查看服务状态并确认 <code>8443/tcp</code> 已监听。</li>
+          </ol>
+
+          <div class="command-block">
+            <div class="command-title"><span>Condensed Commands</span><span>manual checkpoints included</span></div>
+            <pre><code>tar -xf shadowsocks-v1.24.0.x86_64-unknown-linux-gnu.tar.xz
+cp ssserver /usr/local/bin/ssserver
+chmod +x /usr/local/bin/ssserver
+
+mkdir -p /etc/shadowsocks-rust
+vi /etc/shadowsocks-rust/config.json
+vi /etc/systemd/system/shadowsocks-rust.service
+
+systemctl daemon-reload
+systemctl enable shadowsocks-rust --now
+systemctl status shadowsocks-rust</code></pre>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
