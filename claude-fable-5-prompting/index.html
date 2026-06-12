@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Fable 5 协作方法 | A5 经验文档</title>
+<meta name="description" content="把 Claude Fable 5 口播内容整理为 A5 纸张模式经验文档：把模型当思考伙伴，设定目标和验证方法，并用更大胆的任务打开能力边界。">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Bebas+Neue&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #151515;
+    --muted: #5f5a52;
+    --paper: #f7f0e4;
+    --sheet: #fffaf0;
+    --line: #c9bda9;
+    --line-dark: #8d806f;
+    --accent: #b83024;
+    --accent-dark: #761b14;
+    --green: #2f6f58;
+    --blue: #285f83;
+    --shadow: rgba(24, 20, 16, 0.28);
+  }
+
+  html { background: #201d19; }
+
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(184,48,36,0.18), transparent 28%),
+      linear-gradient(135deg, #28231e, #151311 62%);
+    color: var(--ink);
+    font-family: 'Noto Sans SC', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding: 28px 18px 44px;
+  }
+
+  a { color: inherit; }
+
+  .topbar {
+    width: min(100%, 148mm);
+    margin: 0 auto 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    color: var(--paper);
+  }
+
+  .topbar a,
+  .topbar button {
+    min-height: 34px;
+    border: 1px solid rgba(255,250,240,0.34);
+    background: rgba(255,250,240,0.08);
+    color: var(--paper);
+    padding: 7px 11px;
+    font: 800 10px/1 'Noto Sans SC', sans-serif;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .document {
+    display: grid;
+    gap: 18px;
+    justify-content: center;
+  }
+
+  .sheet {
+    width: 148mm;
+    min-height: 210mm;
+    background: var(--sheet);
+    box-shadow: 0 18px 55px var(--shadow);
+    border: 1px solid rgba(255,255,255,0.18);
+    padding: 13mm 12mm 11mm;
+    position: relative;
+    overflow: hidden;
+    break-after: page;
+  }
+
+  .sheet::before {
+    content: "";
+    position: absolute;
+    inset: 7mm;
+    border: 1.4px solid var(--line);
+    pointer-events: none;
+  }
+
+  .sheet::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+
+  .sheet > * { position: relative; z-index: 1; }
+
+  .cover {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .cover-mark {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding-bottom: 9mm;
+    border-bottom: 1.5px solid var(--line-dark);
+  }
+
+  .kicker,
+  .label,
+  .page-no,
+  .tag {
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .kicker { color: var(--accent); }
+  .page-no { color: var(--muted); }
+
+  h1 {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 67px;
+    line-height: 0.86;
+    letter-spacing: 1.6px;
+    margin: 15mm 0 5mm;
+  }
+
+  .cn-title {
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1.32;
+    margin-bottom: 5mm;
+  }
+
+  .lead {
+    font-size: 12.5px;
+    line-height: 1.95;
+    color: var(--muted);
+    max-width: 102mm;
+  }
+
+  .thesis {
+    margin-top: 11mm;
+    background: var(--ink);
+    color: var(--sheet);
+    padding: 7mm;
+    border-left: 5px solid var(--accent);
+  }
+
+  .thesis strong {
+    display: block;
+    font-size: 16px;
+    line-height: 1.45;
+    margin-bottom: 3mm;
+  }
+
+  .thesis p,
+  .cover-foot p {
+    font-size: 10.5px;
+    line-height: 1.72;
+    color: rgba(255,250,240,0.78);
+  }
+
+  .cover-foot {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 7mm;
+    align-items: end;
+    padding-top: 8mm;
+    border-top: 1.5px solid var(--line-dark);
+  }
+
+  .cover-foot p { color: var(--muted); }
+
+  .signal {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2mm;
+  }
+
+  .signal div {
+    border-top: 3px solid var(--accent);
+    padding-top: 2.5mm;
+  }
+
+  .signal strong {
+    display: block;
+    font-size: 17px;
+    line-height: 1;
+    margin-bottom: 1.5mm;
+  }
+
+  .signal span {
+    display: block;
+    font-size: 8.7px;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
+  .sheet-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 6mm;
+    border-bottom: 1.5px solid var(--line-dark);
+    margin-bottom: 7mm;
+  }
+
+  .sheet-title {
+    font-size: 22px;
+    line-height: 1.2;
+    font-weight: 900;
+  }
+
+  .section-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5mm;
+  }
+
+  .block {
+    border-top: 3px solid var(--accent);
+    padding-top: 3mm;
+  }
+
+  .block.green { border-color: var(--green); }
+  .block.blue { border-color: var(--blue); }
+
+  .label {
+    color: var(--accent);
+    margin-bottom: 2mm;
+  }
+
+  .block h3 {
+    font-size: 15px;
+    line-height: 1.38;
+    margin-bottom: 2.5mm;
+  }
+
+  .block p,
+  .body-copy,
+  .rule li,
+  .workflow-step p {
+    font-size: 10.4px;
+    line-height: 1.78;
+    color: var(--muted);
+  }
+
+  .rule {
+    list-style: none;
+    display: grid;
+    gap: 2.5mm;
+    margin-top: 3mm;
+  }
+
+  .rule li {
+    position: relative;
+    padding-left: 5mm;
+    border-top: 1px solid var(--line);
+    padding-top: 2.4mm;
+  }
+
+  .rule li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 4.1mm;
+    width: 2.5mm;
+    height: 2.5mm;
+    background: var(--accent);
+  }
+
+  .wide {
+    grid-column: 1 / -1;
+    margin-top: 3mm;
+  }
+
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 3mm;
+    align-items: stretch;
+    margin: 5mm 0;
+  }
+
+  .compare-card {
+    background: var(--ink);
+    color: var(--sheet);
+    padding: 5mm;
+    min-height: 33mm;
+  }
+
+  .compare-card.accent { background: var(--accent); }
+  .compare-card strong {
+    display: block;
+    font-size: 16px;
+    line-height: 1.25;
+    margin-bottom: 2mm;
+  }
+  .compare-card span {
+    display: block;
+    font-size: 9.4px;
+    line-height: 1.6;
+    color: rgba(255,250,240,0.8);
+  }
+
+  .arrow {
+    display: grid;
+    place-items: center;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 33px;
+    color: var(--accent);
+  }
+
+  .workflow {
+    display: grid;
+    gap: 3.5mm;
+  }
+
+  .workflow-step {
+    display: grid;
+    grid-template-columns: 16mm 1fr;
+    gap: 4mm;
+    border-top: 1px solid var(--line);
+    padding-top: 3mm;
+  }
+
+  .num {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 34px;
+    line-height: 0.9;
+    color: var(--accent);
+  }
+
+  .workflow-step h3 {
+    font-size: 14px;
+    margin-bottom: 1.5mm;
+  }
+
+  .prompt {
+    background: #191817;
+    color: var(--sheet);
+    padding: 5mm;
+    border-left: 5px solid var(--accent);
+    font: 9.2px/1.62 Consolas, 'Courier New', monospace;
+    white-space: pre-wrap;
+    margin-top: 3mm;
+  }
+
+  .quote-note {
+    border: 1.5px solid var(--line-dark);
+    padding: 5mm;
+    margin-top: 5mm;
+    background: rgba(255,255,255,0.32);
+  }
+
+  .quote-note strong {
+    display: block;
+    font-size: 18px;
+    line-height: 1.35;
+    margin-bottom: 2mm;
+  }
+
+  .footer {
+    position: absolute;
+    left: 12mm;
+    right: 12mm;
+    bottom: 8mm;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    border-top: 1px solid var(--line);
+    padding-top: 2mm;
+    color: var(--muted);
+    font-size: 8px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 720px) {
+    body { padding: 12px; }
+    .topbar {
+      width: min(100%, 148mm);
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .topbar a,
+    .topbar button { width: 100%; }
+    .sheet {
+      width: min(100%, 148mm);
+      min-height: auto;
+      padding: 24px 22px 48px;
+    }
+    .sheet::before { inset: 10px; }
+    h1 { font-size: 52px; }
+    .section-grid,
+    .cover-foot,
+    .comparison {
+      grid-template-columns: 1fr;
+    }
+    .arrow { transform: rotate(90deg); }
+    .signal { grid-template-columns: 1fr; }
+    .footer { position: static; margin-top: 20px; }
+  }
+
+  @page {
+    size: A5;
+    margin: 0;
+  }
+
+  @media print {
+    html,
+    body {
+      width: 148mm;
+      background: white;
+      padding: 0;
+    }
+    .topbar { display: none; }
+    .document { display: block; }
+    .sheet {
+      width: 148mm;
+      height: 210mm;
+      min-height: 210mm;
+      box-shadow: none;
+      border: 0;
+      page-break-after: always;
+      break-after: page;
+    }
+    .sheet:last-child { page-break-after: auto; break-after: auto; }
+  }
+</style>
+</head>
+<body>
+<nav class="topbar" aria-label="文档操作">
+  <a href="../">← Back to Experience Notes</a>
+  <button type="button" onclick="window.print()">Print A5</button>
+</nav>
+
+<main class="document">
+  <section class="sheet cover">
+    <div>
+      <div class="cover-mark">
+        <span class="kicker">Experience Note · Claude Code</span>
+        <span class="page-no">A5 / 01</span>
+      </div>
+      <h1>CLAUDE<br>FABLE 5</h1>
+      <div class="cn-title">从监督执行，转向管理方向、背景和验证</div>
+      <p class="lead">这份经验文档整理自一段 Claude Code 团队口播：当模型能长时间自主推进、写代码并测试成果时，人类的工作重心要改变。重点不再是盯着模型每一步是否正确，而是确认它是否在做“该做的事”。</p>
+      <div class="thesis">
+        <strong>核心转变：不要只把 Claude 当成执行工具，要把它当成会思考、会推进、会验证的协作者。</strong>
+        <p>你提供足够背景、明确目标和验收方法；它负责探索路径、实现方案和自我检查。人的价值上移到方向判断、框架设计和边界把控。</p>
+      </div>
+    </div>
+
+    <div class="cover-foot">
+      <p>原始内容强调三件事：把 Claude 当思考伙伴、给 Claude 目标和验证方法、让 Claude 尝试过去以为大模型做不到的事。</p>
+      <div class="signal">
+        <div><strong>01</strong><span>背景先行，而不是只给限制。</span></div>
+        <div><strong>02</strong><span>目标清楚，还要配验证方法。</span></div>
+        <div><strong>03</strong><span>大胆试探模型能力边界。</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sheet">
+    <header class="sheet-head">
+      <div>
+        <div class="kicker">Mental Model</div>
+        <h2 class="sheet-title">真正的问题变了：从“它做得对不对”到“它是不是在做该做的事”</h2>
+      </div>
+      <span class="page-no">A5 / 02</span>
+    </header>
+
+    <div class="comparison">
+      <div class="compare-card">
+        <strong>旧模型：逐步监督</strong>
+        <span>把任务拆很小，反复检查输出，担心它中途停下或跑偏。人类像监工，模型像执行员。</span>
+      </div>
+      <div class="arrow">→</div>
+      <div class="compare-card accent">
+        <strong>新模型：方向管理</strong>
+        <span>模型能连续推进、测试成果、提出更好实现。人类主要定义目标、背景、验证和取舍。</span>
+      </div>
+    </div>
+
+    <div class="section-grid">
+      <article class="block">
+        <div class="label">Principle 01</div>
+        <h3>把 Claude 当成思考伙伴</h3>
+        <p>在需求还模糊、你也不确定能不能做的时候，越应该早拉 Claude 进来。先让它采访你、拆问题、指出不确定性，而不是等到自己想清楚后再把任务丢给它执行。</p>
+        <ul class="rule">
+          <li>先写一份小 SPEC，让 Claude 反向提问，把隐藏需求挖出来。</li>
+          <li>让 Claude 生成多种方向或 HTML 原型，用可见方案帮助你做判断。</li>
+          <li>给背景而不只是约束，让模型理解为什么这样做。</li>
+        </ul>
+      </article>
+
+      <article class="block green">
+        <div class="label">Principle 02</div>
+        <h3>给目标，也给验证方法</h3>
+        <p>强模型需要的不只是“做完这个功能”，还需要知道什么叫完成。目标让它有空间发挥，验证方法让它不会偏离你真正要的结果。</p>
+        <ul class="rule">
+          <li>把 SPEC 作为目标来源，不让模型凭感觉定义范围。</li>
+          <li>让它逐项验证计划，输出报告和差异说明。</li>
+          <li>允许创造性实现，但用验收清单锁住结果。</li>
+        </ul>
+      </article>
+
+      <article class="block blue wide">
+        <div class="label">Principle 03</div>
+        <h3>更大胆地使用模型</h3>
+        <p class="body-copy">如果你一直认为大语言模型做不到某件事，不妨把它变成一次实验。视频剪辑、复杂原型、跨文件重构、长时间自主 coding，都是值得重新测试的能力边界。</p>
+      </article>
+    </div>
+
+    <div class="footer">
+      <span>Claude Fable 5 Prompting</span>
+      <span>Mindset Shift</span>
+    </div>
+  </section>
+
+  <section class="sheet">
+    <header class="sheet-head">
+      <div>
+        <div class="kicker">Operating Workflow</div>
+        <h2 class="sheet-title">一套可复用的 Claude 协作流程</h2>
+      </div>
+      <span class="page-no">A5 / 03</span>
+    </header>
+
+    <div class="workflow">
+      <div class="workflow-step">
+        <div class="num">01</div>
+        <div>
+          <h3>先写最小 SPEC</h3>
+          <p>只写目标、背景、已知约束和不确定问题。不要急着规定实现细节。</p>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="num">02</div>
+        <div>
+          <h3>让 Claude 采访你</h3>
+          <p>要求它反向提问，补齐边界、输入输出、用户场景、失败路径和验收标准。</p>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="num">03</div>
+        <div>
+          <h3>让 Claude 重写最终 SPEC</h3>
+          <p>把问答整理成明确目标、非目标、方案边界、实现计划和验证清单。</p>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="num">04</div>
+        <div>
+          <h3>把 SPEC 变成 Goal</h3>
+          <p>要求 Claude 持续推进到目标完成，中途遇到分歧时记录假设和取舍。</p>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="num">05</div>
+        <div>
+          <h3>用 Workflow 验证成果</h3>
+          <p>让 Claude 按验收清单逐项检查，生成完成报告：做了什么、怎么验证、哪里和原计划不同。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote-note">
+      <strong>提示词里的关键变化：少说“别过度设计”，多说“为什么不要过度设计”。</strong>
+      <p class="body-copy">例如：不要只写“保持简单”。更好的写法是：“这是一个实验功能，很可能一个月后删除，不要搭任何未来扔掉会心疼的东西。”背景越真实，模型越能做出符合目标的工程判断。</p>
+    </div>
+
+    <div class="footer">
+      <span>Workflow</span>
+      <span>Spec → Interview → Goal → Verification</span>
+    </div>
+  </section>
+
+  <section class="sheet">
+    <header class="sheet-head">
+      <div>
+        <div class="kicker">Reusable Prompts</div>
+        <h2 class="sheet-title">可直接复用的提示词模板</h2>
+      </div>
+      <span class="page-no">A5 / 04</span>
+    </header>
+
+    <article class="block">
+      <div class="label">Prompt 01 · 澄清需求</div>
+      <h3>让 Claude 先采访你，而不是直接开工</h3>
+      <pre class="prompt">我有一个初步想法，但还没完全想清楚：
+&lt;粘贴想法或小 SPEC&gt;
+
+请先不要实现。请像产品/工程伙伴一样采访我：
+1. 找出目标、用户、边界和风险里的模糊点
+2. 按优先级列出你需要问我的问题
+3. 说明哪些问题会影响架构或实现方向
+4. 等我回答后，再帮我整理最终 SPEC</pre>
+    </article>
+
+    <article class="block green" style="margin-top: 6mm;">
+      <div class="label">Prompt 02 · 目标与验证</div>
+      <h3>让 Claude 自主推进，但必须交付证据</h3>
+      <pre class="prompt">请把下面的 SPEC 作为目标完整实现：
+&lt;粘贴最终 SPEC&gt;
+
+执行要求：
+- 允许你选择合适的实现路径
+- 遇到不确定点先记录假设
+- 不要只完成表面功能，要补齐关键验证
+
+完成后请输出报告：
+1. 实现了什么
+2. 运行了哪些验证
+3. 哪些地方与原计划不同，为什么
+4. 还剩哪些风险或后续建议</pre>
+    </article>
+
+    <article class="block blue" style="margin-top: 6mm;">
+      <div class="label">Prompt 03 · 能力探索</div>
+      <h3>把“不知道能不能做”改成一次实验</h3>
+      <pre class="prompt">我过去以为大语言模型不擅长做这件事：
+&lt;描述任务&gt;
+
+请把它当成一次能力探索：
+1. 先提出 3 种可行方向
+2. 每种方向说明预期效果、成本和风险
+3. 选一个最值得试的方向做最小原型
+4. 给出判断是否值得继续投入的验收标准</pre>
+    </article>
+
+    <div class="footer">
+      <span>Reusable Prompt Pack</span>
+      <span>Version 1.0</span>
+    </div>
+  </section>
+</main>
+</body>
+</html>
