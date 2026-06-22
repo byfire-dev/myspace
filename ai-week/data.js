@@ -1,6 +1,92 @@
 window.AI_WEEK_ARCHIVE = {
-  updatedAt: "2026-06-05",
+  updatedAt: "2026-06-22",
   weeks: [
+    {
+      id: "2026-06-16_2026-06-22",
+      range: "June 16-22, 2026",
+      title: "前沿模型进入制度化管理，安全评测、算力供应与顶尖人才同步重排",
+      summary: "本周 AI 的主线不是单一模型发布，而是前沿能力进入更硬的基础设施和治理周期：OpenAI 把真实对话回放纳入发布前评测，生物安全和未成年人安全成为 G7 与国会层面的议题；Anthropic 一边面对 Fable/Mythos 管制余波，一边通过 Micron 锁定内存与存储供应；Google DeepMind 的核心人才流向 OpenAI 和 Anthropic，显示模型竞赛已经同时打到算力、政策、组织和人才四条线上。",
+      events: [
+        {
+          date: "2026-06-16",
+          displayDate: "Jun 16",
+          weekday: "Tue",
+          org: "OpenAI",
+          category: "Safety Evaluation",
+          headline: "OpenAI 引入 Deployment Simulation，用真实使用场景预测模型发布风险",
+          body: "OpenAI 发布 Deployment Simulation 方法，在候选模型上线前以隐私保护方式回放历史对话，观察新模型在接近真实部署的上下文中是否出现新的不良行为。相比只靠人工构造的高压测试，这类评测更像一次发布前演练：它帮助 OpenAI 在 GPT-5 系列 Thinking 模型中估计风险频率、发现评测盲区，并把安全评估扩展到带工具调用的 Agent 场景。",
+          sourceUrl: "https://openai.com/index/deployment-simulation/",
+          sourceName: "OpenAI",
+          tags: ["Deployment Simulation", "Safety Evaluation", "Agentic Risk"],
+          priority: 1
+        },
+        {
+          date: "2026-06-17",
+          displayDate: "Jun 17",
+          weekday: "Wed",
+          org: "Google / OpenAI",
+          category: "Talent",
+          headline: "Gemini 联合负责人 Noam Shazeer 离开 Google 加入 OpenAI，模型人才争夺继续升温",
+          body: "9to5Google 援引 Noam Shazeer 的公开帖文报道，这位 Google VP、Gemini 联合负责人将加入 OpenAI。Shazeer 是 Transformer 时代的关键工程人物之一，也曾创办 Character.AI；他的再次流动说明，顶尖模型实验室的竞争不只发生在参数、算力和产品分发上，也发生在少数能重塑训练范式与组织节奏的人才身上。",
+          sourceUrl: "https://9to5google.com/2026/06/17/geminis-co-lead-is-leaving-google-to-join-openai/",
+          sourceName: "9to5Google",
+          tags: ["Talent", "Gemini", "OpenAI"],
+          priority: 1
+        },
+        {
+          date: "2026-06-20",
+          displayDate: "Jun 20",
+          weekday: "Sat",
+          org: "Google DeepMind / Anthropic",
+          category: "AI Science",
+          headline: "AlphaFold 核心科学家 John Jumper 转投 Anthropic，科学 AI 人才也被卷入前沿模型竞争",
+          body: "TechCrunch 报道，诺贝尔化学奖得主、AlphaFold 团队核心科学家 John Jumper 宣布离开 Google DeepMind，加入 Anthropic。这个信号比普通高管流动更重：前沿实验室正在争夺能把大模型能力转化为科学发现流程的人，AI 公司的长期壁垒开始从聊天与编码延伸到科研自动化、实验设计和专业知识工作。",
+          sourceUrl: "https://techcrunch.com/2026/06/20/nobel-laureate-john-jumper-is-leaving-deepmind-for-rival-anthropic/",
+          sourceName: "TechCrunch",
+          tags: ["DeepMind", "Anthropic", "AI for Science"],
+          priority: 1
+        },
+        {
+          date: "2026-06-22",
+          displayDate: "Jun 22",
+          weekday: "Mon",
+          org: "Micron / Anthropic",
+          category: "Infrastructure",
+          headline: "Micron 与 Anthropic 达成战略协议，前沿模型竞争继续向内存与存储供应链下沉",
+          body: "Micron 宣布与 Anthropic 达成战略协议，覆盖 AI 内存与存储架构设计、供应安排、Claude 在 Micron 内部采用，以及对 Anthropic Series H 的战略投资。相比单纯采购 GPU，这类合作把模型工作负载、HBM/DRAM/SSD 供应、能耗和 token economics 直接绑在一起，说明下一阶段前沿 AI 竞争会越来越像全栈基础设施工程。",
+          sourceUrl: "https://investors.micron.com/news-releases/news-release-details/micron-and-anthropic-announce-strategic-agreement-scale-next",
+          sourceName: "Micron",
+          tags: ["AI Infrastructure", "Memory", "Anthropic"],
+          priority: 1
+        },
+        {
+          date: "2026-06-22",
+          displayDate: "Jun 22",
+          weekday: "Mon",
+          org: "Five Eyes",
+          category: "Cybersecurity",
+          headline: "五眼联盟罕见警告前沿 AI 网络风险，模型能力被正式纳入企业核心风险",
+          body: "The Guardian 报道，五眼联盟情报与网络安全机构发出罕见联合警告，称更强前沿模型可能在数月内显著改变网络攻防格局，并要求政府和企业把 AI 驱动的漏洞发现、攻击链自动化和关键基础设施韧性放到领导层议程。Fable/Mythos 管制余波仍在扩散，前沿模型的网络安全能力已经从实验室问题变成国家安全与企业治理问题。",
+          sourceUrl: "https://www.theguardian.com/technology/2026/jun/22/anthropic-claude-fable-ai-model-artificial-intelligence-national-security",
+          sourceName: "The Guardian",
+          tags: ["Cybersecurity", "Frontier AI", "Critical Infrastructure"],
+          priority: 2
+        },
+        {
+          date: "2026-06-22",
+          displayDate: "Jun 22",
+          weekday: "Mon",
+          org: "OpenAI",
+          category: "Youth Safety",
+          headline: "OpenAI 借 G7 议程推动全球未成年人 AI 安全标准，教育场景进入默认护栏阶段",
+          body: "OpenAI 呼吁建立国际性的青年 AI 安全机构，围绕年龄识别、默认保护、年度风险评估、证据共享和教育部署形成长期标准。这个方向意味着教育 AI 的竞争焦点正在从“能不能辅导学习”转向“能不能在默认状态下适合未成年人使用”，产品设计、监管合规和学校采购会被一起改写。",
+          sourceUrl: "https://openai.com/index/advancing-youth-safety-and-opportunity-through-global-leadership/",
+          sourceName: "OpenAI",
+          tags: ["Youth Safety", "Education", "G7"],
+          priority: 2
+        }
+      ]
+    },
     {
       id: "2026-06-01_2026-06-05",
       range: "June 1-5, 2026",
