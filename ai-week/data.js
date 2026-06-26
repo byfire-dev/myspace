@@ -1,6 +1,105 @@
 window.AI_WEEK_ARCHIVE = {
-  updatedAt: "2026-06-22",
+  updatedAt: "2026-06-26",
   weeks: [
+    {
+      id: "2026-06-23_2026-06-26",
+      range: "June 23-26, 2026",
+      title: "Agent 进入组织现场，推理芯片、政府预审与劳动力转型成为新战场",
+      summary: "本周 AI 的核心变化，是前沿能力从模型发布会继续下沉到组织、硬件和制度：Anthropic 把 Claude 做进 Slack 团队协作，OpenAI 用 Codex 数据证明 Agent 正从聊天走向任务委托，并与 Broadcom 推出自研推理芯片；与此同时，美国政府开始要求 OpenAI 限制新模型首发范围，RAISE US 试图用 5 亿美元级别资金应对 AI 对就业的冲击，Patronus AI 则把 Agent 训练和评测推向可模拟世界。AI 竞争已经不只是“谁的模型更强”，而是谁能把模型安全、算力成本、组织流程和社会承接一起做成系统。",
+      events: [
+        {
+          date: "2026-06-23",
+          displayDate: "Jun 23",
+          weekday: "Tue",
+          org: "Anthropic",
+          category: "Enterprise Agents",
+          headline: "Anthropic 发布 Claude Tag，把 Claude 变成 Slack 里的团队成员",
+          body: "Anthropic 推出 Claude Tag，允许团队在 Slack 频道中直接 @Claude，把任务、上下文、工具和代码库交给同一个共享 Agent。相比单人聊天窗口，Claude Tag 的关键变化是组织上下文：它能从被授权的频道中积累信息、规划后续任务，并在多人协作中承接交接。Anthropic 称内部产品团队已有 65% 的代码由 Claude Tag 的内部版本创建，这说明企业 Agent 的竞争正在从“个人效率工具”转向“团队工作层”。",
+          sourceUrl: "https://www.anthropic.com/news/introducing-claude-tag",
+          sourceName: "Anthropic",
+          tags: ["Claude Tag", "Slack", "Enterprise Agents"],
+          priority: 1
+        },
+        {
+          date: "2026-06-24",
+          displayDate: "Jun 24",
+          weekday: "Wed",
+          org: "OpenAI / Broadcom",
+          category: "Infrastructure",
+          headline: "OpenAI 与 Broadcom 发布 Jalapeño 推理芯片，前沿模型竞争继续向硬件下沉",
+          body: "OpenAI 与 Broadcom 发布 Jalapeño，这是 OpenAI 首款面向 LLM 推理优化的 Intelligence Processor，也是双方多代计算平台的第一块加速器。OpenAI 强调它围绕模型服务中的 kernel、内存移动、网络和推理负载设计，目标是在实际生产吞吐、能耗和可靠性上提升效率。对行业来说，这意味着前沿模型公司的成本控制正在进入全栈阶段：模型、服务系统、网络和芯片会被一起优化。",
+          sourceUrl: "https://openai.com/index/openai-broadcom-jalapeno-inference-chip/",
+          sourceName: "OpenAI",
+          tags: ["Jalapeño", "Inference Chip", "Broadcom"],
+          priority: 1
+        },
+        {
+          date: "2026-06-24",
+          displayDate: "Jun 24",
+          weekday: "Wed",
+          org: "Google / Anthropic",
+          category: "Talent",
+          headline: "Google Gemini 研究员继续流向 Anthropic，顶尖模型人才重排仍在加速",
+          body: "TechCrunch 援引 Bloomberg 报道称，Google AI 研究员 Jonas Adler 和 Alexander Pritzel 将加入 Anthropic，两人都曾参与 Gemini 模型开发。这延续了 Noam Shazeer 转投 OpenAI、John Jumper 转投 Anthropic 后的趋势：当 OpenAI、Anthropic 等公司接近更大的资本化窗口，顶尖研究员的流动会继续改变模型实验室的组织能力和研究节奏。",
+          sourceUrl: "https://techcrunch.com/2026/06/24/ai-researchers-continue-to-leave-google-for-its-rivals/",
+          sourceName: "TechCrunch",
+          tags: ["Talent", "Gemini", "Anthropic"],
+          priority: 2
+        },
+        {
+          date: "2026-06-25",
+          displayDate: "Jun 25",
+          weekday: "Thu",
+          org: "OpenAI",
+          category: "Agentic Work",
+          headline: "OpenAI 发布 Codex 经济研究，Agent 使用正在从聊天转向任务委托",
+          body: "OpenAI 发布《How agents are transforming work》，并同步公开 Codex 相关研究。论文显示，2026 年上半年 Codex 活跃用户增长超过五倍，增长最快的群体已不再局限于开发者；在 OpenAI 内部，Codex 使用接近普及，并在很多业务场景中取代传统 ChatGPT 使用。这个信号很重：Agent 的价值不只是回答问题，而是承接更长、更复杂、可被审阅的工作单元。",
+          sourceUrl: "https://openai.com/index/how-agents-are-transforming-work/",
+          sourceName: "OpenAI",
+          tags: ["Codex", "Agentic AI", "Work"],
+          priority: 1
+        },
+        {
+          date: "2026-06-25",
+          displayDate: "Jun 25",
+          weekday: "Thu",
+          org: "U.S. Government / OpenAI",
+          category: "Governance",
+          headline: "美国政府要求 OpenAI 限制新模型首发，模型发布进入政府预审时代",
+          body: "Axios 报道称，特朗普政府要求 OpenAI 将下一代 GPT-5.6 的初始发布限制在经政府批准的合作方范围内，理由是国家安全和模型安全测试。无论最终执行边界如何，这都是一个重要转折：前沿模型发布不再只是公司内部安全评测和商业节奏问题，而越来越像半导体、网络安全和军民两用技术一样，需要面对政府预审、分级访问和国际竞争逻辑。",
+          sourceUrl: "https://www.axios.com/2026/06/25/trump-administration-openai-gpt-model-release",
+          sourceName: "Axios",
+          tags: ["Frontier AI", "Government Review", "Model Release"],
+          priority: 1
+        },
+        {
+          date: "2026-06-25",
+          displayDate: "Jun 25",
+          weekday: "Thu",
+          org: "RAISE US",
+          category: "Workforce",
+          headline: "OpenAI、Anthropic、Microsoft、Amazon 支持 RAISE US，AI 劳动力转型进入大规模组织化阶段",
+          body: "Business Insider 报道，新非营利组织 RAISE US 获得 OpenAI Foundation、Anthropic、Amazon、Microsoft 等支持，计划筹集 10 亿美元，已获得约 5 亿美元承诺，用于帮助美国劳动者适应 AI 带来的职业变化。它不只做培训，还计划与州政府合作，探索职业导航、工资保险、短工时补偿等政策工具。AI 对白领工作的冲击正在从舆论讨论变成公共治理项目。",
+          sourceUrl: "https://www.businessinsider.com/raise-us-ai-workers-supporters-openai-anthropic-2026-6",
+          sourceName: "Business Insider",
+          tags: ["Workforce", "Reskilling", "AI Economy"],
+          priority: 2
+        },
+        {
+          date: "2026-06-25",
+          displayDate: "Jun 25",
+          weekday: "Thu",
+          org: "Patronus AI",
+          category: "Agent Evaluation",
+          headline: "Patronus AI 完成 5000 万美元 B 轮融资，Agent 训练和评测转向数字世界模拟",
+          body: "Patronus AI 宣布完成 5000 万美元 B 轮融资，并发布面向 AI Agent 训练与仿真的 Digital World Models。它的方向是构造可控的数字环境，让长程 Agent 在进入真实客户流程前完成训练、评估和治理。随着企业开始部署自主 Agent，评测不再只是问答准确率，而是要验证多步任务、工具调用、失败恢复和权限边界，Agent 基础设施正在形成新的投资赛道。",
+          sourceUrl: "https://www.patronus.ai/announcements",
+          sourceName: "Patronus AI",
+          tags: ["Agent Evaluation", "Simulation", "Funding"],
+          priority: 2
+        }
+      ]
+    },
     {
       id: "2026-06-16_2026-06-22",
       range: "June 16-22, 2026",
