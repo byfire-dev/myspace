@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>弱传播：舆论世界的弱者优势 | 经验文档</title>
+<meta name="description" content="基于邹振东《弱传播：舆论世界的哲学》整理的传播经验文档：舆论世界的弱者优势、情感货币、故事结构、战略示弱、时间窗和花粉式语言。">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Bebas+Neue&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper: #f6f0e4;
+    --ink: #151515;
+    --muted: #56514a;
+    --line: #c8bda9;
+    --red: #c7262d;
+    --green: #2d6f5f;
+    --blue: #254f7b;
+    --gold: #b47d1c;
+    --dark: #171717;
+    --white: #fffaf0;
+  }
+
+  body {
+    min-height: 100vh;
+    background: var(--dark);
+    color: var(--ink);
+    font-family: 'Noto Sans SC', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding: 22px;
+  }
+
+  a { color: inherit; }
+
+  .page {
+    width: min(1120px, 100%);
+    margin: 0 auto;
+    background: var(--paper);
+    border: 6px solid var(--red);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, .4);
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 24px 0;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+
+  .topbar a {
+    text-decoration: none;
+    color: var(--red);
+  }
+
+  header {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr);
+    gap: 36px;
+    padding: 30px 34px 24px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ink);
+    color: var(--white);
+    padding: 6px 10px;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: clamp(58px, 10vw, 116px);
+    line-height: .86;
+    margin-top: 18px;
+    letter-spacing: 0;
+  }
+
+  h1 .en {
+    display: block;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-weight: 400;
+  }
+
+  h1 .cn {
+    display: block;
+    font-size: clamp(38px, 6vw, 68px);
+    line-height: 1;
+    margin-top: 8px;
+  }
+
+  .lead {
+    max-width: 700px;
+    margin-top: 18px;
+    color: #26221d;
+    font-size: 17px;
+    line-height: 1.75;
+    font-weight: 700;
+  }
+
+  .book-note {
+    border-left: 5px solid var(--red);
+    padding-left: 16px;
+    align-self: end;
+  }
+
+  .book-note h2 {
+    font-size: 18px;
+    line-height: 1.35;
+    margin-bottom: 10px;
+  }
+
+  .book-note p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .model {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .model-cell {
+    min-height: 210px;
+    padding: 24px;
+    border-right: 1.5px solid var(--line);
+  }
+
+  .model-cell:last-child { border-right: 0; }
+
+  .label {
+    color: var(--red);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .model-cell h3 {
+    font-size: 25px;
+    line-height: 1.18;
+    margin-bottom: 12px;
+  }
+
+  .model-cell p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.72;
+  }
+
+  .inverse-map {
+    padding: 28px 34px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .map-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: end;
+    margin-bottom: 18px;
+  }
+
+  .map-head h2 {
+    font-size: 32px;
+    line-height: 1.15;
+  }
+
+  .map-head p {
+    max-width: 460px;
+    color: var(--muted);
+    line-height: 1.65;
+    font-size: 14px;
+  }
+
+  .axis {
+    display: grid;
+    grid-template-columns: 1fr 88px 1fr;
+    align-items: stretch;
+    border: 1.5px solid var(--line);
+    background: rgba(255, 255, 255, .22);
+  }
+
+  .axis-side {
+    padding: 18px;
+  }
+
+  .axis-title {
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 14px;
+  }
+
+  .axis-title strong { color: var(--red); }
+
+  .axis-list {
+    display: grid;
+    gap: 10px;
+    list-style: none;
+  }
+
+  .axis-list li {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .axis-list span {
+    color: var(--ink);
+    font-weight: 900;
+  }
+
+  .axis-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ink);
+    color: var(--white);
+    font-weight: 900;
+    writing-mode: vertical-rl;
+    letter-spacing: 4px;
+  }
+
+  .tools {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .tool {
+    padding: 24px 20px 26px;
+    border-right: 1.5px solid var(--line);
+  }
+
+  .tool:last-child { border-right: 0; }
+
+  .tool-num {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    background: var(--red);
+    color: white;
+    font-weight: 900;
+    margin-bottom: 14px;
+  }
+
+  .tool h3 {
+    font-size: 20px;
+    line-height: 1.22;
+    margin-bottom: 10px;
+  }
+
+  .tool p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.68;
+  }
+
+  .formula {
+    display: inline-block;
+    margin-top: 13px;
+    padding: 7px 9px;
+    background: var(--ink);
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1.45;
+  }
+
+  .playbook {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .playbook section {
+    padding: 28px 34px;
+  }
+
+  .playbook section:first-child {
+    border-right: 1.5px solid var(--line);
+  }
+
+  .playbook h2 {
+    font-size: 29px;
+    line-height: 1.2;
+    margin-bottom: 18px;
+  }
+
+  .steps {
+    display: grid;
+    gap: 12px;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .step:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .step strong {
+    color: var(--ink);
+    font-size: 13px;
+  }
+
+  .step p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .guardrail {
+    background: var(--ink);
+    color: var(--white);
+    padding: 28px 34px;
+    display: grid;
+    grid-template-columns: .85fr 1.15fr;
+    gap: 30px;
+  }
+
+  .guardrail h2 {
+    font-size: 31px;
+    line-height: 1.12;
+  }
+
+  .guardrail p {
+    color: #e8dcc7;
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  .source-list {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .source-list a {
+    color: var(--white);
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,.32);
+    padding: 7px 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .accent-green { color: var(--green); }
+  .accent-blue { color: var(--blue); }
+  .accent-gold { color: var(--gold); }
+
+  @media (max-width: 880px) {
+    body { padding: 12px; }
+    h1 { font-size: clamp(44px, 12vw, 50px); }
+    h1 .cn { font-size: clamp(30px, 8vw, 38px); }
+
+    header,
+    .playbook,
+    .guardrail,
+    .model,
+    .tools {
+      grid-template-columns: 1fr;
+    }
+
+    header { gap: 24px; padding: 24px 20px; }
+    .model-cell,
+    .tool,
+    .playbook section {
+      border-right: 0 !important;
+      border-bottom: 1.5px solid var(--line);
+    }
+
+    .model-cell:last-child,
+    .tool:last-child,
+    .playbook section:last-child {
+      border-bottom: 0;
+    }
+
+    .axis {
+      grid-template-columns: 1fr;
+    }
+
+    .axis-center {
+      writing-mode: horizontal-tb;
+      padding: 12px;
+      letter-spacing: 2px;
+    }
+
+    .map-head {
+      display: block;
+    }
+
+    .map-head p {
+      margin-top: 10px;
+    }
+
+    .step,
+    .axis-list li {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+</style>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <a href="../">BYFIRE.AI / EXPERIENCE NOTE</a>
+      <span>Public Opinion · Weak Communication</span>
+    </div>
+
+    <header>
+      <div>
+        <div class="eyebrow">Zou Zhendong · Public Opinion Philosophy</div>
+        <h1>
+          <span class="en">WEAK</span>
+          <span class="en">COMMUNICATION</span>
+          <span class="cn">弱传播</span>
+        </h1>
+        <p class="lead">《弱传播》的关键价值，不是教人“卖惨”，而是提醒我们：现实世界的权力、资本、资源，到了舆论世界会被重新定价。舆论更容易被情感、道德位置、具体痛感和可复述语言驱动。</p>
+      </div>
+      <aside class="book-note">
+        <h2>底层判断：舆论世界不是现实世界的投影，而是现实世界的逆向剧场。</h2>
+        <p>邹振东把《弱传播》定位为“舆论世界的哲学”。公开书籍信息显示，本书作者为厦门大学新闻传播学院教授邹振东，副标题为《舆论世界的哲学》，2018 年 10 月由国家行政学院出版社出版。</p>
+      </aside>
+    </header>
+
+    <section class="model">
+      <div class="model-cell">
+        <div class="label">01 · Thesis</div>
+        <h3>现实越强，越容易在舆论中失分</h3>
+        <p>现实世界靠资源集中形成优势；舆论世界会天然审视优势者是否滥用权力。强者一旦只讲规则、程序和权威，很容易被公众理解成冷漠。</p>
+      </div>
+      <div class="model-cell">
+        <div class="label">02 · Currency</div>
+        <h3>弱者优势来自情感货币</h3>
+        <p>普通人缺少组织能力和资源杠杆，但拥有更容易被相信的痛苦、更具体的困境和更天然的道德位置。传播力来自“让人愿意代入”。</p>
+      </div>
+      <div class="model-cell">
+        <div class="label">03 · Method</div>
+        <h3>不要先攻击，先让公众看见</h3>
+        <p>有效传播不是把对方骂倒，而是把自己的处境变得可见、可信、可共情，让第三方自发完成判断。愤怒只是燃料，结构才是发动机。</p>
+      </div>
+    </section>
+
+    <section class="inverse-map">
+      <div class="map-head">
+        <h2>逆世界模型</h2>
+        <p>同一件事，放进两个世界会得到完全不同的解释权。经验上，做传播时要先判断自己处在哪个世界，再选择话语。</p>
+      </div>
+      <div class="axis">
+        <div class="axis-side">
+          <div class="axis-title">现实世界：<strong>强者为王</strong></div>
+          <ul class="axis-list">
+            <li><span>优势来源</span>权力、资本、组织、资源、渠道。</li>
+            <li><span>表达方式</span>制度、流程、合同、权威背书。</li>
+            <li><span>常见误区</span>以为掌握资源就掌握叙事。</li>
+          </ul>
+        </div>
+        <div class="axis-center">规则反转</div>
+        <div class="axis-side">
+          <div class="axis-title">舆论世界：<strong>弱者占优</strong></div>
+          <ul class="axis-list">
+            <li><span>优势来源</span>情感、同情、细节、道德站位。</li>
+            <li><span>表达方式</span>故事、画面、对比、具体痛感。</li>
+            <li><span>关键胜负</span>谁先让公众理解“我为什么痛”。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="tools">
+      <article class="tool">
+        <div class="tool-num">1</div>
+        <h3>会讲故事：把抽象冲突变成具体的人</h3>
+        <p>不要只说“维权”“不公平”“被欺负”。先给出身份、困境和细节，让公众看到一个人，而不是一个标签。</p>
+        <span class="formula">具体身份 + 具体困境 + 具体细节</span>
+      </article>
+      <article class="tool">
+        <div class="tool-num">2</div>
+        <h3>主动示弱：把姿态放低，把证据拿稳</h3>
+        <p>示弱不是放弃主张，而是避免把自己推成攻击者。用数字代替情绪，用第三方材料代替自证，用自嘲降低对立。</p>
+        <span class="formula">事实先行 + 情绪克制 + 责任边界</span>
+      </article>
+      <article class="tool">
+        <div class="tool-num">3</div>
+        <h3>抢占时间窗：先定义，再被定义</h3>
+        <p>危机刚出现时，公众还在寻找解释。早回应、认小错、给承诺，比沉默等调查更容易守住基本信任。</p>
+        <span class="formula">第一画面 + 第一解释 + 第一承诺</span>
+      </article>
+      <article class="tool">
+        <div class="tool-num">4</div>
+        <h3>花粉式语言：让信息能被复制</h3>
+        <p>短句、白话、动作和数字更容易穿透记忆。传播口径要像花粉一样轻，能被转述、截图、标题化。</p>
+        <span class="formula">短句子 + 平白话 + 快节奏</span>
+      </article>
+    </section>
+
+    <div class="playbook">
+      <section>
+        <div class="label">Application</div>
+        <h2>把用户给出的案例抽象成四步</h2>
+        <div class="steps">
+          <div class="step">
+            <strong>先命名处境</strong>
+            <p>不要从“对方坏”开始，而是从“我遇到了什么具体困境”开始。命名越具体，公众越容易进入。</p>
+          </div>
+          <div class="step">
+            <strong>再呈现证据</strong>
+            <p>视频、票据、时间线、仲裁结果、聊天记录，比纯粹控诉更稳。证据负责可信，故事负责可感。</p>
+          </div>
+          <div class="step">
+            <strong>承认有限责任</strong>
+            <p>如果自己确有小错，先承认。主动认小错能阻断对方把议题转移成“你也不完美”。</p>
+          </div>
+          <div class="step">
+            <strong>提出可执行诉求</strong>
+            <p>退款、道歉、补偿、恢复岗位、公开说明、制度调整，都比“给我一个说法”更容易获得支持。</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="label">Reusable Checklist</div>
+        <h2>写传播材料前的 8 个问题</h2>
+        <div class="steps">
+          <div class="step">
+            <strong>谁是弱者</strong>
+            <p>公众会把谁视作资源更少、处境更难、承受更多的人？</p>
+          </div>
+          <div class="step">
+            <strong>痛点在哪</strong>
+            <p>是钱、时间、尊严、家庭、健康、机会，还是被制度性忽视？</p>
+          </div>
+          <div class="step">
+            <strong>画面是什么</strong>
+            <p>有没有一个可拍、可描述、可截图的关键场景？</p>
+          </div>
+          <div class="step">
+            <strong>一句话怎么说</strong>
+            <p>能否用一句短句讲清楚冲突：谁在什么处境下，被什么规则伤害？</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="guardrail">
+      <div>
+        <div class="label">Boundary</div>
+        <h2>弱传播不是操纵术，底线是事实。</h2>
+      </div>
+      <div>
+        <p>这套方法真正有价值的地方，是帮助弱势一方把真实处境表达清楚，而不是编造痛苦、煽动仇恨或制造对立。经验上，舆论能放大痛苦，也会反噬虚假；一旦核心事实被证伪，所有情感货币都会变成信任债务。</p>
+        <p>因此，最稳的做法是：<span class="accent-green">真实细节</span>负责共情，<span class="accent-blue">证据链</span>负责可信，<span class="accent-gold">明确诉求</span>负责行动。</p>
+        <div class="source-list" aria-label="参考来源">
+          <a href="https://read.douban.com/reader/ebook/106347927/" target="_blank" rel="noreferrer">豆瓣阅读：弱传播</a>
+          <a href="https://book.douban.com/subject/30383755/blockquotes" target="_blank" rel="noreferrer">豆瓣读书：书籍信息与摘录</a>
+          <a href="https://m.douban.com/book/review/10244613/" target="_blank" rel="noreferrer">豆瓣书评：理论评价</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
