@@ -241,6 +241,198 @@
     });
   }
 
+  function initBrandFilm() {
+    const video = $("#brand-video");
+    const playButton = $("#film-play");
+    const soundButton = $("#film-sound");
+    const status = $("#film-status");
+    if (!video || !playButton || !soundButton || !status) return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const reducedData = window.matchMedia("(prefers-reduced-data: reduce)");
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    let inView = false;
+    let userPaused = false;
+    let userPlayback = false;
+    let hasPlayed = false;
+    let autoBlocked = false;
+    let mediaFailed = false;
+    let autoPlayEventExpected = false;
+    let internalPauseExpected = false;
+    let playPending = false;
+    let requestVersion = 0;
+
+    function prefersManualPlayback() {
+      return reducedMotion.matches || reducedData.matches || connection?.saveData ||
+        ["slow-2g", "2g"].includes(connection?.effectiveType);
+    }
+
+    function canAutomaticallyPlay() {
+      return inView && !document.hidden && !dialog.open && !prefersManualPlayback() &&
+        !userPaused && !autoBlocked && video.muted;
+    }
+
+    function syncControls() {
+      const needsPlayback = mediaFailed || video.error || video.paused;
+      playButton.querySelector("span").textContent = needsPlayback ? "播放宣传片" : "暂停宣传片";
+      playButton.querySelector("use").setAttribute("href", needsPlayback ? "#i-play" : "#i-pause");
+      const audible = !video.muted && video.volume > 0;
+      soundButton.querySelector("span").textContent = audible ? "关闭声音" : "打开声音";
+      soundButton.querySelector("use").setAttribute("href", audible ? "#i-volume" : "#i-muted");
+      soundButton.setAttribute("aria-pressed", String(audible));
+      status.textContent = mediaFailed ? "视频暂未加载成功，请稍后再试。" :
+        !video.paused ? (audible ? "配乐已开启 · 可随时暂停" : "正在静音播放 · 可打开声音") :
+        hasPlayed || userPaused ? "已暂停 · 点击播放继续观看" :
+        autoBlocked || prefersManualPlayback() ? "点击播放观看 · 可按需打开声音" :
+        "24 秒品牌短片 · 默认静音，可打开声音";
+    }
+
+    function pauseAutomatically() {
+      requestVersion += 1;
+      playPending = false;
+      // pause() queues its event; preserve its origin until that event arrives.
+      if (!video.paused) {
+        internalPauseExpected = true;
+        video.pause();
+      }
+    }
+
+    function tryAutomaticPlayback() {
+      if (!video.paused || playPending || !canAutomaticallyPlay()) return;
+      const version = ++requestVersion;
+      playPending = true;
+      autoPlayEventExpected = true;
+      userPlayback = false;
+      Promise.resolve(video.play()).then(() => {
+        if (version !== requestVersion) return;
+        playPending = false;
+        if (!inView || document.hidden || dialog.open || userPaused ||
+            (prefersManualPlayback() && !userPlayback)) pauseAutomatically();
+      }).catch(() => {
+        if (version !== requestVersion) return;
+        playPending = false;
+        autoPlayEventExpected = false;
+        // A denied autoplay request must leave a working manual play button.
+        autoBlocked = true;
+        syncControls();
+      });
+    }
+
+    function reconcilePlayback() {
+      if (!inView || document.hidden || dialog.open) {
+        pauseAutomatically();
+      } else if (prefersManualPlayback() && !userPlayback) {
+        pauseAutomatically();
+      } else {
+        tryAutomaticPlayback();
+      }
+      syncControls();
+    }
+
+    playButton.hidden = false;
+    soundButton.hidden = false;
+    video.muted = true;
+
+    playButton.addEventListener("click", async () => {
+      const retrySource = Boolean(mediaFailed || video.error);
+      if (!retrySource && !video.paused) {
+        userPaused = true;
+        userPlayback = false;
+        requestVersion += 1;
+        video.pause();
+        return;
+      }
+      if (retrySource) pauseAutomatically();
+      const version = ++requestVersion;
+      autoPlayEventExpected = false;
+      playPending = false;
+      userPaused = false;
+      userPlayback = true;
+      autoBlocked = false;
+      mediaFailed = false;
+      try {
+        if (retrySource) {
+          video.load();
+          // load() clears the old source's queued events, including its pause.
+          internalPauseExpected = false;
+        }
+        await video.play();
+      } catch {
+        if (version !== requestVersion) return;
+        autoBlocked = true;
+        syncControls();
+        if (!mediaFailed) status.textContent = "暂时无法播放，请再次点击播放或使用画面中的播放控件。";
+      }
+    });
+
+    soundButton.addEventListener("click", () => {
+      if (video.muted || video.volume === 0) {
+        if (video.volume === 0) video.volume = 1;
+        video.muted = false;
+      } else {
+        video.muted = true;
+      }
+    });
+
+    video.addEventListener("play", () => {
+      hasPlayed = true;
+      mediaFailed = false;
+      if (autoPlayEventExpected) {
+        autoPlayEventExpected = false;
+      } else {
+        // Includes playback initiated from the browser's native controls.
+        userPaused = false;
+        userPlayback = true;
+        autoBlocked = false;
+      }
+      syncControls();
+    });
+    video.addEventListener("pause", () => {
+      if (internalPauseExpected) {
+        internalPauseExpected = false;
+      } else if (!document.hidden && !dialog.open) {
+        userPaused = true;
+        userPlayback = false;
+        requestVersion += 1;
+        playPending = false;
+      }
+      syncControls();
+    });
+    video.addEventListener("volumechange", () => {
+      if (!video.muted && !video.paused) userPlayback = true;
+      syncControls();
+    });
+    function showMediaError() {
+      mediaFailed = true;
+      autoBlocked = true;
+      autoPlayEventExpected = false;
+      userPlayback = false;
+      // A failed load can leave paused=false while play() remains pending.
+      // Cancel that request and make the first next click a genuine retry.
+      pauseAutomatically();
+      syncControls();
+    }
+    video.addEventListener("error", showMediaError);
+    video.querySelector("source")?.addEventListener("error", showMediaError);
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(entries => {
+        inView = entries[0].isIntersecting && entries[0].intersectionRatio >= 0.25;
+        reconcilePlayback();
+      }, { threshold: [0, 0.25] });
+      observer.observe(video);
+    }
+    // Without IntersectionObserver, native and explicit playback remain available.
+    document.addEventListener("visibilitychange", reconcilePlayback);
+    reducedMotion.addEventListener?.("change", reconcilePlayback);
+    reducedData.addEventListener?.("change", reconcilePlayback);
+    connection?.addEventListener?.("change", reconcilePlayback);
+    new MutationObserver(reconcilePlayback).observe(dialog, { attributes: true, attributeFilter: ["open"] });
+    window.addEventListener("pagehide", pauseAutomatically);
+    window.addEventListener("pageshow", reconcilePlayback);
+    syncControls();
+  }
+
   // Counts and filters are derived from the same data used to render the catalogue.
   $("#topic-filter").innerHTML = [{ id: "all", label: "全部主题" }, ...topics].map(topic =>
     `<button type="button" data-topic="${escape(topic.id)}" aria-pressed="false">${escape(topic.label)}</button>`
@@ -302,4 +494,5 @@
   renderCatalogue();
   updateDock();
   if (state.product) showDetail(state.product);
+  initBrandFilm();
 })();
