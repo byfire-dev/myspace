@@ -1,0 +1,36 @@
+{
+  "provider": "LibTV",
+  "officialCliVersion": "1.2.0",
+  "createdDate": "2026-10-20",
+  "projectUrl": "https://www.liblib.tv/canvas?projectId=b101c18d523a4ac6ae1e93e39afb8c26",
+  "projectUuid": "b101c18d523a4ac6ae1e93e39afb8c26",
+  "referenceNode": "i-RvLHugLC16",
+  "videoNode": "v-4Q8MpLW3hL",
+  "taskId": "20261020202803262985531",
+  "status": 2,
+  "generationSubmissions": 1,
+  "model": "Seedance 2.5",
+  "modelKey": "star-video2.5",
+  "mode": "image2video",
+  "settings": {
+    "ratio": "16:9",
+    "resolution": "720p",
+    "duration": 10,
+    "enableSound": "off"
+  },
+  "prompt": "根据提供的臣能蛋白粉产品参考图，制作一段10秒、16:9的健康生活品牌产品展示镜头，单一连续镜头，无人物、无口播。整体安静、温润、克制，米白色台面，深墨绿色远景，柔和暖色晨光，背景有极淡的抽象山水层次。产品静置在画面右侧，左侧保留约一半画面宽度的干净空间供后期放置中文文案。保持参考产品的罐体比例、金色盖底、白色标签、标志和包装内容一致，不旋转、不打开、不改变形状，不展示参考图中没有的包装面。镜头只作非常缓慢的微量推进，光影在背景中自然移动；产品本身没有变形、漂浮或发光效果。不要照搬参考海报外围的标题、数值、分子图形和飞溅装饰；不要增加任何新文字、标识、功效、医学符号、服用场景或治疗效果。无突然切镜、无快速运动，结尾保留稳定构图。高品质品牌产品摄影风格，柔和真实接触阴影，高清细节。",
+  "sourceFile": "sources/libtv-product-v1.mp4",
+  "referenceFile": "sources/protein.jpg",
+  "sourceSha256": "56017A019FCD0C356E61F52218C9EC1FF24645BCDF22575F61C1B71C1ED79DF1",
+  "outputSha256": "AFFAB4EA962A60AA85A6AC1FA0E4B2EBE4B3EC0B7C98A6A7D87C0717571826A1",
+  "output": "chenneng/assets/chenneng-brand-film.mp4",
+  "composition": {
+    "localOriginalMusic": true,
+    "realWebsiteSeconds": 8,
+    "brandOutroSeconds": 6,
+    "localTypography": true,
+    "durationSeconds": 24,
+    "generatedFootageSeconds": 10
+  },
+  "credentialsIncluded": false
+}
