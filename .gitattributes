@@ -1,0 +1,3 @@
+ops/tls/*.sh text eol=lf
+ops/tls/*.service text eol=lf
+ops/tls/*.timer text eol=lf

@@ -1,0 +1,15 @@
+[Unit]
+Description=Renew myspace.byfire.ai TLS certificate using acme.sh
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+UMask=0077
+Environment=ACME_USE_IPV4_REQUESTS=1
+ExecStart=/usr/bin/flock --nonblock --conflict-exit-code 75 /run/lock/myspace-tls-renew.lock /root/.acme.sh/acme.sh --home /root/.acme.sh --renew -d myspace.byfire.ai --ecc
+ExecStopPost=/usr/local/sbin/myspace-tls-hooks recover
+SuccessExitStatus=2 75
+TimeoutStartSec=180
+TimeoutStopSec=30
+KillMode=control-group

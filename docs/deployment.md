@@ -90,3 +90,7 @@ rm -f "$KEY_FILE" "$KEY_FILE.pub"
 ```
 
 The full workflow excludes `.git/`, `.github/`, and `.well-known/`, then publishes the remaining repository files with `rsync --delete`.
+
+## HTTPS 证书维护
+
+`myspace.byfire.ai` 的证书续期、独立证书目录、Nginx 恢复机制及应急操作见 [TLS 维护文档](../ops/tls/README.md)。TLS-ALPN 验证需要临时释放 443 端口，维护时应考虑同一 Nginx 承载的其他站点。
