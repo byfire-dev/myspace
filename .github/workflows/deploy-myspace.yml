@@ -10,6 +10,14 @@ on:
         description: "Branch, tag, or commit SHA to deploy"
         required: true
         default: "master"
+      deployment_scope:
+        description: "Use chenneng-only to update the homepage and 臣能 subsite without syncing other files"
+        type: choice
+        options:
+          - full
+          - chenneng-only
+        required: true
+        default: full
 
 concurrency:
   group: myspace-production
@@ -121,13 +129,39 @@ jobs:
           DEPLOY_PORT: ${{ vars.DEPLOY_PORT || secrets.DEPLOY_PORT }}
           DEPLOY_USER: ${{ vars.DEPLOY_USER || secrets.DEPLOY_USER }}
           DEPLOY_PATH: ${{ vars.DEPLOY_PATH || secrets.DEPLOY_PATH }}
+          DEPLOYMENT_SCOPE: ${{ github.event_name == 'workflow_dispatch' && inputs.deployment_scope || 'full' }}
         run: |
           test -n "$DEPLOY_USER" || (echo "Missing DEPLOY_USER secret" && exit 1)
           test -n "$DEPLOY_PATH" || (echo "Missing DEPLOY_PATH secret" && exit 1)
           SSH_CMD="ssh -i ~/.ssh/deploy_key -p ${DEPLOY_PORT:-22}"
-          $SSH_CMD "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$DEPLOY_PATH'"
-          rsync -az --delete \
-            --exclude ".git/" \
-            --exclude ".github/" \
-            -e "$SSH_CMD" \
-            ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
+          if ! $SSH_CMD "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$DEPLOY_PATH'"; then
+            $SSH_CMD "$DEPLOY_USER@$DEPLOY_HOST" "sudo -n mkdir -p '$DEPLOY_PATH'"
+          fi
+          if $SSH_CMD "$DEPLOY_USER@$DEPLOY_HOST" "test -w '$DEPLOY_PATH'"; then
+            RSYNC_PATH="rsync"
+          elif $SSH_CMD "$DEPLOY_USER@$DEPLOY_HOST" "sudo -n true"; then
+            RSYNC_PATH="sudo -n rsync"
+          else
+            echo "Deployment account cannot write to DEPLOY_PATH and has no passwordless sudo."
+            exit 1
+          fi
+          RSYNC_OPTIONS=( -az --no-owner --no-group --no-perms --rsync-path="$RSYNC_PATH" -e "$SSH_CMD" )
+          case "$DEPLOYMENT_SCOPE" in
+            chenneng-only)
+              rsync "${RSYNC_OPTIONS[@]}" --delete \
+                ./chenneng/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/chenneng/"
+              rsync "${RSYNC_OPTIONS[@]}" \
+                ./index.html "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/index.html"
+              ;;
+            full)
+              rsync "${RSYNC_OPTIONS[@]}" --delete \
+                --exclude ".git/" \
+                --exclude ".github/" \
+                --exclude ".well-known/" \
+                ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
+              ;;
+            *)
+              echo "Unknown deployment scope: $DEPLOYMENT_SCOPE"
+              exit 1
+              ;;
+          esac

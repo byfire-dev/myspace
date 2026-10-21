@@ -26,6 +26,9 @@ Open:
 Inputs:
 
 - `deploy_ref`: use `master` for the latest master branch, or paste a commit SHA from the email to deploy that exact commit.
+- `deployment_scope`: defaults to `full`. Choose `chenneng-only` to update just the root `index.html` and the `chenneng/` site directory.
+
+The full sync preserves `.well-known/` for server-managed challenges. Before syncing, the workflow checks that the deploy account can write to `DEPLOY_PATH`; if it cannot, the workflow uses passwordless `sudo rsync` only when available, otherwise it stops before transferring files.
 
 ## Required secrets and variables
 
@@ -86,4 +89,8 @@ Copy the output from `cat "$KEY_FILE"` into the GitHub secret named `DEPLOY_SSH_
 rm -f "$KEY_FILE" "$KEY_FILE.pub"
 ```
 
-The workflow excludes `.git/` and `.github/`, then publishes all other files with `rsync --delete`.
+The full workflow excludes `.git/`, `.github/`, and `.well-known/`, then publishes the remaining repository files with `rsync --delete`.
+
+## HTTPS 证书维护
+
+`myspace.byfire.ai` 的证书续期、独立证书目录、Nginx 恢复机制及应急操作见 [TLS 维护文档](../ops/tls/README.md)。TLS-ALPN 验证需要临时释放 443 端口，维护时应考虑同一 Nginx 承载的其他站点。
