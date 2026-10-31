@@ -1,0 +1,27 @@
+[Unit]
+Description=Liyoxi enrollment API and private lead inbox
+After=network.target
+
+[Service]
+Type=simple
+User=liyoxi
+Group=liyoxi
+WorkingDirectory=/opt/liyoxi/current/ops/liyoxi
+EnvironmentFile=/etc/liyoxi/liyoxi.env
+ExecStart=/usr/bin/node /opt/liyoxi/current/ops/liyoxi/server.mjs
+Restart=on-failure
+RestartSec=5
+StateDirectory=liyoxi
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/liyoxi
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target

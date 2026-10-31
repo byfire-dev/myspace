@@ -1,0 +1,3 @@
+ops/liyoxi/*.sh text eol=lf
+ops/liyoxi/*.service text eol=lf
+ops/liyoxi/*.conf text eol=lf

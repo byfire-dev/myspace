@@ -20,3 +20,5 @@ url-to-markdown/
 *.jpeg
 *.gif
 index.html.backup
+!liyoxi/assets/*.png
+!liyoxi/assets/*.jpg
