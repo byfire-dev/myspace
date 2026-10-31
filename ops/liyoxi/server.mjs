@@ -1,4 +1,5 @@
 import { createServer } from 'node:http';
+import { realpathSync } from 'node:fs';
 import { scrypt, timingSafeEqual } from 'node:crypto';
 import { isIP } from 'node:net';
 import { Readable } from 'node:stream';
@@ -205,7 +206,9 @@ export async function start(config = configFromEnv()) {
   return { server, store };
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+// Node resolves an ES module's URL to its real path, while argv preserves the
+// release symlink used by systemd (for example /opt/liyoxi/current/server.mjs).
+if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
   try {
     const { server, store } = await start();
     console.info(JSON.stringify({ event: 'liyoxi_started', host: '127.0.0.1', port: server.address().port }));

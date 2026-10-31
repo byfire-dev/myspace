@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, readFileSync, symlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID, scryptSync } from 'node:crypto';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { request } from 'node:http';
 import { configFromEnv, createApp, validateEnrollment } from './server.mjs';
 import { openStore, csvCell } from './storage.mjs';
@@ -47,6 +47,34 @@ test('configuration fails closed for missing credentials and supports explicit l
   assert.throws(() => configFromEnv({ LIYOXI_ADMIN_USER: 'a', LIYOXI_ADMIN_PASSWORD_HASH: '' }), /PASSWORD_HASH/);
   const local = configFromEnv({ LIYOXI_ADMIN_USER: 'a', LIYOXI_ADMIN_PASSWORD_HASH: hash, LIYOXI_ALLOWED_ORIGINS: origin + ',http://127.0.0.1:8796' });
   assert.equal(local.allowedOrigins.has('http://127.0.0.1:8796'), true);
+});
+
+test('actual server process starts through a release directory symlink', async t => {
+  const dir = mkdtempSync(join(tmpdir(), 'liyoxi-symlink-'));
+  const current = join(dir, 'current');
+  symlinkSync(here, current, process.platform === 'win32' ? 'junction' : 'dir');
+  const child = spawn(process.execPath, [join(current, 'server.mjs')], {
+    env: { ...process.env, LIYOXI_ADMIN_USER: 'test_admin', LIYOXI_ADMIN_PASSWORD_HASH: hash, LIYOXI_PORT: '0', LIYOXI_DB_PATH: join(dir, 'enrollments.sqlite') },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  const closed = new Promise(resolve => child.once('close', resolve));
+  t.after(async () => { if (child.exitCode === null && child.signalCode === null) child.kill(); await closed; rmSync(dir, { recursive: true, force: true }); });
+  const started = await new Promise((resolve, reject) => {
+    let stdout = ''; let stderr = '';
+    const timeout = setTimeout(() => reject(new Error('Symlink-launched server did not start')), 5000);
+    child.stderr.setEncoding('utf8'); child.stderr.on('data', chunk => stderr += chunk);
+    child.stdout.setEncoding('utf8'); child.stdout.on('data', chunk => {
+      stdout += chunk;
+      for (const line of stdout.split('\n').filter(Boolean)) {
+        try { const event = JSON.parse(line); if (event.event === 'liyoxi_started') { clearTimeout(timeout); resolve(event); return; } } catch {}
+      }
+    });
+    child.once('error', error => { clearTimeout(timeout); reject(error); });
+    child.once('exit', code => { clearTimeout(timeout); reject(new Error(`Symlink-launched server exited before startup (${code}): ${stderr}`)); });
+  });
+  assert.equal(started.host, '127.0.0.1'); assert.ok(started.port > 0);
+  const response = await fetch(`http://127.0.0.1:${started.port}/liyoxi/api/health`);
+  assert.equal(response.status, 200); assert.deepEqual(await response.json(), { ok: true });
 });
 
 test('valid input is normalized and invalid data types or values are rejected', () => {
