@@ -28,7 +28,8 @@ const advisorCard=()=>`<section class="advisor-card"><h2>狸有戏 · 李老师<
 const success=()=>`${header()}<div class="stage-track"><span>01 填写意向 ✓</span><i></i><span class="active">02 添加课程顾问</span></div><section class="success-head"><div class="success-sign" aria-hidden="true">✓</div><h1>报名意向已收到。</h1><p>再添加李老师微信，<br>确认适合你的课程、班次和费用。</p></section>${advisorCard()}<div class="success-summary"><div class="summary-row"><span class="title">你的意向</span><span class="value">${(Array.isArray(receipt?.courseIds)?all.filter(([id])=>receipt.courseIds.includes(id)).map(([,name])=>name):selectedNames()).join('<br>')||'请顾问推荐课程'}</span></div><div class="summary-row"><span class="title">上课地点</span><span class="value">中南大学科技园</span></div></div><p class="success-bottom">意向已记录，顾问将后续跟进。<br>具体课程与班期，以双方确认的信息为准。</p>${footer('返回查看课程','courses')}`;
 const advisor=()=>`${header()}<section class="success-head"><h1>和李老师聊聊。</h1><p>了解课程、班次和费用，<br>一起确认适合你的学习方向。</p></section>${advisorCard()}${footer('填写报名意向','form')}`;
 const views={home,courses,schedule,form,success,advisor};
-document.querySelector('#app').innerHTML=`<article class="screen ${Object.hasOwn(views,view)?view:'home'}-screen">${(views[view]||home)()}</article>`;
+const resolvedView=Object.hasOwn(views,view)?view:'home';
+document.querySelector('#app').innerHTML=`<article class="screen ${resolvedView}-screen">${views[resolvedView]()}</article>`;
 function modal(content){
  const priorFocus=document.activeElement,wrap=document.createElement('div');wrap.className='modal-backdrop';
  wrap.innerHTML=`<section class="modal" role="dialog" aria-modal="true" aria-label="课程信息">${content}<button class="secondary close" type="button">关闭</button></section>`;

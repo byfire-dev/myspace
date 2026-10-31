@@ -4,6 +4,8 @@ set -Eeuo pipefail
 release_id="${1:?Usage: deploy-release.sh FULL_COMMIT_SHA}"
 [[ "$release_id" =~ ^[a-f0-9]{40}$ ]] || { echo 'Expected full commit SHA'; exit 1; }
 [[ $(id -u) == 0 ]] || { echo 'Root is required'; exit 1; }
+exec 9>/run/lock/liyoxi-deploy.lock
+flock -n 9 || { echo 'Another liyoxi deployment is running'; exit 1; }
 release="/opt/liyoxi/releases/$release_id"
 [[ $(readlink -f "$release") == "$release" ]] || { echo 'Unexpected release path'; exit 1; }
 test -f "$release/liyoxi/index.html"
@@ -19,7 +21,7 @@ cp -a "$conf" "$backup/site.conf"
 old_release=$(readlink -f /opt/liyoxi/current 2>/dev/null || true)
 printf '%s\n' "$old_release" > "$backup/previous-release.txt"
 rollback() {
-    trap - ERR
+    trap - ERR HUP INT TERM
     set +e
     echo 'Release failed; restoring previous routing and service.' >&2
     cp -a "$backup/site.conf" "$conf"
@@ -43,7 +45,7 @@ rollback() {
     echo "Rollback files: $backup" >&2
     exit 1
 }
-trap rollback ERR
+trap rollback ERR HUP INT TERM
 if ! id liyoxi >/dev/null 2>&1; then
     useradd --system --user-group --home /var/lib/liyoxi --shell /sbin/nologin liyoxi
 fi
@@ -88,5 +90,5 @@ systemctl reload nginx
 curl --fail --silent --connect-timeout 3 --max-time 10 https://myspace.byfire.ai/liyoxi/api/health >/dev/null
 curl --fail --silent --connect-timeout 3 --max-time 10 https://myspace.byfire.ai/liyoxi/ >/dev/null
 curl --fail --silent --connect-timeout 3 --max-time 10 https://myspace.byfire.ai/liyoxi/assets/advisor-wechat.jpg >/dev/null
-trap - ERR
+trap - ERR HUP INT TERM
 printf 'Published %s\nBackup: %s\n' "$release_id" "$backup"
