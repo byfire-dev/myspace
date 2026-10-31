@@ -129,5 +129,7 @@ jobs:
           rsync -az --delete \
             --exclude ".git/" \
             --exclude ".github/" \
+            --exclude "ops/" \
+            --exclude "liyoxi/" \
             -e "$SSH_CMD" \
             ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
