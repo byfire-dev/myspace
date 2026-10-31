@@ -87,8 +87,18 @@ done
 [[ "$healthy" == true ]]
 nginx -t
 systemctl reload nginx
-curl --fail --silent --connect-timeout 3 --max-time 10 https://myspace.byfire.ai/liyoxi/api/health >/dev/null
-curl --fail --silent --connect-timeout 3 --max-time 10 https://myspace.byfire.ai/liyoxi/ >/dev/null
-curl --fail --silent --connect-timeout 3 --max-time 10 https://myspace.byfire.ai/liyoxi/assets/advisor-wechat.jpg >/dev/null
+# Reload starts new workers asynchronously; old workers can briefly serve the old
+# site's HTML fallback with HTTP 200. Check content, then wait for routing to settle.
+public_ready=false
+for attempt in 1 2 3 4 5; do
+    if curl --fail --silent --connect-timeout 3 --max-time 10 https://myspace.byfire.ai/liyoxi/api/health | grep -qx '{"ok":true}' \
+       && curl --fail --silent --connect-timeout 3 --max-time 10 https://myspace.byfire.ai/liyoxi/ | grep -q 'app.js' \
+       && curl --fail --silent --connect-timeout 3 --max-time 10 https://myspace.byfire.ai/liyoxi/assets/advisor-wechat.jpg >/dev/null; then
+        public_ready=true
+        break
+    fi
+    sleep 1
+done
+[[ "$public_ready" == true ]]
 trap - ERR HUP INT TERM
 printf 'Published %s\nBackup: %s\n' "$release_id" "$backup"
